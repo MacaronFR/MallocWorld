@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="centos (7a1de938-11ed-4056-9fc4-e5876755e960)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/tmp.xcGqaocXMN" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>
