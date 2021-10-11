@@ -2,10 +2,10 @@
 <project version="4">
   <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
-      <paths name="Remote Host (790346f0-916e-46cc-a2a3-67d8655043d0)">
+      <paths name="centos (7a1de938-11ed-4056-9fc4-e5876755e960)">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/tmp/tmp.xcGqaocXMN" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
