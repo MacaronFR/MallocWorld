@@ -1,5 +1,3 @@
-
-#include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -34,7 +32,7 @@ int initInventory(inventory *inventory){
 			freeInventory(inventory);
 			return -1;
 		}
-		inventory->slots[i]->item = malloc(sizeof(item*) * 20);
+		inventory->slots[i]->item = malloc(sizeof(item *) * 20);
 		if(inventory->slots[i]->item == NULL){
 			fprintf(stderr, "Error : Out of memory");
 			freeInventory(inventory);
