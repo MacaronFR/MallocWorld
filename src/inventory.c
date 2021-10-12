@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 
 typedef struct s_item{
 	int8_t durability; //durabilité ou cout en durabilité
@@ -21,34 +22,58 @@ typedef struct s_inventory{
 } inventory;
 
 #define MAX_SLOTS_INVENTORY 10
+#define MAX_STACK 20
 
 //---------------------- Creation et Destruction ----------------------
-void initInventory(inventory *inventory){
+int initInventory(inventory *inventory){
 	for(int i = 0; i < MAX_SLOTS_INVENTORY; i++){
-		inventory->slots[i]->item = NULL;
+		inventory->slots[i] = malloc(sizeof(slot));
+		if(inventory->slots[i] == NULL){
+			fprintf(stderr, "Error : Out of memory");
+			freeInventory(inventory);
+			return -1;
+		}
+		inventory->slots[i]->item = malloc(sizeof(item*) * 20);
+		if(inventory->slots[i]->item == NULL){
+			fprintf(stderr, "Error : Out of memory");
+			freeInventory(inventory);
+			return -1;
+		}
+		inventory->slots[i]->item[0] = NULL;
 		inventory->slots[i]->quantity = 0;
 	}
+	return 1;
 }
 
 inventory *createInventory(){
 	inventory *inventory = malloc(sizeof(inventory));
-	initInventory(inventory);
+	if(inventory == NULL){
+		fprintf(stderr, "Error : Out of memory");
+		return NULL;
+	}
+	if(initInventory(inventory) == -1){
+		return NULL;
+	}
+	return inventory;
 }
 
 void freeInventory(inventory *inventory){
-	for(int i = 0; i < MAX_SLOTS_INVENTORY; i++){
+	for(int i = 0; inventory->slots[i] != NULL && i < MAX_SLOTS_INVENTORY; i++){
+		if(inventory->slots[i]->item == NULL){
+			free(inventory->slots[i]->item);
+		}
 		free(inventory->slots[i]);
 	}
 	free(inventory);
 }
 
 //---------------------- Test du contenue ----------------------
-bool isLikeItem(item *item1, item *item2){
+bool itemSameId(item *item1, item *item2){
 	return item1->id == item2->id;
 }
 
 bool isFullStack(slot *slot){
-	return slot->quantity >= 20;
+	return slot->quantity >= MAX_STACK;
 }
 
 bool isFullInventory(inventory *inventory){
