@@ -43,20 +43,11 @@ bool isFullInventory(inventory *inventory){
 	return true;
 }
 
-bool isFullStackInventory(inventory *inventory){
-	if(!isFullInventory(inventory)){
-		return false;
-	}
-	for(int i = 0; i < MAX_SLOTS_INVENTORY; i++){
-		if(inventory->slots[i]->item == 0)
-			return false;
-	}
-	return true;
-}
+
 
 bool isInInventory(inventory *inventory, item *item){
 	int i = 0;
-	while(inventory->slots[i] != NULL && i < MAX_SLOTS_INVENTORY){
+	while(inventory->slots[i]->item != NULL && i < MAX_SLOTS_INVENTORY){
 		if(isLikeItem(inventory->slots[i]->item, item)){
 			return true;
 		}
@@ -66,7 +57,7 @@ bool isInInventory(inventory *inventory, item *item){
 }
 
 //---------------------- Récupération et Modification ----------------------
-int indexInInventory(inventory *inventory, item *item){
+int indexSlotInInventory(inventory *inventory, item *item){
 	int i = 0;
 	while(inventory->slots[i] != NULL && i < MAX_SLOTS_INVENTORY){
 		if(isLikeItem(inventory->slots[i]->item, item)){
