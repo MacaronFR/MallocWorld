@@ -5,11 +5,11 @@
 #include "inventory.c"
 
 typedef struct s_player {
-    Inventory inventory;
-    int current_life;
-    int max_life;
-    int level;
-    int experience;
+
+inventory *inventory;
+uint16_t life;
+uint16_t exp;
+uint8_t level;
 }player;
 
 
