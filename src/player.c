@@ -4,10 +4,13 @@
 
 #include "inventory.c"
 
-typedef struct Player {
+typedef struct s_player {
     Inventory inventory;
-    int life;
-}Player;
+    int current_life;
+    int max_life;
+    int level;
+    int experience;
+}player;
 
 
 
