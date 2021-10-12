@@ -1,16 +1,12 @@
-//
-// Created by basil on 12/10/2021.
-//
 
-#include "inventory.c"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdint-gcc.h>
 
-typedef struct s_player {
+#include "inventory.h"
 
-inventory *inventory;
-uint16_t life;
-uint16_t exp;
-uint8_t level;
-}player;
+
 
 
 
