@@ -83,24 +83,15 @@ bool isFullInventory(inventory *inventory){
 	return true;
 }
 
-bool isFullStackInventory(inventory *inventory){
-	if(!isFullInventory(inventory)){
-		return false;
-	}
-	for(int i = 0; i < MAX_SLOTS_INVENTORY; i++){
-		if(inventory->slots[i]->item == 0)
-			return false;
-	}
-	return true;
+bool isStackFull(slot *slot){
+	return slot->quantity >= MAX_STACK;
 }
 
-bool isInInventory(inventory *inventory, item *item){
-	int i = 0;
-	while(inventory->slots[i] != NULL && i < MAX_SLOTS_INVENTORY){
-		if(isLikeItem(inventory->slots[i]->item, item)){
+bool isInInventory(inventory *inventory, int32_t id){
+	for(int i = 0; i < MAX_SLOTS_INVENTORY; ++i){
+		if(inventory->slots[i]->item[0] != NULL && inventory->slots[i]->item[0]->id == id){
 			return true;
 		}
-		i++;
 	}
 	return false;
 }
@@ -109,7 +100,7 @@ bool isInInventory(inventory *inventory, item *item){
 int indexInInventory(inventory *inventory, item *item){
 	int i = 0;
 	while(inventory->slots[i] != NULL && i < MAX_SLOTS_INVENTORY){
-		if(isLikeItem(inventory->slots[i]->item, item)){
+		if(itemSameId(inventory->slots[i]->item, item)){
 			return i;
 		}
 		i++;
