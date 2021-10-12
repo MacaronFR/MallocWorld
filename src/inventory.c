@@ -83,6 +83,7 @@ bool isFullInventory(inventory *inventory){
 	return true;
 }
 
+
 bool isStackFull(slot *slot){
 	return slot->quantity >= MAX_STACK;
 }
@@ -90,6 +91,7 @@ bool isStackFull(slot *slot){
 bool isInInventory(inventory *inventory, int32_t id){
 	for(int i = 0; i < MAX_SLOTS_INVENTORY; ++i){
 		if(inventory->slots[i]->item[0] != NULL && inventory->slots[i]->item[0]->id == id){
+
 			return true;
 		}
 	}
@@ -97,7 +99,7 @@ bool isInInventory(inventory *inventory, int32_t id){
 }
 
 //---------------------- Récupération et Modification ----------------------
-int indexInInventory(inventory *inventory, item *item){
+int indexSlotInInventory(inventory *inventory, item *item){
 	int i = 0;
 	while(inventory->slots[i] != NULL && i < MAX_SLOTS_INVENTORY){
 		if(itemSameId(inventory->slots[i]->item, item)){
