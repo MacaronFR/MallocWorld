@@ -1,4 +1,5 @@
-//
-// Created by macaron on 11/10/2021.
-//
+#include <stdlib.h>
 
+int main(){
+	
+}
