@@ -3,28 +3,14 @@
 #include <stdint.h>
 #include <stdio.h>
 
-typedef struct s_item{
-	int8_t durability; //durabilité ou cout en durabilité
-	uint16_t type; // type de l'objet (ressources/item arme/armure/outil/potion/arbre/roche/plante épée/lance/…
-	int32_t id; //id objet
-	int32_t *craft; // si item son craft en tableau d'id nécessaire
-	uint8_t flag; // zone
-} item;
+#include <inventory.h>
 
-typedef struct s_slot{
-	item **item;
-	int quantity;
-} slot;
-
-typedef struct s_inventory{
-	slot *slots[10];
-} inventory;
 
 #define MAX_SLOTS_INVENTORY 10
 #define MAX_STACK 20
 
 //---------------------- Creation et Destruction ----------------------
-int initInventory(inventory *inventory){
+int initInventory(inventory* inventory){
 	for(int i = 0; i < MAX_SLOTS_INVENTORY; i++){
 		inventory->slots[i] = malloc(sizeof(slot));
 		if(inventory->slots[i] == NULL){
@@ -44,7 +30,7 @@ int initInventory(inventory *inventory){
 	return 1;
 }
 
-inventory *createInventory(){
+inventory* createInventory(){
 	inventory *inventory = malloc(sizeof(inventory));
 	if(inventory == NULL){
 		fprintf(stderr, "Error : Out of memory");
@@ -56,7 +42,7 @@ inventory *createInventory(){
 	return inventory;
 }
 
-void freeInventory(inventory *inventory){
+void freeInventory(inventory* inventory){
 	for(int i = 0; inventory->slots[i] != NULL && i < MAX_SLOTS_INVENTORY; i++){
 		if(inventory->slots[i]->item == NULL){
 			free(inventory->slots[i]->item);

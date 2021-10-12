@@ -8,6 +8,8 @@
 
 #include <item.h>
 
+
+
 typedef struct s_slot{
     item **item;
     int quantity;
@@ -21,7 +23,7 @@ typedef struct s_inventory{
 
 
 //---------------------- Creation et Destruction ----------------------
-void initInventory(inventory* inventory);
+int initInventory(inventory* inventory);
 inventory* createInventory();
 void freeInventory(inventory* inventory);
 
@@ -30,7 +32,7 @@ bool isLikeItem(item* item1, item* item2);
 bool isFullStack(slot* slot);
 bool isFullInventory(inventory* inventory);
 bool isFullStackInventory(inventory* inventory);
-bool isInInventory(inventory* inventory, item* item);
+bool isInInventory(inventory* inventory, int32_t id);
 
 //---------------------- Récupération et Modification ----------------------
 int indexInInventory(inventory* inventory, item* item);

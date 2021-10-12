@@ -2,12 +2,12 @@
 // Created by basil on 12/10/2021.
 //
 
-#include "player.c" //MAL
+#include "player.h" //MAL
 
 
 
 int main() {
 
-
+    player p1=
 
 }
