@@ -1,24 +1,4 @@
-#include <stdlib.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
-
-typedef struct s_item{
-	int8_t durability; //durabilité ou cout en durabilité
-	uint16_t type; // type de l'objet (ressources/item arme/armure/outil/potion/arbre/roche/plante épée/lance/…
-	int32_t id; //id objet
-	int32_t *craft; // si item son craft en tableau d'id nécessaire
-	uint8_t flag; // zone
-} item;
-
-typedef struct s_slot{
-	item **item;
-	int quantity;
-} slot;
-
-typedef struct s_inventory{
-	slot *slots[10];
-} inventory;
+#include <inventory.h>
 
 #define MAX_SLOTS_INVENTORY 10
 #define MAX_STACK 20
@@ -102,7 +82,7 @@ bool isInInventory(inventory *inventory, int32_t id){
 int indexSlotInInventory(inventory *inventory, item *item){
 	int i = 0;
 	while(inventory->slots[i] != NULL && i < MAX_SLOTS_INVENTORY){
-		if(itemSameId(inventory->slots[i]->item, item)){
+		if(itemSameId(inventory->slots[i]->item, item)){ //TODO correction comparaison item
 			return i;
 		}
 		i++;
