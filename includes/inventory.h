@@ -8,15 +8,13 @@
 
 #include <item.h>
 
-
-
 typedef struct s_slot{
-    item **item;
+    item** item;
     int quantity;
 } slot;
 
 typedef struct s_inventory{
-    slot *slots[10];
+    slot* slots[10];
 } inventory;
 
 #define MAX_SLOTS_INVENTORY 10

@@ -18,6 +18,7 @@ typedef struct s_map {
 map* createMap();
 void initMap(map* map);
 void freeMap(map* map);
+bool endOfGame(map* map);
 
 bool canMine(map* map, player* player);
 bool canChopWood(map* map, player* player);

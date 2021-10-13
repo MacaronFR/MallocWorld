@@ -8,6 +8,6 @@
 
 int main() {
 
-    player p1=
+    player* p1 = createPlayer();
 
 }

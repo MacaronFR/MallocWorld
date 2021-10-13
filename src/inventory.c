@@ -10,6 +10,18 @@
 #define MAX_STACK 20
 
 //---------------------- Creation et Destruction ----------------------
+inventory* createInventory(){
+    inventory* inventory = malloc(sizeof(inventory));
+    if(inventory == NULL){
+        fprintf(stderr, "Error : Out of memory");
+        return NULL;
+    }
+    if(initInventory(inventory) == -1){
+        return NULL;
+    }
+    return inventory;
+}
+
 int initInventory(inventory* inventory){
 	for(int i = 0; i < MAX_SLOTS_INVENTORY; i++){
 		inventory->slots[i] = malloc(sizeof(slot));
@@ -28,18 +40,6 @@ int initInventory(inventory* inventory){
 		inventory->slots[i]->quantity = 0;
 	}
 	return 1;
-}
-
-inventory* createInventory(){
-	inventory *inventory = malloc(sizeof(inventory));
-	if(inventory == NULL){
-		fprintf(stderr, "Error : Out of memory");
-		return NULL;
-	}
-	if(initInventory(inventory) == -1){
-		return NULL;
-	}
-	return inventory;
 }
 
 void freeInventory(inventory* inventory){
