@@ -1,3 +1,4 @@
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -88,7 +89,7 @@ bool isInInventory(inventory *inventory, int32_t id){
 int indexSlotInInventory(inventory *inventory, item *item){
 	int i = 0;
 	while(inventory->slots[i] != NULL && i < MAX_SLOTS_INVENTORY){
-		if(itemSameId(inventory->slots[i]->item, item)){
+		if(itemSameId(inventory->slots[i]->item, item)){ //TODO correction comparaison item
 			return i;
 		}
 		i++;
