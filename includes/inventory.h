@@ -29,11 +29,16 @@ void freeInventory(inventory* inventory);
 bool isLikeItem(item* item1, item* item2);
 bool isFullStack(slot* slot);
 bool isFullInventory(inventory* inventory);
-bool isFullStackInventory(inventory* inventory);
 bool isInInventory(inventory* inventory, int32_t id);
 
 //---------------------- Récupération et Modification ----------------------
 int indexInInventory(inventory* inventory, item* item);
+void addItemInInventory(inventory* inventory, item* item);
+void removeItemInInventory(inventory* inventory, item* item);
+void decrementStackInInventory(inventory* inventory, item* item, int count);
+
+//---------------------- Affichage ----------------------
+void printInventory(inventory* inventory);
 
 
 #endif
