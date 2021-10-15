@@ -6,6 +6,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <errno.h>
+#include <utils.h>
 
 
 typedef struct s_item{
@@ -16,7 +18,7 @@ typedef struct s_item{
     uint8_t flag; // zone
 } item;
 
-
+item *loadItem(const char *filename);
 bool isSword(item* item);
 bool isPickaxe(item* item);
 bool isHoe(item* item);

@@ -35,15 +35,7 @@ bool isDead(player* player) {
     return player->life == 0;
 }
 
-void takeDamage(player* player, int damage) {
-    if(getArmor() != NULL)
-        player->life -= damage;
-    else
 
-    if(player->life < 0) {
-        player->life = 0;
-    }
-}
 
 //---------------------- Affichage ----------------------
 void printPlayer(player* player) {

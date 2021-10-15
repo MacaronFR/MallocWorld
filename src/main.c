@@ -1,5 +1,10 @@
-#include <stdlib.h>
+#include <item.h>
 
-int mainv(){
+int main(){
+	item *res = loadItem("../test.mw");
+	if(res == NULL){
+		return 1;
+	}
+	free(res);
 	return 0;
 }

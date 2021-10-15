@@ -124,10 +124,10 @@ void printSlot(inventory* inventory, int id) {
 void printQuantity(inventory* inventory, int id) {
     if(inventory->slots[id]->item[0] != NULL) {
         item* item = inventory->slots[id]->item[0];
-        if(isRessource(item))
-            printf("|%3d", inventory->slots[id]->quantity);
-        else
-            printf("|%3d", item->durability);
+        //if(isRessource(item))
+            //printf("|%3d", inventory->slots[id]->quantity);
+        //else
+            //printf("|%3d", item->durability);
     }
     else
         printf("|   ");
