@@ -1,5 +1,5 @@
 #include <stdlib.h>
 
-int main(){
-	
+int mainv(){
+	return 0;
 }

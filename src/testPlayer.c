@@ -9,5 +9,6 @@
 int main() {
 
     player* p1 = createPlayer();
+    printInventory(p1->inventory);
 
 }
