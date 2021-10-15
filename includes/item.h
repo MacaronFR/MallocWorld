@@ -17,11 +17,18 @@ typedef struct s_item{
 } item;
 
 
-bool isTool(item* item);
-bool isWeapon(item* item);
-bool isArmor(item* item);
-bool isRessource(item* item);
-bool canStack(item* item);
+bool isSword(item* item);
+bool isPickaxe(item* item);
+bool isHoe(item* item);
+bool isAxe(item* item);
+bool isWood(item* item);
+bool isOre(item* item);
+bool isPlante(item* item);
+bool isSpear(item* item);
+bool isHammer(item* item);
+bool isChestplate(item* item);
+bool isPotion(item* item);
+
 
 void useDurability(item* item);
 void repareItem(item* item);

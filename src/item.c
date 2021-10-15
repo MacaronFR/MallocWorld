@@ -5,10 +5,50 @@
 #include <stdint-gcc.h>
 
 #include "item.h"
+#include "id.h"
 
 
-bool isTool(item* item) {
-    if(item->id == )
+bool isSword(item* item) {
+    for(int i=0 ; i<sizeof(I_PICKAXES) ; i++) {
+        if(item->id == I_PICKAXES[i])
+            return true;
+    }
+    return false;
+}
+bool isPickaxe(item* item) {
+    for(int i=0 ; i<sizeof(I_PICKAXES) ; i++) {
+        if(item->id == I_PICKAXES[i])
+            return true;
+    }
+    return false;
+};
+bool isPickaxe(item* item) {
+    for(int i=0 ; i<sizeof(I_PICKAXES) ; i++) {
+        if(item->id == I_PICKAXES[i])
+            return true;
+    }
+    return false;
+};
+bool isPickaxe(item* item) {
+    for(int i=0 ; i<sizeof(I_PICKAXES) ; i++) {
+        if(item->id == I_PICKAXES[i])
+            return true;
+    }
+    return false;
+};
+bool isPickaxe(item* item) {
+    for(int i=0 ; i<sizeof(I_PICKAXES) ; i++) {
+        if(item->id == I_PICKAXES[i])
+            return true;
+    }
+    return false;
+};
+bool isPickaxe(item* item) {
+    for(int i=0 ; i<sizeof(I_PICKAXES) ; i++) {
+        if(item->id == I_PICKAXES[i])
+            return true;
+    }
+    return false;
 };
 bool isWeapon(item* item);
 bool isArmor(item* item);
