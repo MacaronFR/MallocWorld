@@ -89,10 +89,52 @@ bool isInInventory(inventory *inventory, int32_t id){
 int indexSlotInInventory(inventory *inventory, item *item){
 	int i = 0;
 	while(inventory->slots[i] != NULL && i < MAX_SLOTS_INVENTORY){
-		if(itemSameId(inventory->slots[i]->item, item)){ //TODO correction comparaison item
+		if(itemSameId(inventory->slots[i]->item[0], item)){ //TODO correction comparaison item
 			return i;
 		}
 		i++;
 	}
 	return -1;
+}
+
+//---------------------- Affichage ----------------------
+void printInventory(inventory* inventory) {
+    printLineSeparator(MAX_SLOTS_INVENTORY);
+    for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
+        printSlot(inventory, i);
+    }
+    printf("| <- Item\n");
+    printLineSeparator(MAX_SLOTS_INVENTORY);
+    for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
+        printQuantity(inventory, i);
+    }
+    printf("| <- Count/Durability\n");
+    printLineSeparator(MAX_SLOTS_INVENTORY);
+}
+void printSlot(inventory* inventory, int id) {
+    if(inventory->slots[id]->item[0] != NULL) {
+        item* item = inventory->slots[id]->item[0];
+        printf("|%3d", item->id);
+    }
+    else {
+        printf("|   ");
+    }
+
+}
+void printQuantity(inventory* inventory, int id) {
+    if(inventory->slots[id]->item[0] != NULL) {
+        item* item = inventory->slots[id]->item[0];
+        if(isRessource(item))
+            printf("|%3d", inventory->slots[id]->quantity);
+        else
+            printf("|%3d", item->durability);
+    }
+    else
+        printf("|   ");
+}
+void printLineSeparator(int count) {
+    for(int i=0 ; i<count ; i++) {
+        printf("+---");
+    }
+    printf("+\n");
 }

@@ -37,6 +37,7 @@ void decrementStackInInventory(inventory* inventory, item* item, int count);
 
 //---------------------- Affichage ----------------------
 void printInventory(inventory* inventory);
-
-
+void printLineSeparator(int count);
+void printSlot(inventory* inventory, int id);
+void printQuantity(inventory* inventory, int id);
 #endif

@@ -28,10 +28,14 @@ void usePotion(player* player, int id);
 void winExp(player* player, uint16_t exp);
 void levelUp(player* player);
 
-item getArmor(player* player);
-item getWeapon(player* player);
-item getRessource(player* player, int id, int nb);
+item* getArmor(player* player, int id);
+item* getWeapon(player* player, int id);
+item* getRessource(player* player, int id, int nb);
 
+//---------------------- Affichage ----------------------
+void printPlayer(player* player);
+void printExp(player* player);
+void printLife(player* player);
 
 
 
