@@ -1,8 +1,7 @@
 #include <item.h>
 
 bool checkFieldSyntax(const char *s){
-	size_t l = strlen(s);
-	return s[0] == '{' && s[l - 1] == '}';
+	return s[0] == '{' && s[strlen(s) - 1] == '}';
 }
 
 int32_t getFieldValue(char *buf, FILE *stream){
@@ -23,6 +22,37 @@ int32_t getFieldValue(char *buf, FILE *stream){
 		errno = ERANGE;
 		return -1;
 	}
+	return res;
+}
+
+int32_t *getCraft(char *buf, FILE *stream){
+	char *id;
+	int l, count = 1;
+	int32_t *res;
+	if(m_fgets(buf, 256, stream) == NULL || !checkFieldSyntax(buf)){
+#ifdef DEBUG
+		fprintf(stderr, "Bad item file syntax : Item field must be inside bracket ({<VALUE>})\n");
+#endif
+		return NULL;
+	}
+	l = strlen(buf);
+	if(l <= 2){
+		return NULL;
+	}
+	for(int i = 1; i < l - 1; i++){
+		if(buf[i] == ','){
+			count++;
+		}
+	}
+	res = malloc(sizeof(int32_t) * (count + 1));
+	id = strtok(buf+1, ",");
+	count = 0;
+	while(id != NULL){
+		res[count] = atoll(id);
+		id = strtok(NULL, ",");
+		count++;
+	}
+	res[count] = 0;
 	return res;
 }
 
@@ -81,8 +111,22 @@ item *load_item(const char *filename){
 		return NULL;
 	}
 	res->durability = tmp;
+	res->craft = getCraft(buf, f);
 #ifdef DEBUG
-	fprintf(stderr, "item {\n\ttype = %d,\n\tid = %d,\n\tflag = %d,\n\tdurability = %d\n}\n", res->type, res->id, res->flag, res->durability);
+	fprintf(stderr, "item {\n\ttype = %d,\n\tid = %d,\n\tflag = %d,\n\tdurability = %d\n", res->type, res->id, res->flag, res->durability);
+	int i = 0;
+	if(res->craft != NULL){
+		fprintf(stderr, "\tcraft : [");
+		while(res->craft[i] != 0){
+			fprintf(stderr, "%d", res->craft[i]);
+			if(res->craft[i + 1] != 0){
+				fprintf(stderr, ", ");
+			}
+			++i;
+		}
+		fprintf(stderr, "]\n");
+	}
+	fprintf(stderr, "}\n");
 #endif
 	fclose(f);
 	return res;

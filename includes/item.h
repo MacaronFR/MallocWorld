@@ -16,6 +16,7 @@ typedef struct s_item{
     int32_t id; //id objet
     int32_t *craft; // si item son craft en tableau d'id nécessaire
     uint8_t flag; // zone
+	char *name;
 } item;
 
 item *load_item(const char *filename);
