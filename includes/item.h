@@ -7,8 +7,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <errno.h>
+#include <dirent.h>
 #include <utils.h>
-
 
 typedef struct s_item{
     int8_t durability; //durabilité ou cout en durabilité
@@ -18,7 +18,9 @@ typedef struct s_item{
     uint8_t flag; // zone
 } item;
 
-item *loadItem(const char *filename);
+item *load_item(const char *filename);
+item **load_items(const char *dir, size_t *nItem);
+void freeItemList(item **items, int length);
 bool isSword(item* item);
 bool isPickaxe(item* item);
 bool isHoe(item* item);
