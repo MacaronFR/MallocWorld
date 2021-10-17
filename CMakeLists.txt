@@ -7,6 +7,6 @@ include_directories("includes")
 
 #Permet l'affichage de debug lors du déroulement du programme
 #À commenter pour version release
-add_definitions(-DDEBUG)
+add_definitions(-DDEBUG -DVERBOSE)
 
 add_executable(mallocworld src/main.c src/player.c src/inventory.c src/map.c src/item.c src/utils.c)

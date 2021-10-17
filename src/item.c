@@ -36,9 +36,11 @@ int32_t *getCraft(char *buf, FILE *stream){
 		return NULL;
 	}
 	l = strlen(buf);
-	if(l <= 2){
-		return NULL;
+#ifdef DEBUG
+	if(l == 2){
+		fprintf(stderr, "No craft");
 	}
+#endif
 	for(int i = 1; i < l - 1; i++){
 		if(buf[i] == ','){
 			count++;
@@ -53,6 +55,33 @@ int32_t *getCraft(char *buf, FILE *stream){
 		count++;
 	}
 	res[count] = 0;
+	return res;
+}
+
+char *getName(char *buf, FILE *stream){
+	char *res;
+	int l;
+	if(m_fgets(buf, 256, stream) == NULL || !checkFieldSyntax(buf)){
+#ifdef DEBUG
+		fprintf(stderr, "Bad item file syntax : Item field must be inside bracket ({<VALUE>})\n");
+#endif
+		return NULL;
+	}
+	l = strlen(buf) - 2;
+#ifdef DEBUG
+	if(l == 0){
+		fprintf(stderr, "No Name\n");
+	}
+#endif
+	res = malloc(sizeof(char) * l + 1);
+	if(res == NULL){
+#ifdef DEBUG
+		fprintf(stderr, "No memory left\n");
+#endif
+		return NULL;
+	}
+	strncpy(res, buf + 1, l);
+	res[l] = 0;
 	return res;
 }
 
@@ -112,20 +141,35 @@ item *load_item(const char *filename){
 	}
 	res->durability = tmp;
 	res->craft = getCraft(buf, f);
+	if(res->craft == NULL){
 #ifdef DEBUG
+		fprintf(stderr, "Item must have craft (event empty) defined\n");
+#endif
+		free(res);
+		return NULL;
+	}
+	res->name = getName(buf, f);
+	if(res->name == NULL){
+#ifdef DEBUG
+		fprintf(stderr, "Item must have name (even empty) defined\n");
+#endif
+		free(res->craft);
+		free(res);
+		return NULL;
+	}
+#ifdef VERBOSE
 	fprintf(stderr, "item {\n\ttype = %d,\n\tid = %d,\n\tflag = %d,\n\tdurability = %d\n", res->type, res->id, res->flag, res->durability);
 	int i = 0;
-	if(res->craft != NULL){
-		fprintf(stderr, "\tcraft : [");
-		while(res->craft[i] != 0){
-			fprintf(stderr, "%d", res->craft[i]);
-			if(res->craft[i + 1] != 0){
-				fprintf(stderr, ", ");
-			}
-			++i;
+	fprintf(stderr, "\tcraft : [");
+	while(res->craft[i] != 0){
+		fprintf(stderr, "%d", res->craft[i]);
+		if(res->craft[i + 1] != 0){
+			fprintf(stderr, ", ");
 		}
-		fprintf(stderr, "]\n");
+		++i;
 	}
+	fprintf(stderr, "]\n");
+	fprintf(stderr, "\tname : \"%s\"\n", res->name);
 	fprintf(stderr, "}\n");
 #endif
 	fclose(f);
@@ -183,7 +227,10 @@ item **load_items(const char *dir, size_t *n){
 }
 
 void freeItemList(item **items, int length){
-	for(int i = 0; i < length; ++i)
+	for(int i = 0; i < length; ++i){
+		free(items[i]->craft);
+		free(items[i]->name);
 		free(items[i]);
+	}
 	free(items);
 }
