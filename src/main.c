@@ -9,6 +9,11 @@ int main(){
 	size_t nItem;
 	item **itemList = load_items("..", &nItem);
 	if(itemList != NULL){
+		if(checkCraftValidity(itemList, nItem)){
+			printf("OK");
+		}else{
+			printf("NIKK");
+		}
 		freeItemList(itemList, nItem);
 	}
 	return 0;

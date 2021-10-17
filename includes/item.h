@@ -22,6 +22,7 @@ typedef struct s_item{
 item *load_item(const char *filename);
 item **load_items(const char *dir, size_t *nItem);
 void freeItemList(item **items, int length);
+bool checkCraftValidity(item **items, int length);
 bool isSword(item* item);
 bool isPickaxe(item* item);
 bool isHoe(item* item);

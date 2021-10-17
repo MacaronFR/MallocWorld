@@ -234,3 +234,87 @@ void freeItemList(item **items, int length){
 	}
 	free(items);
 }
+
+typedef struct s_chained_int{
+	int32_t value;
+	struct s_chained_int *next;
+} chained_int;
+
+void freeChainedInt(chained_int *p){
+	chained_int *tmp;
+	while(p != NULL){
+		tmp = p->next;
+		free(p);
+		p = tmp;
+	}
+}
+
+chained_int *getIds(item **items, int length){
+	chained_int *res = NULL, *tmp;
+	for(int i = 0; i < length; i++){
+		tmp = malloc(sizeof(chained_int));
+		tmp->value = items[i]->id;
+		tmp->next = res;
+		res = tmp;
+	}
+	return res;
+}
+
+chained_int *getCraftIds(item **items, int length){
+	chained_int *res = NULL, *tmp;
+	int j;
+	for(int i = 0; i < length; i++){
+		j = 0;
+		while(items[i]->craft[j] != 0){
+			if(items[i]->id == items[i]->craft[j]){
+				freeChainedInt(res);
+				return NULL;
+			}
+			tmp = res;
+			while(tmp != NULL && tmp->value != items[i]->craft[j]){
+				tmp = tmp->next;
+			}
+			if(tmp == NULL || tmp->value != items[i]->craft[j]){
+				tmp = malloc(sizeof(chained_int));
+				tmp->value = items[i]->craft[j];
+				tmp->next = res;
+				res = tmp;
+			}
+			++j;
+		}
+	}
+	return res;
+}
+
+bool checkCraftValidity(item **items, int length){
+	chained_int *ids = getIds(items, length);
+	chained_int *craftIds = getCraftIds(items, length);
+	chained_int *actualCraft = craftIds, *actualIds;
+	bool valid;
+	if(craftIds == NULL){
+		freeChainedInt(ids);
+		freeChainedInt(craftIds);
+		return false;
+	}
+	while(actualCraft != NULL){
+		actualIds = ids;
+		valid = false;
+		while(actualIds != NULL){
+			if(actualIds->value == actualCraft->value){
+				valid = true;
+				break;
+			}
+			actualIds = actualIds->next;
+		}
+		if(valid){
+			actualCraft = actualCraft->next;
+		}else{
+			freeChainedInt(ids);
+			freeChainedInt(craftIds);
+			return false;
+		}
+	}
+	freeChainedInt(ids);
+	freeChainedInt(craftIds);
+	return true;
+}
