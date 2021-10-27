@@ -10,30 +10,31 @@
 #include <dirent.h>
 #include <utils.h>
 
-typedef enum e_typeItem {
-    RESSOURCES = 1,
-    ITEM = 2
-}typeItem;
-
-typedef enum e_categorieItem {
-    sword = 4,
-    spear = 8,
-    hammer = 16,
-    armor = 32,
-    pickaxe = 64,
-    hoe = 128,
-    axe = 256,
-    wood = 512,
-    ore = 1024,
-    plant = 2048
-}categorieItem;
-
-typedef enum e_levelItem {
-    level1 = 4096,
-    level2 = 8192,
-    level3 = 16384,
-    level4 = 32768
-}levelItem;
+typedef enum e_itemType {
+    ITEMS = 32768,
+    RESSOURCES = 16384
+}itemType;
+typedef enum e_ressources {
+    WOODS = RESSOURCES + 8192,
+    ORES = RESSOURCES + 4096,
+    PLANTS = RESSOURCES + 2048
+}ressources;
+typedef enum e_items {
+    ARMORS = ITEMS + 8192,
+    WEAPONS = ITEMS + 4096,
+    TOOLS = ITEMS + 2048,
+    POTIONS = ITEMS + 1024
+}items;
+typedef enum e_weapons {
+    SWORD = WEAPONS + 512,
+    SPEAR = WEAPONS + 256,
+    HAMMER = WEAPONS + 128
+}weapons;
+typedef enum e_tools {
+    AXE = TOOLS + 512,
+    PICKAXE = TOOLS + 256,
+    HOE = TOOLS + 128
+}tools;
 
 typedef struct s_item{
     uint16_t type; // type de l'objet (ressources/item arme/armure/outil/potion/arbre/roche/plante épée/lance/…
