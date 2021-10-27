@@ -32,7 +32,7 @@ void freePlayer(player* player) {
 
 //---------------------- Test du player ----------------------
 bool isDead(player* player) {
-    return player->life == 0;
+    return player->life <= 0;
 }
 
 
