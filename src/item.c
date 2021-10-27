@@ -321,8 +321,8 @@ bool checkCraftValidity(item **items, int length){
 
 //-------------- CHECK TYPE ITEM --------------
 bool isItem(item *item) {
-    return item->type & itemType.item != 0;
+    return item->type & typeItem.ITEM != 0;
 }
 bool isSword(item* item) {
-    return type &  != 0
+    return item->type & categorieItem.sword != 0
 }

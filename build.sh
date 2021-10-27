@@ -1,3 +1,4 @@
+#!/bin/bash
 clear
 echo " |-----| suppression des fichiers |-----| "
 rm -rf cmake_install.cmake

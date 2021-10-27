@@ -10,10 +10,10 @@
 #include <dirent.h>
 #include <utils.h>
 
-typedef enum e_itemType {
-    typeRessource = 1,
-    typeItem = 2
-}itemType;
+typedef enum e_typeItem {
+    RESSOURCES = 1,
+    ITEM = 2
+}typeItem;
 
 typedef enum e_categorieItem {
     sword = 4,
