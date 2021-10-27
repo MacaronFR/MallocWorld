@@ -11,8 +11,8 @@
 #include <utils.h>
 
 typedef enum e_itemType {
-    ressource = 1,
-    item = 2
+    typeRessource = 1,
+    typeItem = 2
 }itemType;
 
 typedef enum e_categorieItem {
@@ -42,7 +42,7 @@ typedef struct s_item{
     int32_t *craft; // si item son craft en tableau d'id nécessaire
     uint8_t flag; // zone
 	char *name;
-} item;
+}item;
 
 void init_item(item *item);
 item *load_item(const char *filename);
