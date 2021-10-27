@@ -318,3 +318,11 @@ bool checkCraftValidity(item **items, int length){
 	freeChainedInt(craftIds);
 	return true;
 }
+
+//-------------- CHECK TYPE ITEM --------------
+bool isItem(item *item) {
+    return item->type & itemType.item != 0;
+}
+bool isSword(item* item) {
+    return type &  != 0
+}

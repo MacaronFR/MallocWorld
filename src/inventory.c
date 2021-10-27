@@ -62,6 +62,10 @@ bool isFullStack(slot *slot){
 	return slot->quantity >= MAX_STACK;
 }
 
+bool isStackFull(slot *slot){
+    return slot->quantity >= MAX_STACK;
+}
+
 bool isFullInventory(inventory *inventory){
 	for(int i = 0; i < MAX_SLOTS_INVENTORY; i++){
 		if(inventory->slots[i]->quantity == 0)
@@ -71,9 +75,7 @@ bool isFullInventory(inventory *inventory){
 }
 
 
-bool isStackFull(slot *slot){
-	return slot->quantity >= MAX_STACK;
-}
+
 
 bool isInInventory(inventory *inventory, int32_t id){
 	for(int i = 0; i < MAX_SLOTS_INVENTORY; ++i){
