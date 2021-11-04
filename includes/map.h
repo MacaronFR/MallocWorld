@@ -25,6 +25,14 @@ bool canChopWood(map* map, player* player);
 bool canCutGrass(map* map, player* player);
 bool canCraftItem(map* map, player* player, int id);
 
+void moovPlayerOnTop(map *map, player *player);
+void moovPlayerOnBottom(map *map, player *player);
+void moovPlayerOnLeft(map *map, player *player);
+void moovPlayerOnRight(map *map, player *player);
+
+
+
+
 void interactWithPNJ(map* map, player* player);
 item* craftItem(player* player, int id);
 

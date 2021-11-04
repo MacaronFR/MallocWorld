@@ -5,6 +5,7 @@ set(CMAKE_C_STANDARD 99)
 
 include_directories("includes")
 
+#Permet de créer des variable regroupant des fichiers
 set(SRCS
         src/main.c
         src/player.c
