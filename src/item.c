@@ -186,7 +186,7 @@ item **load_items(const char *dir, size_t *n){
 	size_t dirlen = strlen(dir);
 	char *file = malloc(sizeof(char) * (dirlen + 256));
 	strcpy(file, dir);
-	if(file[dirlen] - 1 != '/'){
+	if(file[dirlen - 1] != '/'){
 		file[dirlen] = '/';
 		file[dirlen + 1] = '\0';
 		dirlen++;
