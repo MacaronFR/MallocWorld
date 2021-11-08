@@ -9,4 +9,5 @@ include_directories("includes")
 #À commenter pour version release
 add_definitions(-DDEBUG -DVERBOSE)
 
-add_executable(mallocworld src/main.c src/player.c src/inventory.c src/map.c src/item.c src/utils.c)
+add_executable(mallocworld src/main.c src/player.c src/inventory.c src/utils.c src/perlin.c includes/perlin.h)
+target_link_libraries(mallocworld -lm)
