@@ -10,7 +10,6 @@ set(SRCS
         src/main.c
         src/player.c
         src/inventory.c
-        src/map.c
         src/item.c
         src/utils.c
         src/monster.c
