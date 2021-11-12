@@ -25,6 +25,7 @@ enum items {
     TOOLS = ITEMS + 2048,
     POTIONS = ITEMS + 1024
 };
+/*
 enum weapons {
     SWORDS = WEAPONS + 512,
     SPEARS = WEAPONS + 256,
@@ -34,14 +35,14 @@ enum tools {
     AXES = TOOLS + 512,
     PICKAXES = TOOLS + 256,
     HOES = TOOLS + 128
-};
+};*/
 
 typedef struct s_item{
-    int8_t durability; //durabilité ou cout en durabilité
     uint16_t type; // type de l'objet (ressources/item arme/armure/outil/potion/arbre/roche/plante épée/lance/…
     int32_t id; //id objet
-    int32_t *craft; // si item son craft en tableau d'id nécessaire
     uint8_t flag; // zone
+    int8_t durability; //durabilité ou cout en durabilité
+    int32_t *craft; // si item son craft en tableau d'id nécessaire
 	char *name;
 	uint8_t maxStack;
 } item;
