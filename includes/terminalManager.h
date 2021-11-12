@@ -6,20 +6,47 @@
 
 //      https://man7.org/linux/man-pages/man5/terminal-colors.d.5.html
 
+#ifdef _WIN32
+#include <windows.h>
+
+enum e_style {
+    //FOREGROUND_BLUE = 1,
+    //FOREGROUND_GREEN = 2,
+    //FOREGROUND_RED = 4,
+    //FOREGROUND_INTENSITY = 8
+    FOREGROUND_BLACK = 0,
+    FOREGROUND_WHITE = 7,
+    FOREGROUND_YELLOW = 6,
+    FOREGROUND_PURPLE = 5,
+    FOREGROUND_CYAN = 3,
+
+    //BACKGROUND_BLUE = 16,
+    //BACKGROUND_GREEN = 32,
+    //BACKGROUND_RED = 64,
+    //BACKGROUND_INTENSITY = 128
+    BACKGROUND_BLACK = 0,
+    BACKGROUND_WHITE = 127,
+    BACKGROUND_YELLOW = 96,
+    BACKGROUND_PURPLE = 80,
+    BACKGROUND_CYAN = 48
+};
+
+
+#else
 typedef enum e_style {
     DEFAULT = 0,
 
-    FG_BRIGHTER = 1,
+    FOREGROUND_INTENSITY = 1,
     FG_UNDERLINED = 4,
     FG_FLASHING = 5,
-    FG_BLACK = 30,
-    FG_RED = 31,
-    FG_GREEN = 32,
-    FG_YELlOW = 33,
-    FG_BLUE = 34,
-    FG_PURPLE = 35,
-    FG_CYAN = 36,
-    FG_WHITE = 37,
+    FOREGROUND_BLACK = 30,
+    FOREGROUND_RED = 31,
+    FOREGROUND_GREEN = 32,
+    FOREGROUND_YELLOW = 33,
+    FOREGROUND_BLUE = 34,
+    FOREGROUND_PURPLE = 35,
+    FOREGROUND_CYAN = 36,
+    FOREGROUND_WHITE = 37,
 
     BG_BLACK = 40,
     BG_RED = 41,
@@ -30,6 +57,8 @@ typedef enum e_style {
     BG_CYAN = 46,
     BG_WHITE = 47
 }style;
+
+#endif
 
 //---------------| TEXT (FOREGROUND & BACKGROUND) STYLE |---------------
 void setText(int nbArgs, ...);
