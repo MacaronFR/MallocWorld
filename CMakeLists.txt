@@ -14,6 +14,7 @@ set(SRCS
         src/item.c
         src/utils.c
         src/monster.c
+        src/perlin.c
         )
 
 #Permet l'affichage de debug lors du déroulement du programme
@@ -21,3 +22,5 @@ set(SRCS
 add_definitions(-DDEBUG -DVERBOSE)
 
 add_executable(mallocworld ${SRCS})
+
+target_link_libraries(mallocworld -lm)

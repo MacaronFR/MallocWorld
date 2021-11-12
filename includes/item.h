@@ -37,13 +37,14 @@ typedef enum e_tools {
 }tools;
 
 typedef struct s_item{
-    uint16_t type; // type de l'objet (ressources/item arme/armure/outil/potion/arbre/roche/plante épée/lance/…
     int8_t durability; //durabilité ou cout en durabilité
+    uint16_t type; // type de l'objet (ressources/item arme/armure/outil/potion/arbre/roche/plante épée/lance/…
     int32_t id; //id objet
     int32_t *craft; // si item son craft en tableau d'id nécessaire
     uint8_t flag; // zone
 	char *name;
-}item;
+	uint8_t maxStack;
+} item;
 
 void init_item(item *item);
 item *load_item(const char *filename);
