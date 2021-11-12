@@ -1,7 +1,3 @@
-//
-// Created by basil on 26/10/2021.
-//
-
 #ifndef MALLOCWORLD_MONSTER_H
 #define MALLOCWORLD_MONSTER_H
 
@@ -9,6 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <utils.h>
+#include <player.h>
 
 typedef struct s_monster{
 	u_int16_t life;

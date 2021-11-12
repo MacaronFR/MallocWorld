@@ -15,6 +15,7 @@ set(SRCS
         src/utils.c
         src/monster.c
         src/perlin.c
+        src/terminalManager.c
         )
 
 #Permet l'affichage de debug lors du déroulement du programme

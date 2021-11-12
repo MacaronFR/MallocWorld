@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include <inventory.h>
+#include <terminalManager.h>
 
 
 #define MAX_SLOTS_INVENTORY 10
@@ -87,7 +88,7 @@ bool isInInventory(inventory *inventory, int32_t id){
 	return false;
 }
 
-//---------------------- Récupération et Modification ----------------------
+//---------------------- R�cup�ration et Modification ----------------------
 int indexSlotInInventory(inventory *inventory, item *item){
 	int i = 0;
 	while(inventory->slots[i] != NULL && i < MAX_SLOTS_INVENTORY){
@@ -105,38 +106,60 @@ void printInventory(inventory* inventory) {
     for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
         printSlot(inventory, i);
     }
-    printf("| <- Item\n");
+    printf(" <- Item\n");
     printLineSeparator(MAX_SLOTS_INVENTORY);
     for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
         printQuantity(inventory, i);
     }
-    printf("| <- Count/Durability\n");
+    printf(" <- Count/Durability\n");
     printLineSeparator(MAX_SLOTS_INVENTORY);
 }
 void printSlot(inventory* inventory, int id) {
+    setText(1,FG_BLUE);
+    printf("|");
+    setTextDefault();
     if(inventory->slots[id]->item[0] != NULL) {
         item* item = inventory->slots[id]->item[0];
-        printf("|%3d", item->id);
+        printf("%3d", item->id);
     }
     else {
-        printf("|   ");
+        printf("   ");
     }
+    if(id == MAX_SLOTS_INVENTORY-1) {
+        setText(1,FG_BLUE);
+        printf("|");
+        setTextDefault();
+    }
+
 
 }
 void printQuantity(inventory* inventory, int id) {
+    setText(1, FG_BLUE);
+    printf("|");
+    setTextDefault();
     if(inventory->slots[id]->item[0] != NULL) {
-        item* item = inventory->slots[id]->item[0];
-        //if(isRessource(item))
-            //printf("|%3d", inventory->slots[id]->quantity);
-        //else
-            //printf("|%3d", item->durability);
+        item *item = inventory->slots[id]->item[0];
+        if (isRessource(item))
+            printf("%3d", inventory->slots[id]->quantity);
+        else{
+            setText(1, FG_YELlOW);
+            printf("%3d", item->durability);
+            setTextDefault();
+        }
     }
     else
-        printf("|   ");
+        printf("   ");
+    if(id == MAX_SLOTS_INVENTORY-1) {
+        setText(1,FG_BLUE);
+        printf("|");
+        setTextDefault();
+    }
 }
 void printLineSeparator(int count) {
+    setText(1,FG_BLUE);
     for(int i=0 ; i<count ; i++) {
         printf("+---");
     }
     printf("+\n");
+    setTextDefault();
 }

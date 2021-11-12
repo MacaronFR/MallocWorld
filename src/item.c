@@ -1,29 +1,6 @@
 #include <item.h>
 
-bool checkFieldSyntax(const char *s){
-	return s[0] == '{' && s[strlen(s) - 1] == '}';
-}
 
-int32_t getFieldValue(char *buf, FILE *stream){
-	char *check;
-	errno = 0;
-	if(m_fgets(buf, 256, stream) == NULL || !checkFieldSyntax(buf)){
-#ifdef DEBUG
-		fprintf(stderr, "Bad item file syntax : Item field must be inside bracket ({<VALUE>})\n");
-#endif
-		errno = EINVAL;
-		return -1;
-	}
-	int64_t res = strtoll(buf + 1, &check, 0);
-	if(check != buf + strlen(buf) - 1 || res < INT32_MIN || res > INT32_MAX){
-#ifdef DEBUG
-		fprintf(stderr, "Bad item file syntax : Item field value must be an integer between %d and %d (given '%s'", INT32_MIN, INT32_MAX, buf + 1);
-#endif
-		errno = ERANGE;
-		return -1;
-	}
-	return res;
-}
 
 int32_t *getCraft(char *buf, FILE *stream){
 	char *id;
@@ -320,12 +297,18 @@ bool checkCraftValidity(item **items, int length){
 }
 
 //-------------- CHECK TYPE ITEM --------------
-bool isItem(item *item) {
-    return (item->type & itemType.ITEM != 0);
-}
-bool isRessource(item *item) {
-    return (item->type & itemType.RESSOURCE != 0);
-}
-bool isSword(item* item) {
-    return ((item->type & weapons.sword) != 0);
-}
+bool isItem(item *item) {       return (item->type & ITEMS != 0);}
+bool isRessource(item *item) {  return (item->type & RESSOURCES != 0);}
+bool isWood(item* item) {       return (item->type & WOODS != 0);}
+bool isOres(item* item) {       return (item->type & ORES != 0);}
+bool isPlant(item* item) {      return (item->type & PLANTS != 0);}
+bool isArmor(item* item) {      return (item->type & ARMORS != 0);}
+bool isWeapon(item* item) {     return (item->type & WEAPONS != 0);}
+bool isTool(item* item) {       return (item->type & TOOLS != 0);}
+bool isPotion(item* item) {     return (item->type & POTIONS != 0);}
+bool isSword(item* item) {      return (item->type & SWORDS != 0);}
+bool isSpear(item* item) {      return (item->type & SPEARS != 0);}
+bool isHammer(item* item) {     return (item->type & HAMMERS != 0);}
+bool isAxe(item* item) {        return (item->type & AXES != 0);}
+bool isPickaxe(item* item) {    return (item->type & PICKAXES != 0);}
+bool isHoe(item* item) {        return (item->type & HOES != 0);}

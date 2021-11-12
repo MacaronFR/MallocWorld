@@ -10,31 +10,31 @@
 #include <dirent.h>
 #include <utils.h>
 
-typedef enum e_itemType {
+enum itemType {
     ITEMS = 32768,
     RESSOURCES = 16384
-}itemType;
-typedef enum e_ressources {
+};
+enum ressources {
     WOODS = RESSOURCES + 8192,
     ORES = RESSOURCES + 4096,
     PLANTS = RESSOURCES + 2048
-}ressources;
-typedef enum e_items {
+};
+enum items {
     ARMORS = ITEMS + 8192,
     WEAPONS = ITEMS + 4096,
     TOOLS = ITEMS + 2048,
     POTIONS = ITEMS + 1024
-}items;
-typedef enum e_weapons {
-    SWORD = WEAPONS + 512,
-    SPEAR = WEAPONS + 256,
-    HAMMER = WEAPONS + 128
-}weapons;
-typedef enum e_tools {
-    AXE = TOOLS + 512,
-    PICKAXE = TOOLS + 256,
-    HOE = TOOLS + 128
-}tools;
+};
+enum weapons {
+    SWORDS = WEAPONS + 512,
+    SPEARS = WEAPONS + 256,
+    HAMMERS = WEAPONS + 128
+};
+enum tools {
+    AXES = TOOLS + 512,
+    PICKAXES = TOOLS + 256,
+    HOES = TOOLS + 128
+};
 
 typedef struct s_item{
     int8_t durability; //durabilité ou cout en durabilité

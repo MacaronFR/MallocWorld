@@ -16,9 +16,9 @@ player* createPlayer() {
 }
 
 void initPlayer(player* player) {
-    inventory* inventory1 = createInventory();
-    initInventory(inventory1);
-    player->inventory = inventory1;
+    inventory* inventory = createInventory();
+    initInventory(inventory);
+    player->inventory = inventory;
     player->level = 1;
     player->life = 100;
     player->maxLife = 100;
