@@ -15,19 +15,24 @@ int ***generateMap(int seed){
 	int *p;
 	for(int i = 0; i < 3; i++){
 		p = generatePerm(seed * ((i + 1)* seed));
-		map[i] = generateLevel(100, 100, i + 1, p);
+		map[i] = generateLevel(100, 100, i + 1, p, seed);
 		free(p);
 	}
 	return map;
 }
 
-int **generateLevel(int h, int w, int level, int *p){
+int **generateLevel(int h, int w, int level, int *p, int seed){
 	int **map = malloc(sizeof(int*) * h);
 	int type;
 	for(int i = 0; i < h; ++i){
 		map[i] = malloc(sizeof(int) * w);
 		for(int j = 0; j < w; ++j){
 			map[i][j] = (int)(octaveNoise(i / 100., j / 100., p, 4, .8, 3) * 10);
+		}
+	}
+	srand(seed);
+	for(int i = 0; i < h; ++i){
+		for(int j = 0; j < w; ++j){
 			if(map[i][j] < 0){
 				type = 16;
 			}else{
@@ -100,9 +105,16 @@ double produit_scalaire(double *vec, double x, double y){
 	return res;
 }
 
+
+double fRand(double fMin, double fMax)
+{
+	double f = (double)rand() / RAND_MAX;
+	return fMin + f * (fMax - fMin);
+}
+
 double *generateVector(int seed){
-    srand48(seed);
-    double angle = (drand48() - .5) * 2 * M_PI;
+	srand(seed);
+	double angle = fRand(-1, 1) * M_PI;
 	double *vec = malloc(sizeof(double) * 2);
 	if(vec == NULL){
 		return NULL;
