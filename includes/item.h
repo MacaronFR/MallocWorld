@@ -41,9 +41,10 @@ typedef struct s_item{
     uint16_t type; // type de l'objet (ressources/item arme/armure/outil/potion/arbre/roche/plante épée/lance/…
     int32_t id; //id objet
     int32_t *craft; // si item son craft en tableau d'id nécessaire
-    uint8_t flag; // zone
-	char *name;
 	uint8_t maxStack;
+	uint8_t flag; // zone
+	char *name;
+	struct s_item *next;
 } item;
 
 void init_item(item *item);

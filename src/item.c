@@ -115,6 +115,13 @@ item *load_item(const char *filename){
 		return NULL;
 	}
 	res->durability = tmp;
+	tmp = getFieldValue(buf, f);
+	if(tmp == -1 && (errno == EINVAL || errno == ERANGE)){
+		free(res);
+		fclose(f);
+		return NULL;
+	}
+	res->maxStack = tmp;
 	res->craft = getCraft(buf, f);
 	if(res->craft == NULL){
 #ifdef DEBUG
@@ -133,7 +140,7 @@ item *load_item(const char *filename){
 		return NULL;
 	}
 #ifdef VERBOSE
-	fprintf(stderr, "item {\n\ttype = %d,\n\tid = %d,\n\tflag = %d,\n\tdurability = %d\n", res->type, res->id, res->flag, res->durability);
+	fprintf(stderr, "item {\n\ttype = %d,\n\tid = %d,\n\tflag = %d,\n\tdurability = %d\n\tmaxStack = %d\n", res->type, res->id, res->flag, res->durability, res->maxStack);
 	int i = 0;
 	fprintf(stderr, "\tcraft : [");
 	while(res->craft[i] != 0){
@@ -143,9 +150,7 @@ item *load_item(const char *filename){
 		}
 		++i;
 	}
-	fprintf(stderr, "]\n");
-	fprintf(stderr, "\tname : \"%s\"\n", res->name);
-	fprintf(stderr, "}\n");
+	fprintf(stderr, "]\n\tname : \"%s\"\n}\n", res->name);
 #endif
 	fclose(f);
 	return res;
@@ -292,15 +297,4 @@ bool checkCraftValidity(item **items, int length){
 	freeChainedInt(ids);
 	freeChainedInt(craftIds);
 	return true;
-}
-
-//-------------- CHECK TYPE ITEM --------------
-bool isItem(item *item) {
-    return (item->type & itemType.ITEM != 0);
-}
-bool isRessource(item *item) {
-    return (item->type & itemType.RESSOURCE != 0);
-}
-bool isSword(item* item) {
-    return ((item->type & weapons.sword) != 0);
 }

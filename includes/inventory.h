@@ -10,7 +10,7 @@
 #define MAX_SLOTS_INVENTORY 10
 
 typedef struct s_slot{
-    item** item;
+    item *item; //TODO
     int quantity;
 } slot;
 
