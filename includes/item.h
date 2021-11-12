@@ -25,7 +25,8 @@ typedef enum e_items {
     TOOLS = ITEMS + 2048,
     POTIONS = ITEMS + 1024
 }items;
-typedef enum e_weapons {
+
+/*typedef enum e_weapons {
     SWORD = WEAPONS + 512,
     SPEAR = WEAPONS + 256,
     HAMMER = WEAPONS + 128
@@ -34,15 +35,15 @@ typedef enum e_tools {
     AXE = TOOLS + 512,
     PICKAXE = TOOLS + 256,
     HOE = TOOLS + 128
-}tools;
+}tools;*/
 
 typedef struct s_item{
-    int8_t durability; //durabilité ou cout en durabilité
     uint16_t type; // type de l'objet (ressources/item arme/armure/outil/potion/arbre/roche/plante épée/lance/…
     int32_t id; //id objet
-    int32_t *craft; // si item son craft en tableau d'id nécessaire
+    uint8_t flag; // zone
+    int8_t durability; //durabilité ou cout en durabilité
 	uint8_t maxStack;
-	uint8_t flag; // zone
+    int32_t *craft; // si item son craft en tableau d'id nécessaire
 	char *name;
 	struct s_item *next;
 } item;

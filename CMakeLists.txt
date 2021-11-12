@@ -10,10 +10,12 @@ set(SRCS
         src/main.c
         src/player.c
         src/inventory.c
+        src/map.c
         src/item.c
         src/utils.c
         src/monster.c
-        src/perlin.c
+        #src/perlin.c
+        src/terminalManager.c
         )
 
 #Permet l'affichage de debug lors du déroulement du programme

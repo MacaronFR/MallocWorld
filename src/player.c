@@ -6,6 +6,7 @@
 
 #include "inventory.h"
 #include "player.h"
+#include "terminalManager.h"
 
 
 //---------------------- Creation et Destruction ----------------------
@@ -15,32 +16,52 @@ player* createPlayer() {
     return player1;
 }
 
-void initPlayer(player* player) {
-    inventory* inventory1 = createInventory();
-    initInventory(inventory1);
-    player->inventory = inventory1;
+void initPlayer(player *player) {
+    inventory* inventory = createInventory();
+    initInventory(inventory);
+    player->inventory = inventory;
     player->level = 1;
     player->life = 100;
     player->maxLife = 100;
     player->exp = 0;
 }
 
-void freePlayer(player* player) {
+void freePlayer(player *player) {
     freeInventory(player->inventory);
     free(player);
 }
 
 //---------------------- Test du player ----------------------
-bool isDead(player* player) {
+bool isDead(player *player) {
     return player->life <= 0;
 }
 
 
 
 //---------------------- Affichage ----------------------
-void printPlayer(player* player) {
-
+void printPlayer(player *player) {
+    printf(" @      | ");   printLevel(player);
+    printf("/|\\     | ");  printExp(player);
+    printf("/ \\     | ");  printLife(player);
+    printInventory(player->inventory);
 }
+void printLevel(player *player) {
+    setText(1,FOREGROUND_PURPLE);
+    printf("Lvl : %d\n", player->level);
+    setTextDefault();
+}
+void printExp(player *player) {
+    setText(1,FOREGROUND_GREEN);
+    printf("Exp : %d\n", player->exp);
+    setTextDefault();
+}
+void printLife(player *player) {
+    setText(1,FOREGROUND_RED);
+    printf("Life : %d / %d\n", player-> life, player->maxLife);
+    setTextDefault();
+}
+
+
 
 
 
