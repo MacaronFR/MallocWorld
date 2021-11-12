@@ -81,14 +81,13 @@ bool isFullInventory(inventory *inventory){
 bool isInInventory(inventory *inventory, int32_t id){
 	for(int i = 0; i < MAX_SLOTS_INVENTORY; ++i){
 		if(inventory->slots[i]->item[0] != NULL && inventory->slots[i]->item[0]->id == id){
-
 			return true;
 		}
 	}
 	return false;
 }
 
-//---------------------- R�cup�ration et Modification ----------------------
+//---------------------- GET ET SET ----------------------
 int indexSlotInInventory(inventory *inventory, item *item){
 	int i = 0;
 	while(inventory->slots[i] != NULL && i < MAX_SLOTS_INVENTORY){
@@ -100,7 +99,7 @@ int indexSlotInInventory(inventory *inventory, item *item){
 	return -1;
 }
 
-//---------------------- Affichage ----------------------
+//----------------------| AFFICHAGE |----------------------
 void printInventory(inventory* inventory) {
     printLineSeparator(MAX_SLOTS_INVENTORY);
     for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
@@ -115,7 +114,7 @@ void printInventory(inventory* inventory) {
     printLineSeparator(MAX_SLOTS_INVENTORY);
 }
 void printSlot(inventory* inventory, int id) {
-    setText(1,FG_BLUE);
+    setText(1,FOREGROUND_BLUE);
     printf("|");
     setTextDefault();
     if(inventory->slots[id]->item[0] != NULL) {
@@ -126,15 +125,13 @@ void printSlot(inventory* inventory, int id) {
         printf("   ");
     }
     if(id == MAX_SLOTS_INVENTORY-1) {
-        setText(1,FG_BLUE);
+        setText(1,FOREGROUND_BLUE);
         printf("|");
         setTextDefault();
     }
-
-
 }
 void printQuantity(inventory* inventory, int id) {
-    setText(1, FG_BLUE);
+    setText(1, FOREGROUND_BLUE);
     printf("|");
     setTextDefault();
     if(inventory->slots[id]->item[0] != NULL) {
@@ -142,7 +139,7 @@ void printQuantity(inventory* inventory, int id) {
         if (isRessource(item))
             printf("%3d", inventory->slots[id]->quantity);
         else{
-            setText(1, FG_YELlOW);
+            setText(1, FOREGROUND_GREEN);
             printf("%3d", item->durability);
             setTextDefault();
         }
@@ -150,13 +147,13 @@ void printQuantity(inventory* inventory, int id) {
     else
         printf("   ");
     if(id == MAX_SLOTS_INVENTORY-1) {
-        setText(1,FG_BLUE);
+        setText(1,FOREGROUND_BLUE);
         printf("|");
         setTextDefault();
     }
 }
 void printLineSeparator(int count) {
-    setText(1,FG_BLUE);
+    setText(2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
     for(int i=0 ; i<count ; i++) {
         printf("+---");
     }
