@@ -10,6 +10,19 @@
 #include <item.h>
 #include <stdint.h>
 
+enum experience {
+    LEVEL1 = 10,
+    LEVEL2 = 20,
+    LEVEL3 = 30,
+    LEVEL4 = 40,
+    LEVEL5 = 50,
+    LEVEL6 = 60,
+    LEVEL7 = 70,
+    LEVEL8 = 80,
+    LEVEL9 = 90,
+    LEVEL10 = 100,
+};
+
 typedef struct s_player {
     inventory *inventory;
     uint16_t life;
@@ -19,23 +32,24 @@ typedef struct s_player {
 }player;
 
 player* createPlayer();
-void initPlayer(player* player);
-void freePlayer(player* player);
+void initPlayer(player *player);
+void freePlayer(player *player);
 
-bool isDead(player* player);
-void takeDamage(player* player, int damage);
-void usePotion(player* player, int id);
-void winExp(player* player, uint16_t exp);
-void levelUp(player* player);
+bool isDead(player *player);
+void takeDamage(player *player, int damage);
+void usePotion(player *player, int id);
+void winExp(player *player, uint16_t exp);
+void levelUp(player *player);
 
-item* getArmor(player* player, int id);
-item* getWeapon(player* player, int id);
-item* getRessource(player* player, int id, int nb);
+item* getArmor(player *player, int id);
+item* getWeapon(player *player, int id);
+item* getRessource(player *player, int id, int nb);
 
 //---------------------- Affichage ----------------------
-void printPlayer(player* player);
-void printExp(player* player);
-void printLife(player* player);
+void printPlayer(player *player);
+void printLevel(player *player);
+void printExp(player *player);
+void printLife(player *player);
 
 
 
