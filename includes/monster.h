@@ -7,9 +7,9 @@
 #include <utils.h>
 
 typedef struct s_monster{
-	u_int16_t life;
-	u_int8_t respawn;
-	u_int16_t strength;
+	uint16_t life;
+	uint8_t respawn;
+	uint16_t strength;
 	char *name;
 	u_int32_t id;
 } monster;
