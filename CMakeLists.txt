@@ -14,7 +14,7 @@ set(SRCS
         src/item.c
         src/utils.c
         src/monster.c
-        src/perlin.c
+        #src/perlin.c
         src/terminalManager.c
         )
 
