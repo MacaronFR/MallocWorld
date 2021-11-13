@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include <terminalManager.h>
+#include <stdbool.h>
 
 #ifdef _WIN32
 
@@ -32,17 +33,18 @@ void setText(int nbArgs, ...) {
     int value;
     va_list ap;
     va_start(ap, nbArgs);
-    printf("\033[");
-    for(int i=0 ; i<nbArgs ; i++) {
-        value = va_arg(ap, style);
-        printf("%d", value);
-        if(i<nbArgs-1)
-            printf(";");
-    }
-    printf("m");
+	printf("\033[");
+	for (int i = 0; i < nbArgs; i++) {
+		value = va_arg(ap, style);
+		printf("%d", value);
+		if (i < nbArgs - 1)
+			printf(";");
+	}
+	printf("m");
+
 }
 
 void setTextDefault() {
-    printf("\033[0m");
+	printf("\033[0m");
 }
 #endif

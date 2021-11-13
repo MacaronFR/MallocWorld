@@ -3,6 +3,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 //      https://man7.org/linux/man-pages/man5/terminal-colors.d.5.html
 
@@ -48,14 +49,14 @@ typedef enum e_style {
     FOREGROUND_CYAN = 36,
     FOREGROUND_WHITE = 37,
 
-    BG_BLACK = 40,
-    BG_RED = 41,
-    BG_GREEN = 42,
-    BG_YELLOW = 43,
-    BG_BLUE = 44,
-    BG_PURPLE = 45,
-    BG_CYAN = 46,
-    BG_WHITE = 47
+	BACKGROUND_BLACK = 40,
+	BACKGROUND_RED = 41,
+	BACKGROUND_GREEN = 42,
+	BACKGROUND_YELLOW = 43,
+	BACKGROUND_BLUE = 44,
+	BACKGROUND_PURPLE = 45,
+	BACKGROUND_CYAN = 46,
+	BACKGROUND_WHITE = 47
 }style;
 
 #endif

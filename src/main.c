@@ -51,18 +51,21 @@ void testItem() {
 	item **itemList = load_items("..", &nItem);
 	if (itemList != NULL) {
 		if (checkCraftValidity(itemList, nItem)) {
+			setText(1,FOREGROUND_GREEN);
 			printf("testLoadItem : OK\n");
+			setTextDefault();
 		} else {
+			setText(1,FOREGROUND_RED);
 			printf("testLoadItem : NIKK\n");
+			setTextDefault();
 		}
 		freeItemList(itemList, nItem);
 	}
 
-
 	printFlag(1, "ITEM");
 }
 
-int testMacaron(int argc, char **argv) {
+void testMacaron(int argc, char **argv) {
 	testItem();
 	/*
 	FILE *f = fopen("/home/macaron/Documents/res.csv", "w");
@@ -91,7 +94,7 @@ int testMacaron(int argc, char **argv) {
 
 int main(int argc, char **argv) {
 	player *player = createPlayer();
-	//testPlayer(player);
+	testPlayer(player);
 	//testInventory(player->inventory);
 
 	testItem();
