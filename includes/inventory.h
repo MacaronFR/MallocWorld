@@ -24,16 +24,14 @@ inventory* createInventory();
 void freeInventory(inventory* inventory);
 
 //---------------------- Test du contenue ----------------------
-bool itemSameId(item *item1, item *item2);
 bool isStackFull(slot *slot);
-bool isFullInventory(inventory* inventory);
-bool isInInventory(inventory* inventory, int32_t id);
+int indexEmptySlot(inventory* inventory);
 
 //---------------------- Récupération et Modification ----------------------
-int indexSlotInInventory(inventory *inventory, item *item);
-void addItemInInventory(inventory* inventory, item* item);
-void removeItemInInventory(inventory* inventory, item* item);
-void decrementStackInInventory(inventory* inventory, item* item, int count);
+int indexSlotInInventory(inventory *inventory, int32_t id, int start);
+bool addItemInInventory(inventory *inventory, item* add);
+void removeItemInInventory(inventory *inventory, item* item);
+void decrementStackInInventory(inventory *inventory, item* item, int count);
 
 //---------------------- Affichage ----------------------
 void printInventory(inventory* inventory);

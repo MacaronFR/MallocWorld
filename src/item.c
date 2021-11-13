@@ -308,7 +308,8 @@ bool isPlant(item* item) {      return (item->type & PLANTS != 0);}
 bool isArmor(item* item) {      return (item->type & ARMORS != 0);}
 bool isWeapon(item* item) {     return (item->type & WEAPONS != 0);}
 bool isTool(item* item) {       return (item->type & TOOLS != 0);}
-bool isPotion(item* item) {     return (item->type & POTIONS != 0);}/*
+bool isPotion(item* item) {     return (item->type & POTIONS != 0);}
+/*
 bool isSword(item* item) {      return (item->type & SWORDS != 0);}
 bool isSpear(item* item) {      return (item->type & SPEARS != 0);}
 bool isHammer(item* item) {     return (item->type & HAMMERS != 0);}

@@ -57,17 +57,21 @@ bool checkCraftValidity(item **items, int length);
 //-------------- CHECK TYPE ITEM --------------
 bool isItem(item *item);
 bool isRessource(item *item);
+bool isWood(item* item);
+bool isOre(item* item);
+bool isPlant(item* item);
+bool isArmor(item* item);
+bool isWeapon(item* item);
+bool isTool(item* item);
+bool isPotion(item* item);
+/*
 bool isSword(item* item);
 bool isPickaxe(item* item);
 bool isHoe(item* item);
 bool isAxe(item* item);
-bool isWood(item* item);
-bool isOre(item* item);
-bool isPlante(item* item);
 bool isSpear(item* item);
-bool isHammer(item* item);
-bool isChestplate(item* item);
-bool isPotion(item* item);
+bool isHammer(item* item);*/
+
 
 
 void useDurability(item* item);

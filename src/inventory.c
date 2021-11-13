@@ -38,7 +38,7 @@ int initInventory(inventory* inventory){
 			freeInventory(inventory);
 			return -1;
 		}
-		inventory->slots[i]->item[0] = NULL;
+		inventory->slots[i]->item = NULL;
 		inventory->slots[i]->quantity = 0;
 	}
 	return 1;
@@ -55,49 +55,54 @@ void freeInventory(inventory* inventory){
 }
 
 //---------------------- Test du contenue ----------------------
-bool itemSameId(item *item1, item *item2){
-	return item1->id == item2->id;
-}
-
-bool isFullStack(slot *slot){
-	return slot->quantity >= MAX_STACK;
-}
-
 bool isStackFull(slot *slot){
-    return slot->quantity >= MAX_STACK;
+    return slot->item != NULL && slot->item->maxStack <= slot->quantity;
 }
 
-bool isFullInventory(inventory *inventory){
+int indexEmptySlot(inventory *inventory){
 	for(int i = 0; i < MAX_SLOTS_INVENTORY; i++){
 		if(inventory->slots[i]->quantity == 0)
-			return false;
-	}
-	return true;
-}
-
-
-
-
-bool isInInventory(inventory *inventory, int32_t id){
-	for(int i = 0; i < MAX_SLOTS_INVENTORY; ++i){
-		if(inventory->slots[i]->item[0] != NULL && inventory->slots[i]->item[0]->id == id){
-			return true;
-		}
-	}
-	return false;
-}
-
-//---------------------- GET ET SET ----------------------
-int indexSlotInInventory(inventory *inventory, item *item){
-	int i = 0;
-	while(inventory->slots[i] != NULL && i < MAX_SLOTS_INVENTORY){
-		if(itemSameId(inventory->slots[i]->item[0], item)){ //TODO correction comparaison item
 			return i;
-		}
-		i++;
 	}
 	return -1;
 }
+
+int indexSlotInInventory(inventory *inventory, int32_t id, int start){
+	for(int i = start; i < MAX_SLOTS_INVENTORY; ++i){
+		if(inventory->slots[i]->item != NULL && inventory->slots[i]->item->id == id){
+			return i;
+		}
+	}
+	return -1;
+}
+
+bool addItemInInventory(inventory *inventory, item *add) {
+    int slot = indexSlotInInventory(inventory, add->id, 0);
+    int emptySlot;
+
+    while(slot != -1) {
+        if(!isStackFull(inventory->slots[slot])) {
+            add->next = inventory->slots[slot]->item;
+            inventory->slots[slot]->item = add;
+            inventory->slots[slot]->quantity++;
+            return true;
+        }
+        else{
+            slot++;
+        }
+        slot = indexSlotInInventory(inventory, add->id, slot);
+    }
+    emptySlot = indexEmptySlot(inventory);
+    if(emptySlot != -1) {
+        add->next = NULL;
+        inventory->slots[emptySlot]->item = add;
+        inventory->slots[emptySlot]->quantity++;
+        return true;
+    }
+    return false;
+}
+//---------------------- GET ET SET ----------------------
+
 
 //----------------------| AFFICHAGE |----------------------
 void printInventory(inventory* inventory) {
@@ -117,8 +122,8 @@ void printSlot(inventory* inventory, int id) {
     setText(1,FOREGROUND_BLUE);
     printf("|");
     setTextDefault();
-    if(inventory->slots[id]->item[0] != NULL) {
-        item* item = inventory->slots[id]->item[0];
+    if(inventory->slots[id]->item != NULL) {
+        item* item = inventory->slots[id]->item;
         printf("%3d", item->id);
     }
     else {
@@ -134,8 +139,8 @@ void printQuantity(inventory* inventory, int id) {
     setText(1, FOREGROUND_BLUE);
     printf("|");
     setTextDefault();
-    if(inventory->slots[id]->item[0] != NULL) {
-        item *item = inventory->slots[id]->item[0];
+    if(inventory->slots[id]->item != NULL) {
+        item *item = inventory->slots[id]->item;
         if (isRessource(item))
             printf("%3d", inventory->slots[id]->quantity);
         else{
