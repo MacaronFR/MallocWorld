@@ -18,10 +18,18 @@ typedef struct s_inventory{
     slot* slots[10];
 } inventory;
 
+typedef struct s_storage{
+	slot** slots;
+	size_t size;
+} storage;
+
 //---------------------- Creation et Destruction ----------------------
 int initInventory(inventory* inventory);
 inventory* createInventory();
 void freeInventory(inventory* inventory);
+
+storage *createStorage();
+void freeStorage(storage *);
 
 //---------------------- Test du contenue ----------------------
 bool isStackFull(slot *slot);
@@ -32,6 +40,11 @@ int indexSlotInInventory(inventory *inventory, int32_t id, int start);
 bool addItemInInventory(inventory *inventory, item* add);
 void removeItemInInventory(inventory *inventory, item* item);
 void decrementStackInInventory(inventory *inventory, item* item, int count);
+
+int indexSlotInStorage(storage *, int32_t);
+bool addItemInStorage(storage *, item *);
+item *retrieveItemInStorage(storage *, int32_t);
+void removeSlot(storage *s, int index);
 
 //---------------------- Affichage ----------------------
 void printInventory(inventory* inventory);

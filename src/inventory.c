@@ -1,4 +1,3 @@
-
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -13,15 +12,15 @@
 
 //---------------------- Creation et Destruction ----------------------
 inventory* createInventory(){
-    inventory* inventory = malloc(sizeof(inventory));
-    if(inventory == NULL){
+    inventory* inv = malloc(sizeof(inv));
+    if(inv == NULL){
         fprintf(stderr, "Error : Out of memory");
         return NULL;
     }
-    if(initInventory(inventory) == -1){
+    if(initInventory(inv) == -1){
         return NULL;
     }
-    return inventory;
+    return inv;
 }
 
 int initInventory(inventory* inventory){
@@ -52,6 +51,26 @@ void freeInventory(inventory* inventory){
 		free(inventory->slots[i]);
 	}
 	free(inventory);
+}
+
+storage *createStorage(){
+	storage *s = malloc(sizeof(storage));
+	s->size = 0;
+	s->slots = NULL;
+	return s;
+}
+
+void freeStorage(storage *s){
+	item *tmp;
+	for(size_t i = 0; i < s->size; ++i){
+		while(s->slots[i]->item != NULL){
+			tmp = s->slots[i]->item->next;
+			free(s->slots[i]->item);
+			s->slots[i]->item = tmp;
+		}
+		free(s->slots[i]);
+	}
+	free(s);
 }
 
 //---------------------- Test du contenue ----------------------
@@ -100,6 +119,62 @@ bool addItemInInventory(inventory *inventory, item *add) {
         return true;
     }
     return false;
+}
+
+int indexSlotInStorage(storage *s, int32_t id){
+	for(size_t i = 0; i < s->size; ++i){
+		if(s->slots[i]->item->id == id){
+			return i;
+		}
+	}
+	return -1;
+}
+
+bool addItemInStorage(storage *s, item *add){
+	int index = indexSlotInStorage(s, add->id);
+	slot **tmp;
+	if(index == -1){
+		index = s->size;
+		tmp = realloc(s->slots, sizeof(slot*) * s->size + 1);
+		if(tmp == NULL){
+#ifdef DEBUG
+			fprintf(stderr, "Out of memory in allocation of new storage slot");
+#endif
+			freeStorage(s);
+			return false;
+		}
+		s->slots[s->size]->item = NULL;
+		s->slots[s->size]->quantity = 0;
+		s->size += 1;
+	}
+	add->next = s->slots[index]->item;
+	s->slots[index]->item = add;
+	s->slots[index]->quantity += 1;
+	return true;
+}
+
+item *retrieveItemInStorage(storage *s, int32_t id){
+	int index = indexSlotInStorage(s, id);
+	item *tmp;
+	if(index == -1){
+		return NULL;
+	}
+	tmp = s->slots[index]->item;
+	s->slots[index]->item = tmp->next;
+	s->slots[index]->quantity -= 1;
+	if(s->slots[index]->quantity <= 0){
+		removeSlot(s, index);
+	}
+	return tmp;
+}
+
+void removeSlot(storage *s, int index){
+	free(s->slots[index]);
+	for(int i = index; i < s->size - 1; ++i){
+		s->slots[i] = s->slots[i + 1];
+	}
+	s->size -= 1;
+	s->slots = realloc(s->slots, sizeof(slot*) * s->size);
 }
 //---------------------- GET ET SET ----------------------
 

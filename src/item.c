@@ -2,7 +2,8 @@
 
 int32_t *getCraft(char *buf, FILE *stream){
 	char *id;
-	int l, count = 1;
+	int count = 1;
+	unsigned long l;
 	int32_t *res;
 	if(m_fgets(buf, 256, stream) == NULL || !checkFieldSyntax(buf)){
 #ifdef DEBUG
@@ -300,19 +301,12 @@ bool checkCraftValidity(item **items, int length){
 }
 
 //-------------- CHECK TYPE ITEM --------------
-bool isItem(item *item) {       return (item->type & ITEMS != 0);}
-bool isRessource(item *item) {  return (item->type & RESSOURCES != 0);}
-bool isWood(item* item) {       return (item->type & WOODS != 0);}
-bool isOres(item* item) {       return (item->type & ORES != 0);}
-bool isPlant(item* item) {      return (item->type & PLANTS != 0);}
-bool isArmor(item* item) {      return (item->type & ARMORS != 0);}
-bool isWeapon(item* item) {     return (item->type & WEAPONS != 0);}
-bool isTool(item* item) {       return (item->type & TOOLS != 0);}
-bool isPotion(item* item) {     return (item->type & POTIONS != 0);}
-/*
-bool isSword(item* item) {      return (item->type & SWORDS != 0);}
-bool isSpear(item* item) {      return (item->type & SPEARS != 0);}
-bool isHammer(item* item) {     return (item->type & HAMMERS != 0);}
-bool isAxe(item* item) {        return (item->type & AXES != 0);}
-bool isPickaxe(item* item) {    return (item->type & PICKAXES != 0);}
-bool isHoe(item* item) {        return (item->type & HOES != 0);}*/
+bool isItem(item *item) {       return (item->type & ITEMS) != 0;}
+bool isRessource(item *item) {  return (item->type & RESSOURCES) != 0;}
+bool isWood(item* item) {       return (item->type & WOODS) != 0;}
+bool isOres(item* item) {       return (item->type & ORES) != 0;}
+bool isPlant(item* item) {      return (item->type & PLANTS) != 0;}
+bool isArmor(item* item) {      return (item->type & ARMORS) != 0;}
+bool isWeapon(item* item) {     return (item->type & WEAPONS) != 0;}
+bool isTool(item* item) {       return (item->type & TOOLS) != 0;}
+bool isPotion(item* item) {     return (item->type & POTIONS) != 0;}
