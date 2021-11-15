@@ -121,6 +121,18 @@ bool addItemInInventory(inventory *inventory, item *add) {
     return false;
 }
 
+item *retrieveItemInInventory(inventory *inv, int32_t id){
+	int index = indexSlotInInventory(inv, id, 0);
+	item *tmp;
+	if(index == -1){
+		return NULL;
+	}
+	tmp = inv->slots[index]->item;
+	inv->slots[index]->item = tmp->next;
+	inv->slots[index]->quantity -= 1;
+	return tmp;
+}
+
 int indexSlotInStorage(storage *s, int32_t id){
 	for(size_t i = 0; i < s->size; ++i){
 		if(s->slots[i]->item->id == id){

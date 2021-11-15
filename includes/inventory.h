@@ -39,6 +39,7 @@ int indexEmptySlot(inventory* inventory);
 int indexSlotInInventory(inventory *inventory, int32_t id, int start);
 bool addItemInInventory(inventory *inventory, item* add);
 void removeItemInInventory(inventory *inventory, item* item);
+item *retrieveItemInInventory(inventory *inventory, int32_t id);
 void decrementStackInInventory(inventory *inventory, item* item, int count);
 
 int indexSlotInStorage(storage *, int32_t);
