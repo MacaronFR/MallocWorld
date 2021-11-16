@@ -13,6 +13,7 @@
 #include <item.h>
 #include <utils.h>
 
+
 typedef enum e_experience {
     LEVEL1 = 10,
     LEVEL2 = 20,
@@ -47,16 +48,10 @@ void freePlayer(player *player);
 
 //---------------------- Etat du player ----------------------
 bool playerIsDead(player *player);
-void playerTakeDamage(player *player, int amount);
-
+void playerTakeDamage(player *player, uint16_t amount);
 void playerWinExp(player *player, uint16_t exp);
 void playerLevelUp(player *player);
 
-
-
-item* getArmor(player *player, int id);
-item* getWeapon(player *player, int id);
-item* getRessource(player *player, int id, int nb);
 
 //---------------------- Affichage ----------------------
 void printPlayer(player *player);
@@ -64,14 +59,23 @@ void printLevel(player *player);
 void printExp(player *player);
 void printLife(player *player);
 
-//---------------------- ACTION ----------------------
+//|--------------------------------------------| ACTION |--------------------------------------------|
+//---------------------- Fight ----------------------
 int playerTurnFight(player *player, monster *monster);
 int playerDoDamage(player *player, monster *monster);
 int playerSwitchWeapon(player *player);
 int playerSwitchArmor(player *player);
 int playerUsePotion(player *player);
 int playerEscape(player *player);
-
 int playerDoChoiceCategory(item **tabItem);
+
+//---------------------- Map ----------------------
+int playerMoov(player *player, direction direction);
+int playerCraft(player *player);
+int playerMine(player *player);
+int playerChopWood(player *player);
+int playerCutGrass(player *player);
+int playerCraftItem(player *player, int id);
+
 
 #endif //MALLOCWORLD_PLAYER_H

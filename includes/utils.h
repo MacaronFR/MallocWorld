@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <errno.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 
 
@@ -13,6 +14,13 @@ typedef struct s_coordinate {
 	int x;
 	int y;
 }coordinate;
+
+typedef enum e_direction {
+	NORTH,
+	EAST,
+	SOUTH,
+	WEST
+}direction;
 
 char *m_fgets(char *s, int size, FILE *stream);
 int32_t getFieldValue(char *buf, FILE *stream);

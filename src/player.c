@@ -14,7 +14,6 @@ player *createPlayer() {
     initPlayer(player1);
     return player1;
 }
-
 void initPlayer(player *player) {
     inventory* inventory = createInventory();
     initInventory(inventory);
@@ -25,7 +24,6 @@ void initPlayer(player *player) {
     player->exp = 0;
 	player->stuff = NULL;
 }
-
 void freePlayer(player *player) {
     freeInventory(player->inventory);
     free(player);
@@ -35,18 +33,14 @@ void freePlayer(player *player) {
 bool playerIsDead(player *player) {
     return player->life <= 0;
 }
-
-
-
-void playerTakeDamage(player *player, int amount) {
+void playerTakeDamage(player *player, uint16_t amount) {
 	if(player->stuff != NULL) {
 		int reduction = (player->stuff->armor->flag / 100);
 		player->life -= amount - (amount * reduction);
 	}
 }
-
-
-
+void playerWinExp(player *player, uint16_t exp) {}
+void playerLevelUp(player *player) {}
 
 //---------------------- Affichage ----------------------
 void printPlayer(player *player) {
@@ -71,7 +65,9 @@ void printLife(player *player) {
     setTextDefault();
 }
 
-//---------------------- ACTION ----------------------
+
+//|--------------------------------------------| ACTION |--------------------------------------------|
+//---------------------- Fight ----------------------
 int playerTurnFight(player *player, monster *monster) {
 	int value, res;
 	while(res != 1) {
@@ -110,7 +106,6 @@ int playerTurnFight(player *player, monster *monster) {
 		}
 	}
 }
-
 int playerDoDamage(player *player, monster *monster) {
 	if (player->stuff != NULL) {
 		int amount = (player->stuff->weapon->flag);
@@ -197,6 +192,14 @@ int playerDoChoiceCategory(item** tabItem) {
 	scanf("%d", &value);
 	return value;
 }
+
+//---------------------- Map ----------------------
+int playerMoov(player *player, direction direction) {}
+int playerCraft(player *player) {}
+int playerMine(player *player) {}
+int playerChopWood(player *player) {}
+int playerCutGrass(player *player) {}
+int playerCraftItem(player *player, int id) {}
 
 
 
