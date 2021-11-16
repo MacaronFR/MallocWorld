@@ -3,6 +3,7 @@
 #include <inventory.h>
 #include <item.h>
 #include <monster.h>
+#include <craft.h>
 #include <terminalManager.h>
 
 void printFlag(int pos, char *class) {
