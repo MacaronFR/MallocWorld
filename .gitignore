@@ -1,7 +1,9 @@
 .idea
 cmake-build-debug
+cmake-build-debug-1
 cmake-build-debug-wsl
 cmake_install.cmake
+cmake-build-debug-centos
 CMakeCache.txt
 CMakeFiles
 Makefile
