@@ -48,11 +48,12 @@ typedef struct s_item{
 	struct s_item *next;
 } item;
 
-void init_item(item *item);
 item *load_item(const char *filename);
 item **load_items(const char *dir, size_t *nItem);
 void freeItemList(item **items, int length);
 bool checkCraftValidity(item **items, int length);
+void freeItem(item *item);
+item *copyItem(item *i);
 
 //-------------- CHECK TYPE ITEM --------------
 bool isItem(item *item);

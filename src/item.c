@@ -207,11 +207,15 @@ item **load_items(const char *dir, size_t *n){
 	return res;
 }
 
+void freeItem(item *item){
+	free(item->craft);
+	free(item->name);
+	free(item);
+}
+
 void freeItemList(item **items, int length){
 	for(int i = 0; i < length; ++i){
-		free(items[i]->craft);
-		free(items[i]->name);
-		free(items[i]);
+		freeItem(items[i]);
 	}
 	free(items);
 }
@@ -298,6 +302,25 @@ bool checkCraftValidity(item **items, int length){
 	freeChainedInt(ids);
 	freeChainedInt(craftIds);
 	return true;
+}
+
+item *copyItem(item *i){
+	int l;
+	item *res = malloc(sizeof(item));
+	res->type = i->type;
+	res->id = i->id;
+	res->maxStack = i->maxStack;
+	res->durability = i->durability;
+	res->flag = i->flag;
+	res->next = NULL;
+	l = 0;
+	while(i->craft[l] != 0) ++l;
+	res->craft = malloc(sizeof(int32_t) * (l + 1));
+	for(int j = 0; j < l; ++j) res->craft[j] = i->craft[j];
+	l = strlen(i->name);
+	res->name = malloc(sizeof(char) * (l + 1));
+	strcpy(res->name, i->name);
+	return res;
 }
 
 //-------------- CHECK TYPE ITEM --------------
