@@ -1,10 +1,10 @@
-#include <map.h>
 #include <player.h>
 #include <inventory.h>
 #include <item.h>
 #include <monster.h>
 #include <craft.h>
 #include <terminalManager.h>
+#include <perlin.h>
 
 void printFlag(int pos, char *class) {
 	setText(1, FOREGROUND_YELLOW);
@@ -24,20 +24,15 @@ void printPerlin(int res, FILE *f) {
 	fprintf(f, "%2d", res);
 }
 
-
-
 void testPlayer(player *player) {
 	printFlag(0, "PLAYER");
 	printPlayer(player);
-
-
 	printFlag(1, "PLAYER");
 }
 
 void testInventory(inventory *inventory) {
 	printFlag(0, "INVENTORY");
 	printInventory(inventory);
-
 	printFlag(1, "INVENTORY");
 }
 
@@ -94,11 +89,11 @@ void testMacaron(int argc, char **argv) {
 }
 
 int main(int argc, char **argv) {
+	int*** map = generateMap(123);
 	player *player = createPlayer();
-	testPlayer(player);
+	//testPlayer(player);
 	//testInventory(player->inventory);
-
-	testItem();
+	//testItem();
 
 	return 0;
 }

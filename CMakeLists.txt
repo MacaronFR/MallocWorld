@@ -8,13 +8,12 @@ include_directories("includes")
 #Permet de créer des variable regroupant des fichiers
 set(SRCS
         src/main.c
-        src/map.c
         src/player.c
         src/inventory.c
         src/item.c
         src/utils.c
         src/monster.c
-        #src/perlin.c
+        src/perlin.c
         src/terminalManager.c
         src/craft.c)
 
