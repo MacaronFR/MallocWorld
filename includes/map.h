@@ -6,7 +6,9 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include <terminalManager.h>
 #include <player.h>
+#include <monster.h>
 
 typedef struct s_map {
     int id;
@@ -14,6 +16,8 @@ typedef struct s_map {
     int time;
     player* player;
 }map;
+
+
 
 map* createMap();
 void initMap(map* map);

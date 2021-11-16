@@ -5,6 +5,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
+
+#include <terminalManager.h>
 #include <item.h>
 
 #define MAX_SLOTS_INVENTORY 10
@@ -34,9 +36,10 @@ void freeStorage(storage *);
 //---------------------- Test du contenue ----------------------
 bool isStackFull(slot *slot);
 int indexEmptySlot(inventory* inventory);
+int indexSlotInInventory(inventory *inventory, int32_t id, int start);
+void inventoryContainCategory(inventory *inventory, category category, item** tabItem);
 
 //---------------------- Récupération et Modification ----------------------
-int indexSlotInInventory(inventory *inventory, int32_t id, int start);
 bool addItemInInventory(inventory *inventory, item* add);
 void removeItemInInventory(inventory *inventory, item* item);
 item *retrieveItemInInventory(inventory *inventory, int32_t id);

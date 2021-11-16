@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 #include <inventory.h>
-#include <terminalManager.h>
+
 
 
 #define MAX_SLOTS_INVENTORY 10
@@ -12,7 +12,7 @@
 
 //---------------------- Creation et Destruction ----------------------
 inventory* createInventory(){
-    inventory* inv = malloc(sizeof(inv));
+    inventory* inv = malloc(sizeof(inventory));
     if(inv == NULL){
         fprintf(stderr, "Error : Out of memory");
         return NULL;
@@ -95,6 +95,20 @@ int indexSlotInInventory(inventory *inventory, int32_t id, int start){
 	return -1;
 }
 
+void inventoryContainCategory(inventory *inventory, category category, item** tabItem) {
+	tabItem[MAX_SLOTS_INVENTORY];
+	for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++)
+		tabItem[i] = NULL;
+	int index = 0;
+	for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
+		if((inventory->slots[i]->item->type & category) == category) {
+			tabItem[index] = inventory->slots[i]->item;
+			index++;
+		}
+	}
+}
+
+//---------------------- Récupération et Modification ----------------------
 bool addItemInInventory(inventory *inventory, item *add) {
     int slot = indexSlotInInventory(inventory, add->id, 0);
     int emptySlot;
