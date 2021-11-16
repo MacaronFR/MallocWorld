@@ -7,6 +7,13 @@
 #include <errno.h>
 #include <stdint.h>
 
+
+
+typedef struct s_coordinate {
+	int x;
+	int y;
+}coordinate;
+
 char *m_fgets(char *s, int size, FILE *stream);
 int32_t getFieldValue(char *buf, FILE *stream);
 bool checkFieldSyntax(const char *s);

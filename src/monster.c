@@ -83,7 +83,7 @@ monster *loadMonster(const char *fn){
 	strncpy(res->name, buf + 1, strlen(buf) - 2);
 	res->name[strlen(buf) - 2] = 0;
 #ifdef VERBOSE
-	fprintf(stderr, "item {\n\tid = %d,\n\tlife = %d,\n\trespawn = %d\n\tstrength = %d\n\tname = %s\n}\n", res->id, res->life, res->respawn, res->strength, res->name);
+	fprintf(stderr, "monster {\n\tid = %d,\n\tlife = %d,\n\trespawn = %d\n\tstrength = %d\n\tname = %s\n}\n", res->id, res->life, res->respawn, res->strength, res->name);
 #endif
 	return res;
 }

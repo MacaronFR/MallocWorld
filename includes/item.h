@@ -8,39 +8,40 @@
 #include <stdint.h>
 #include <errno.h>
 #include <dirent.h>
+
+#include <terminalManager.h>
 #include <utils.h>
 
-typedef enum e_itemType {
+typedef enum e_category {
     ITEMS = 32768,
-    RESSOURCES = 16384
-}itemType;
+    RESSOURCES = 16384,
+
+	WOODS = RESSOURCES + 8192,
+	ORES = RESSOURCES + 4096,
+	PLANTS = RESSOURCES + 2048,
+
+	ARMORS = ITEMS + 8192,
+	WEAPONS = ITEMS + 4096,
+	TOOLS = ITEMS + 2048,
+	POTIONS = ITEMS + 1024
+}category;
+/*
 typedef enum e_ressources {
-    WOODS = RESSOURCES + 8192,
-    ORES = RESSOURCES + 4096,
-    PLANTS = RESSOURCES + 2048
+	WOODS = RESSOURCES + 8192,
+	ORES = RESSOURCES + 4096,
+	PLANTS = RESSOURCES + 2048
 }ressources;
 typedef enum e_items {
-    ARMORS = ITEMS + 8192,
-    WEAPONS = ITEMS + 4096,
-    TOOLS = ITEMS + 2048,
-    POTIONS = ITEMS + 1024
-}items;
-
-/*typedef enum e_weapons {
-    SWORD = WEAPONS + 512,
-    SPEAR = WEAPONS + 256,
-    HAMMER = WEAPONS + 128
-}weapons;
-typedef enum e_tools {
-    AXE = TOOLS + 512,
-    PICKAXE = TOOLS + 256,
-    HOE = TOOLS + 128
-}tools;*/
+	ARMORS = ITEMS + 8192,
+	WEAPONS = ITEMS + 4096,
+	TOOLS = ITEMS + 2048,
+	POTIONS = ITEMS + 1024
+}items;*/
 
 typedef struct s_item{
     uint16_t type; // type de l'objet (ressources/item arme/armure/outil/potion/arbre/roche/plante épée/lance/…
     int32_t id; //id objet
-    uint8_t flag; // zone
+    uint8_t flag; // zone / nb degat / % de reduction / nb de soin
     int8_t durability; //durabilité ou cout en durabilité
 	uint8_t maxStack;
     int32_t *craft; // si item son craft en tableau d'id nécessaire
