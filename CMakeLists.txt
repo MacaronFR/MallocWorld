@@ -8,6 +8,7 @@ include_directories("includes")
 #Permet de créer des variable regroupant des fichiers
 set(SRCS
         src/main.c
+        src/game.c
         src/player.c
         src/inventory.c
         src/item.c

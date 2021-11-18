@@ -62,6 +62,8 @@ typedef enum e_style {
 #endif
 
 //---------------| TEXT (FOREGROUND & BACKGROUND) STYLE |---------------
+void cleanTerminal();
+
 void setText(int nbArgs, ...);
 void setTextDefault();
 

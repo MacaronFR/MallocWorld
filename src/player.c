@@ -68,11 +68,12 @@ void printLife(player *player) {
 //|--------------------------------------------| ACTION |--------------------------------------------|
 //---------------------- Fight ----------------------
 int playerTurnFight(player *player, monster *monster) {
+	cleanTerminal();
 	printPlayer(player);
 	int choice = 0;
-	int res;
-	do {
-		//setText(1, FOREGROUND_GREEN);
+	int res = -1;
+	char* value = malloc(sizeof (char) * (10 + 1));
+	while(res == -1) {
 		printc("Que souhaitez vous faire ?\n", 1, FOREGROUND_PURPLE);
 		setText(2, FOREGROUND_BLUE, FOREGROUND_INTENSITY);
 		printf("1 - Attaquer    ");
@@ -80,8 +81,9 @@ int playerTurnFight(player *player, monster *monster) {
 		printf("3 - Changer d'armure    ");
 		printf("4 - Boire une potion    ");
 		printf("5 - Prendre la fuite    \n");
-		char* value = malloc(sizeof (char) * (2 + 1));
-		fgets(value,2,stdin);
+
+		fgets(value,10,stdin);
+		fflush(stdin);
 		if(value[0] == '1') {
 			res = playerDoDamage(player, monster);
 		}
@@ -99,13 +101,12 @@ int playerTurnFight(player *player, monster *monster) {
 			res = playerEscape(player);
 		}
 		else {
-			setText(1, FOREGROUND_YELLOW);
-			printf("L'action spécifié est incorrecte\n");
-			setTextDefault();
+			printf("%hhd", *value);
+			printc("L'action spécifié est incorrecte\n", 1, FOREGROUND_YELLOW);
 			res = -1;
 		}
 	}
-	while(res != 1);
+	free(value);
 	return 1;
 }
 int playerDoDamage(player *player, monster *monster) {

@@ -25,19 +25,16 @@ void printFlag(int pos, char *class) {
 void printPerlin(int res, FILE *f) {
 	fprintf(f, "%2d", res);
 }
-
 void testPlayer(player *player) {
 	printFlag(0, "PLAYER");
 	printPlayer(player);
 	printFlag(1, "PLAYER");
 }
-
 void testInventory(inventory *inventory) {
 	printFlag(0, "INVENTORY");
 	printInventory(inventory);
 	printFlag(1, "INVENTORY");
 }
-
 void testItem() {
 	printFlag(0, "ITEM");
 	//item *res = load_item("../test.mw");
@@ -62,7 +59,6 @@ void testItem() {
 
 	printFlag(1, "ITEM");
 }
-
 void testMacaron(int argc, char **argv) {
 	testItem();
 	/*
@@ -91,15 +87,11 @@ void testMacaron(int argc, char **argv) {
 }
 
 int main(int argc, char **argv) {
-	/*int*** map = generateMap(123);
-	player *player = createPlayer();*/
-	//testPlayer(player);
-	/*player *player = createPlayer();
-	testPlayer(player);
-	//testInventory(player->inventory);
+	//int*** map = generateMap(123);
+	player *player = createPlayer();
+	playerTurnFight(player, NULL);
 
-	testItem();
-	*/
+
 	/*
 	inventory *inv = createInventory();
 	initInventory(inv);
