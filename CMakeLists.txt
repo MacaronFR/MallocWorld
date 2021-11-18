@@ -16,7 +16,8 @@ set(SRCS
         src/perlin.c
         src/terminalManager.c
         src/craft.c
-        src/resource.c)
+        src/resource.c
+        src/respawn.c)
 
 #Permet l'affichage de debug lors du déroulement du programme
 #À commenter pour version release

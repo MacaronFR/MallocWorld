@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <dirent.h>
 
 #include <terminalManager.h>
 #include <utils.h>
@@ -19,9 +20,10 @@ typedef struct s_monster{
 } monster;
 
 monster *createMonster(monster *m);
-void deleteMonster(monster *m);
+void freeMonster(monster *m);
 monster *loadMonster(const char *filename);
-
+monster **loadMonsters(const char *dir, size_t *nMonster);
+void freeMonsterList(monster **monsterList, size_t nMonster);
 
 void monsterTakeDamage(monster *monster, int amount);
 void monsterIncrementTime(monster *monster);
