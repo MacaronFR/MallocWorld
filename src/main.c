@@ -90,8 +90,9 @@ void testMacaron(int argc, char **argv) {
 }
 
 int main(int argc, char **argv) {
-	/*int*** map = generateMap(123);
-	player *player = createPlayer();*/
+	int*** map = generateMap(123);
+	player *player = createPlayer();
+	playerTurnFight(player, NULL);
 	//testPlayer(player);
 	/*player *player = createPlayer();
 	testPlayer(player);
@@ -129,11 +130,13 @@ int main(int argc, char **argv) {
 	freeStorage(s);
 	freeItemList(itemList, nItem);
 	return 0;*/
-
+/*
 	size_t nItem, nResource;
 	item **itemList = load_items("../", &nItem);
 	resource **resourceList = loadResources("../", &nResource, itemList, nItem);
 	freeItemList(itemList, nItem);
-	freeResourceList(resourceList, nResource);
+	freeResourceList(resourceList, nResource);*/
+
+
 	return 0;
 }

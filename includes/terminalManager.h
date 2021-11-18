@@ -65,6 +65,8 @@ typedef enum e_style {
 void setText(int nbArgs, ...);
 void setTextDefault();
 
+void printc(char* str, int nbArgs, ...);
+
 
 
 #endif //MALLOCWORLD_TERMINALMANAGER_H

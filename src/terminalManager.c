@@ -43,8 +43,22 @@ void setText(int nbArgs, ...) {
 	printf("m");
 
 }
-
 void setTextDefault() {
 	printf("\033[0m");
 }
+void printc(char* str, int nbArgs, ...) {
+	int value;
+	va_list ap;
+	va_start(ap, nbArgs);
+	printf("\033[");
+	for (int i = 0; i < nbArgs; i++) {
+		value = va_arg(ap, style);
+		printf("%d", value);
+		if (i < nbArgs - 1)
+			printf(";");
+	}
+	printf("m");
+	printf(str);
+}
+
 #endif
