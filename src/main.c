@@ -6,6 +6,7 @@
 #include <terminalManager.h>
 #include <perlin.h>
 #include <resource.h>
+#include <respawn.h>
 
 void printFlag(int pos, char *class) {
 	setText(1, FOREGROUND_YELLOW);
@@ -85,7 +86,7 @@ void testMacaron(int argc, char **argv) {
 	fclose(f);
 	return 0;*/
 	/*monster *tmp = loadMonster("../monster.mw");
-	deleteMonster(tmp);
+	freeMonster(tmp);
 	return 0;*/
 }
 
@@ -130,10 +131,19 @@ int main(int argc, char **argv) {
 	freeItemList(itemList, nItem);
 	return 0;*/
 
-	size_t nItem, nResource;
+
+	respawn *r = NULL;
+	size_t nItem, nResource, nMonstre;
 	item **itemList = load_items("../", &nItem);
 	resource **resourceList = loadResources("../", &nResource, itemList, nItem);
+	monster **monsterList = loadMonsters("../", &nMonstre);
+	addMonsterRespawn(monsterList[0], &r, 0, 0);
+	addResourceRespawn(resourceList[0], &r, 0,1);
+	checkRespawn(&r);
+	checkRespawn(&r);
 	freeItemList(itemList, nItem);
 	freeResourceList(resourceList, nResource);
+	freeMonsterList(monsterList, nMonstre);
+	freeRespawnList(r);
 	return 0;
 }

@@ -11,7 +11,7 @@ monster *createMonster(monster *m){
 	return res;
 }
 
-void deleteMonster(monster *m){
+void freeMonster(monster *m){
 	free(m->name);
 	free(m);
 }
@@ -86,4 +86,61 @@ monster *loadMonster(const char *fn){
 	fprintf(stderr, "monster {\n\tid = %d,\n\tlife = %d,\n\trespawn = %d\n\tstrength = %d\n\tname = %s\n}\n", res->id, res->life, res->respawn, res->strength, res->name);
 #endif
 	return res;
+}
+
+monster **loadMonsters(const char *dir, size_t *n){
+	monster *tmp;
+	monster **res = NULL, **tmpRealloc;
+	size_t nResource = 0;
+	DIR *monsterDir;
+	struct dirent *en;
+	monsterDir = opendir(dir);
+	size_t dirlen = strlen(dir);
+	char *file = malloc(sizeof(char) * (dirlen + 256));
+	strcpy(file, dir);
+	if(file[dirlen - 1] != '/'){
+		file[dirlen] = '/';
+		file[dirlen + 1] = '\0';
+		dirlen++;
+	}
+	if(monsterDir){
+		while((en = readdir(monsterDir)) != NULL){
+			if(en->d_type == DT_REG){
+				file[dirlen] = '\0';
+				strcat(file, en->d_name);
+#ifdef DEBUG
+				fprintf(stderr, "looking in file %s\n", file);
+#endif
+				tmp = loadMonster(file);
+				if(tmp != NULL){
+					nResource++;
+					tmpRealloc = realloc(res, nResource * sizeof(monster *));
+					if(tmpRealloc == NULL){
+#ifdef DEBUG
+						fprintf(stderr, "No more memory available\n");
+#endif
+						freeMonsterList(res, nResource - 1);
+						free(res);
+						free(file);
+						free(tmp);
+						closedir(monsterDir);
+						return NULL;
+					}
+					res = tmpRealloc;
+					res[nResource - 1] = tmp;
+				}
+			}
+		}
+		closedir(monsterDir);
+	}
+	free(file);
+	*n = nResource;
+	return res;
+}
+
+void freeMonsterList(monster **m, size_t n){
+	for(size_t i = 0; i < n; ++i){
+		freeMonster(m[i]);
+	}
+	free(m);
 }
