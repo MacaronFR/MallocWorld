@@ -316,7 +316,7 @@ item *copyItem(item *i){
 	l = 0;
 	while(i->craft[l] != 0) ++l;
 	res->craft = malloc(sizeof(int32_t) * (l + 1));
-	for(int j = 0; j < l; ++j) res->craft[j] = i->craft[j];
+	for(int j = 0; j <= l; ++j) res->craft[j] = i->craft[j];
 	l = strlen(i->name);
 	res->name = malloc(sizeof(char) * (l + 1));
 	strcpy(res->name, i->name);

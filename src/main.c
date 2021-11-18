@@ -94,11 +94,40 @@ void testMacaron(int argc, char **argv) {
 }
 
 int main(int argc, char **argv) {
-	player *player = createPlayer();
+	/*player *player = createPlayer();
 	testPlayer(player);
 	//testInventory(player->inventory);
 
 	testItem();
+	*/
 
+	inventory *inv = createInventory();
+	initInventory(inv);
+	storage *s = createStorage();
+	size_t nItem;
+	item **itemList = load_items("../", &nItem);
+	addItemInInventory(inv, copyItem(itemList[0]));
+	addItemInInventory(inv, copyItem(itemList[0]));
+	addItemInStorage(s, copyItem(itemList[0]));
+	item *tmp = craftItem(inv, s, itemList[1]);
+	fprintf(stderr, "item {\n\ttype = %d,\n\tid = %d,\n\tflag = %d,\n\tdurability = %d\n\tmaxStack = %d\n", tmp->type, tmp->id, tmp->flag, tmp->durability, tmp->maxStack);
+	int i = 0;
+	fprintf(stderr, "\tcraft : [");
+	while(tmp->craft[i] != 0){
+		fprintf(stderr, "%d", tmp->craft[i]);
+		if(tmp->craft[i + 1] != 0){
+			fprintf(stderr, ", ");
+		}
+		++i;
+	}
+	fprintf(stderr, "]\n\tname : \"%s\"\n}\n", tmp->name);
+	addItemInStorage(s,tmp);
+	tmp = craftItem(inv, s, itemList[1]);
+	if(tmp == NULL){
+		printf("Incraftable");
+	}
+	freeInventory(inv);
+	freeStorage(s);
+	freeItemList(itemList, nItem);
 	return 0;
 }

@@ -38,6 +38,6 @@ void moovPlayerOnRight(map *map, player *player);
 
 
 void interactWithPNJ(map* map, player* player);
-item* craftItem(player* player, int id);
+//item* craftItem(player* player, int id);
 
 #endif //MALLOCWORLD_MAP_H

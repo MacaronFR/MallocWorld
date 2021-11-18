@@ -25,30 +25,22 @@ inventory* createInventory(){
 
 int initInventory(inventory* inventory){
 	for(int i = 0; i < MAX_SLOTS_INVENTORY; i++){
-		inventory->slots[i] = malloc(sizeof(slot));
-		if(inventory->slots[i] == NULL){
-			fprintf(stderr, "Error : Out of memory");
-			freeInventory(inventory);
-			return -1;
-		}
-		inventory->slots[i]->item = malloc(sizeof(item *) * 20);
-		if(inventory->slots[i]->item == NULL){
-			fprintf(stderr, "Error : Out of memory");
-			freeInventory(inventory);
-			return -1;
-		}
-		inventory->slots[i]->item = NULL;
-		inventory->slots[i]->quantity = 0;
+		inventory->slots[i].item = NULL;
+		inventory->slots[i].quantity = 0;
 	}
 	return 1;
 }
 
 void freeInventory(inventory* inventory){
-	for(int i = 0; inventory->slots[i] != NULL && i < MAX_SLOTS_INVENTORY; i++){
-		if(inventory->slots[i]->item == NULL){
-			free(inventory->slots[i]->item);
+	item *tmp;
+	for(int i = 0; i < MAX_SLOTS_INVENTORY; i++){
+		if(inventory->slots[i].item != NULL){
+			for(int j = 0; j < inventory->slots[i].quantity; ++j){
+				tmp = inventory->slots[i].item->next;
+				freeItem(inventory->slots[i].item);
+				inventory->slots[i].item = tmp;
+			}
 		}
-		free(inventory->slots[i]);
 	}
 	free(inventory);
 }
@@ -63,13 +55,13 @@ storage *createStorage(){
 void freeStorage(storage *s){
 	item *tmp;
 	for(size_t i = 0; i < s->size; ++i){
-		while(s->slots[i]->item != NULL){
-			tmp = s->slots[i]->item->next;
-			free(s->slots[i]->item);
-			s->slots[i]->item = tmp;
+		while(s->slots[i].item != NULL){
+			tmp = s->slots[i].item->next;
+			freeItem(s->slots[i].item);
+			s->slots[i].item = tmp;
 		}
-		free(s->slots[i]);
 	}
+	free(s->slots);
 	free(s);
 }
 
@@ -80,7 +72,7 @@ bool isStackFull(slot *slot){
 
 int indexEmptySlot(inventory *inventory){
 	for(int i = 0; i < MAX_SLOTS_INVENTORY; i++){
-		if(inventory->slots[i]->quantity == 0)
+		if(inventory->slots[i].quantity == 0)
 			return i;
 	}
 	return -1;
@@ -88,7 +80,7 @@ int indexEmptySlot(inventory *inventory){
 
 int indexSlotInInventory(inventory *inventory, int32_t id, int start){
 	for(int i = start; i < MAX_SLOTS_INVENTORY; ++i){
-		if(inventory->slots[i]->item != NULL && inventory->slots[i]->item->id == id){
+		if(inventory->slots[i].item != NULL && inventory->slots[i].item->id == id){
 			return i;
 		}
 	}
@@ -101,8 +93,8 @@ void inventoryContainCategory(inventory *inventory, category category, item** ta
 		tabItem[i] = NULL;
 	int index = 0;
 	for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
-		if((inventory->slots[i]->item->type & category) == category) {
-			tabItem[index] = inventory->slots[i]->item;
+		if((inventory->slots[i].item->type & category) == category) {
+			tabItem[index] = inventory->slots[i].item;
 			index++;
 		}
 	}
@@ -114,10 +106,10 @@ bool addItemInInventory(inventory *inventory, item *add) {
     int emptySlot;
 
     while(slot != -1) {
-        if(!isStackFull(inventory->slots[slot])) {
-            add->next = inventory->slots[slot]->item;
-            inventory->slots[slot]->item = add;
-            inventory->slots[slot]->quantity++;
+        if(!isStackFull(&(inventory->slots[slot]))) {
+            add->next = inventory->slots[slot].item;
+            inventory->slots[slot].item = add;
+            inventory->slots[slot].quantity++;
             return true;
         }
         else{
@@ -128,8 +120,8 @@ bool addItemInInventory(inventory *inventory, item *add) {
     emptySlot = indexEmptySlot(inventory);
     if(emptySlot != -1) {
         add->next = NULL;
-        inventory->slots[emptySlot]->item = add;
-        inventory->slots[emptySlot]->quantity++;
+        inventory->slots[emptySlot].item = add;
+        inventory->slots[emptySlot].quantity++;
         return true;
     }
     return false;
@@ -141,15 +133,15 @@ item *retrieveItemInInventory(inventory *inv, int32_t id){
 	if(index == -1){
 		return NULL;
 	}
-	tmp = inv->slots[index]->item;
-	inv->slots[index]->item = tmp->next;
-	inv->slots[index]->quantity -= 1;
+	tmp = inv->slots[index].item;
+	inv->slots[index].item = tmp->next;
+	inv->slots[index].quantity -= 1;
 	return tmp;
 }
 
 int indexSlotInStorage(storage *s, int32_t id){
 	for(size_t i = 0; i < s->size; ++i){
-		if(s->slots[i]->item->id == id){
+		if(s->slots[i].item->id == id){
 			return i;
 		}
 	}
@@ -158,10 +150,10 @@ int indexSlotInStorage(storage *s, int32_t id){
 
 bool addItemInStorage(storage *s, item *add){
 	int index = indexSlotInStorage(s, add->id);
-	slot **tmp;
+	slot *tmp;
 	if(index == -1){
 		index = s->size;
-		tmp = realloc(s->slots, sizeof(slot*) * s->size + 1);
+		tmp = realloc(s->slots, sizeof(slot) * (s->size + 1));
 		if(tmp == NULL){
 #ifdef DEBUG
 			fprintf(stderr, "Out of memory in allocation of new storage slot");
@@ -169,13 +161,14 @@ bool addItemInStorage(storage *s, item *add){
 			freeStorage(s);
 			return false;
 		}
-		s->slots[s->size]->item = NULL;
-		s->slots[s->size]->quantity = 0;
+		s->slots = tmp;
+		s->slots[s->size].item = NULL;
+		s->slots[s->size].quantity = 0;
 		s->size += 1;
 	}
-	add->next = s->slots[index]->item;
-	s->slots[index]->item = add;
-	s->slots[index]->quantity += 1;
+	add->next = s->slots[index].item;
+	s->slots[index].item = add;
+	s->slots[index].quantity += 1;
 	return true;
 }
 
@@ -185,17 +178,16 @@ item *retrieveItemInStorage(storage *s, int32_t id){
 	if(index == -1){
 		return NULL;
 	}
-	tmp = s->slots[index]->item;
-	s->slots[index]->item = tmp->next;
-	s->slots[index]->quantity -= 1;
-	if(s->slots[index]->quantity <= 0){
+	tmp = s->slots[index].item;
+	s->slots[index].item = tmp->next;
+	s->slots[index].quantity -= 1;
+	if(s->slots[index].quantity <= 0){
 		removeSlot(s, index);
 	}
 	return tmp;
 }
 
 void removeSlot(storage *s, int index){
-	free(s->slots[index]);
 	for(int i = index; i < s->size - 1; ++i){
 		s->slots[i] = s->slots[i + 1];
 	}
@@ -223,8 +215,8 @@ void printSlot(inventory* inventory, int id) {
     setText(1,FOREGROUND_BLUE);
     printf("|");
     setTextDefault();
-    if(inventory->slots[id]->item != NULL) {
-        item* item = inventory->slots[id]->item;
+    if(inventory->slots[id].item != NULL) {
+        item* item = inventory->slots[id].item;
         printf("%3d", item->id);
     }
     else {
@@ -240,10 +232,10 @@ void printQuantity(inventory* inventory, int id) {
     setText(1, FOREGROUND_BLUE);
     printf("|");
     setTextDefault();
-    if(inventory->slots[id]->item != NULL) {
-        item *item = inventory->slots[id]->item;
+    if(inventory->slots[id].item != NULL) {
+        item *item = inventory->slots[id].item;
         if (isRessource(item))
-            printf("%3d", inventory->slots[id]->quantity);
+            printf("%3d", inventory->slots[id].quantity);
         else{
             setText(1, FOREGROUND_GREEN);
             printf("%3d", item->durability);

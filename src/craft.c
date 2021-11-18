@@ -5,9 +5,9 @@ item *craftItem(inventory *inv, storage *s, item *toCraft){
 	item *list = NULL;
 	item *tmp;
 	while(toCraft->craft[i] != 0){
-		tmp = retrieveItemInInventory(inv, toCraft->id);
+		tmp = retrieveItemInInventory(inv, toCraft->craft[i]);
 		if(tmp == NULL){
-			retrieveItemInStorage(s, toCraft->id);
+			tmp = retrieveItemInStorage(s, toCraft->craft[i]);
 		}
 		if(tmp == NULL){
 			break;

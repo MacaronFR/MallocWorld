@@ -17,11 +17,11 @@ typedef struct s_slot{
 } slot;
 
 typedef struct s_inventory{
-    slot* slots[10];
+    slot slots[MAX_SLOTS_INVENTORY];
 } inventory;
 
 typedef struct s_storage{
-	slot** slots;
+	slot* slots;
 	size_t size;
 } storage;
 
