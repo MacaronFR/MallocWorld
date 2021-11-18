@@ -101,13 +101,12 @@ int playerTurnFight(player *player, monster *monster) {
 			res = playerEscape(player);
 		}
 		else {
-			printf("%hhd", *value);
 			printc("L'action spécifié est incorrecte\n", 1, FOREGROUND_YELLOW);
 			res = -1;
 		}
 	}
 	free(value);
-	return 1;
+	return res-1;
 }
 int playerDoDamage(player *player, monster *monster) {
 	if (player->stuff != NULL) {

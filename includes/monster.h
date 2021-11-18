@@ -10,6 +10,7 @@
 #include <terminalManager.h>
 #include <utils.h>
 
+
 typedef struct s_monster{
 	uint16_t life;
 	uint8_t respawn;
@@ -18,6 +19,8 @@ typedef struct s_monster{
 	uint32_t id;
 	coordinate *coordinate;
 } monster;
+
+#include <player.h>
 
 monster *createMonster(monster *m);
 void freeMonster(monster *m);
