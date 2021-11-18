@@ -5,7 +5,6 @@
 #include <stdint-gcc.h>
 
 #include <player.h>
-#include <map.h>
 
 
 //---------------------- Creation et Destruction ----------------------
@@ -116,7 +115,7 @@ int playerDoDamage(player *player, monster *monster) {
 	return 1;
 }
 int playerSwitchWeapon(player *player) {
-	item* tabItem[MAX_SLOTS_INVENTORY];
+	item** tabItem = malloc(sizeof(item*) * MAX_SLOTS_INVENTORY);
 	inventoryContainCategory(player->inventory, WEAPONS, tabItem);
 	if(tabItem[0] == NULL) {
 		printf("Tu n'as pas d'autre arme, si tu n'es pas content démerde toi avec tes poings! \n");
