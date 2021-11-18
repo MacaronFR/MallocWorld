@@ -213,7 +213,7 @@ void freeItem(item *item){
 	free(item);
 }
 
-void freeItemList(item **items, int length){
+void freeItemList(item **items, size_t length){
 	for(int i = 0; i < length; ++i){
 		freeItem(items[i]);
 	}
