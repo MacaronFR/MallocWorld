@@ -305,7 +305,7 @@ bool checkCraftValidity(item **items, int length){
 }
 
 item *copyItem(item *i){
-	int l;
+	size_t l;
 	item *res = malloc(sizeof(item));
 	res->type = i->type;
 	res->id = i->id;

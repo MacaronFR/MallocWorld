@@ -5,6 +5,7 @@
 #include <craft.h>
 #include <terminalManager.h>
 #include <perlin.h>
+#include <resource.h>
 
 void printFlag(int pos, char *class) {
 	setText(1, FOREGROUND_YELLOW);
@@ -89,8 +90,8 @@ void testMacaron(int argc, char **argv) {
 }
 
 int main(int argc, char **argv) {
-	int*** map = generateMap(123);
-	player *player = createPlayer();
+	/*int*** map = generateMap(123);
+	player *player = createPlayer();*/
 	//testPlayer(player);
 	/*player *player = createPlayer();
 	testPlayer(player);
@@ -98,7 +99,7 @@ int main(int argc, char **argv) {
 
 	testItem();
 	*/
-
+	/*
 	inventory *inv = createInventory();
 	initInventory(inv);
 	storage *s = createStorage();
@@ -127,5 +128,12 @@ int main(int argc, char **argv) {
 	freeInventory(inv);
 	freeStorage(s);
 	freeItemList(itemList, nItem);
+	return 0;*/
+
+	size_t nItem, nResource;
+	item **itemList = load_items("../", &nItem);
+	resource **resourceList = loadResources("../", &nResource, itemList, nItem);
+	freeItemList(itemList, nItem);
+	freeResourceList(resourceList, nResource);
 	return 0;
 }
