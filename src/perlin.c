@@ -10,54 +10,91 @@ void freeMap(int ***map, int level, int h){
 	free(map);
 }
 
-int ***generateMap(int seed){
+int ***generateMap(int seed, int portal[4][2]){
 	int ***map = malloc(sizeof(int **) * 3);
 	int *p;
 	for(int i = 0; i < 3; i++){
 		p = generatePerm(seed * ((i + 1)* seed));
-		map[i] = generateLevel(100, 100, i + 1, p, seed);
+		map[i] = generateLevel(100, 100, i + 1, p, seed, 5 * (i+1), portal);
 		free(p);
 	}
 	return map;
 }
 
-int **generateLevel(int h, int w, int level, int *p, int seed){
+int **generateLevel(int h, int w, int level, int *p, int seed, int maxMonstre, int portal[4][2]){
 	int **map = malloc(sizeof(int*) * h);
-	int type;
+	int x, y;
 	for(int i = 0; i < h; ++i){
 		map[i] = malloc(sizeof(int) * w);
 		for(int j = 0; j < w; ++j){
-			map[i][j] = (int)(octaveNoise(i / 100., j / 100., p, 4, .8, 3) * 10);
+			map[i][j] = (int)(octaveNoise(i / 100., j / 100., p, 4, .45, 4) * 10);
 		}
 	}
 	srand(seed);
 	for(int i = 0; i < h; ++i){
 		for(int j = 0; j < w; ++j){
-			if(map[i][j] < 0){
-				type = 16;
-			}else{
-				type = 0;
-			}
-			map[i][j] = applyRandom(map[i][j], level, type);
+			map[i][j] = applyRandom(map[i][j], level, maxMonstre);
 		}
+	}
+	do{
+		x = (rand() % 98) + 1;
+		y = (rand() % 98) + 1;
+	}while(!checkZone(map, x, y, 1));
+	map[x][y] = (level == 3) ? -3 : -2;
+	map[x + 1][y - 1] = 2;
+	portal[level - 1][0] = x;
+	portal[level - 1][1] = y;
+	if(level == 2){
+		do{
+			x = (rand() % 98) + 1;
+			y = (rand() % 98) + 1;
+		}while(!checkZone(map, x, y, 1));
+		map[x][y] = -2;
+		portal[3][0] = x;
+		portal[3][1] = y;
 	}
 	return map;
 }
 
-int applyRandom(int n, int level, int type){
-	int p;
-	if(n < 0) n *= -1;
+bool checkZone(int **map, int x, int y, int length){
+	for(int i = -length; i < length; ++i){
+		for(int j = -length; j < length; ++j){
+			if(map[x + i][y + j] != 0){
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+int applyRandom(int n, int level, int maxMonstre){
+	int p, v;
+	if(rand()%100 < 3){
+		return -1;
+	}
 	switch(n){
-		case 5:
-		case 4:
-		case 3: p = 90;break;
-		case 2:  level = (level > 1 ? 2: 1); p = 75;break;
-		case 1: level = 1; p = 50;break;
-		default: p = 0;break;
+		case 9:
+		case 8:
+		case 7:
+		case 6: p = 90; v = (level == 3) ?  11 : (level == 2) ? 8 : 5;break;
+		case 5: p = 75; v = (level >= 2) ? 8 : 5;break;
+		case 4: p = 50; v = 5;break;
+		case 3: p = 60; v = (level == 3) ?  9 : (level == 2) ? 6 : 3;break;
+		case 2: p = 50; v = (level >= 2) ? 6 : 3;break;
+		case 1: p = 40; v = 3;break;
+		case 0: p = 90; v = 0;break;
+		case -1: p = 50; v = 4;break;
+		case -2: p = 75; v = (level >= 2) ? 7 : 4;break;
+		default: p = 90; v = (level == 3) ?  10 : (level == 2) ? 7 : 4;break;
 	}
 	int tmp = rand() % 100;
 	if(tmp < p){
-		return type + level;
+		return v;
+	}else{
+		tmp = rand() % 100;
+		if(tmp < 30){
+			return (rand() % maxMonstre) + 12;
+		}
 	}
 	return 0;
 }

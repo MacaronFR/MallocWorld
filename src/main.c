@@ -25,16 +25,19 @@ void printFlag(int pos, char *class) {
 void printPerlin(int res, FILE *f) {
 	fprintf(f, "%2d", res);
 }
+
 void testPlayer(player *player) {
 	printFlag(0, "PLAYER");
 	printPlayer(player);
 	printFlag(1, "PLAYER");
 }
+
 void testInventory(inventory *inventory) {
 	printFlag(0, "INVENTORY");
 	printInventory(inventory);
 	printFlag(1, "INVENTORY");
 }
+
 void testItem() {
 	printFlag(0, "ITEM");
 	//item *res = load_item("../test.mw");
@@ -59,11 +62,13 @@ void testItem() {
 
 	printFlag(1, "ITEM");
 }
+
 void testMacaron(int argc, char **argv) {
 	testItem();
 	/*
 	FILE *f = fopen("/home/macaron/Documents/res.csv", "w");
-	int ***map = generateMap(atoi(argv[1]));
+	int portal[4][2];
+	int ***map = generateMap(atoi(argv[1]), portal);
 	for(int k = 0; k < 3; ++k){
 		for(int i = 0; i < 100; ++i){
 			for(int j = 0; j < 100; ++j){
@@ -80,9 +85,12 @@ void testMacaron(int argc, char **argv) {
 	}
 	freeMap(map, 3, 100);
 	fclose(f);
-	return 0;*/
+	for(int i = 0; i < 4; ++i){
+		printf("portal %d (%d, %d)\n", i, portal[i][0], portal[i][1]);
+	}
+	return 0;
 	/*monster *tmp = loadMonster("../monster.mw");
-	deleteMonster(tmp);
+	freeMonster(tmp);
 	return 0;*/
 }
 
@@ -136,6 +144,6 @@ int main(int argc, char **argv) {
 	freeItemList(itemList, nItem);
 	freeResourceList(resourceList, nResource);
 	freeMonsterList(monsterList, nMonstre);
-	freeRespawnList(r);*/
-	return 0;
+	freeRespawnList(r);
+	return 0;*/
 }

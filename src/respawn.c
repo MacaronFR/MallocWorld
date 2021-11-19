@@ -41,7 +41,7 @@ void checkRespawn(respawn **list){
 		}else{
 			prev = l;
 			l = l->next;
-		};
+		}
 	}
 }
 
