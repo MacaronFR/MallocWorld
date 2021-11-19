@@ -45,7 +45,6 @@ typedef struct s_player {
 #include <monster.h>
 
 player* createPlayer();
-void initPlayer(player *player);
 void freePlayer(player *player);
 
 //---------------------- Etat du player ----------------------

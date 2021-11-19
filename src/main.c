@@ -7,6 +7,9 @@
 #include <perlin.h>
 #include <resource.h>
 #include <respawn.h>
+#include <time.h>
+#include <ctype.h>
+#include <save.h>
 
 void printFlag(int pos, char *class) {
 	setText(1, FOREGROUND_YELLOW);
@@ -46,7 +49,7 @@ void testItem() {
 	//}
 	//free(res);
 	size_t nItem;
-	item **itemList = load_items("..", &nItem);
+	item **itemList = loadItems("..", &nItem);
 	if (itemList != NULL) {
 		if (checkCraftValidity(itemList, nItem)) {
 			setText(1,FOREGROUND_GREEN);
@@ -105,7 +108,7 @@ int main(int argc, char **argv) {
 	initInventory(inv);
 	storage *s = createStorage();
 	size_t nItem;
-	item **itemList = load_items("../", &nItem);
+	item **itemList = loadItems("../", &nItem);
 	addItemInInventory(inv, copyItem(itemList[0]));
 	addItemInInventory(inv, copyItem(itemList[0]));
 	addItemInStorage(s, copyItem(itemList[0]));
@@ -131,10 +134,10 @@ int main(int argc, char **argv) {
 	freeItemList(itemList, nItem);
 	return 0;*/
 
-
+/*
 	respawn *r = NULL;
 	size_t nItem, nResource, nMonstre;
-	item **itemList = load_items("../", &nItem);
+	item **itemList = loadItems("../", &nItem);
 	resource **resourceList = loadResources("../", &nResource, itemList, nItem);
 	monster **monsterList = loadMonsters("../", &nMonstre);
 	int portal[4][2];
@@ -153,5 +156,73 @@ int main(int argc, char **argv) {
 	freeMonsterList(monsterList, nMonstre);
 	freeRespawnList(r);
 	freeMap(map, 3, 100);
+	return 0;*/
+	int portal[4][2];
+	int h,w;
+	int ***map = loadSave("./saves/test.mw", NULL, NULL, NULL, portal, &h, &w);
+	for(int i = 0; i < h; ++i){
+		for(int j = 0; j < w; ++j){
+			printf("%d, ", map[0][i][j]);
+		}
+		printf("\n");
+	}
+	freeMap(map, 1, h);
 	return 0;
+}
+
+int mainF(int argc, char **argv){
+	char filename[256];
+	bool res = true;
+	int r = 0;
+	respawn *respawnList = NULL;//Liste de respawn
+	size_t nItem, nResource, nMonster;
+	item **listItem = loadItems("./items/", &nItem);
+	if(listItem != NULL){
+		resource **listResource = loadResources("./resources/", &nResource, listItem, nItem);
+		if(listResource != NULL){
+			monster **listMonster = loadMonsters("./monsters/", &nMonster);
+			if(listMonster != NULL){
+				player *player1 = createPlayer();
+				if(player1 != NULL){
+					storage *storage = createStorage();
+					if(storage != NULL){
+						int portal[4][2];
+						int ***map;
+						int h, w;
+						char c = 0;
+						printf("Créer un monde ? (Y/n) : ");
+						fflush(stdin);
+						scanf("%c", &c);
+						if(tolower(c) != 'n'){
+							srand(time(NULL));
+							map = generateMap(rand(), portal);
+							h = 100;
+							w = 100;
+						}else{
+							//map = loadSave("", &respawnList, player1, storage);
+						}
+						if(map != NULL){
+							//game();
+							do{
+								if(res){
+									printf("Erreur lors de la sauvegarde\n");
+								}
+								printf("sauvegarder à : ");
+								scanf("%s", filename);
+								//res = saveGame(filename, map, &respawnList, player1, storage);
+							}while(!res);
+							freeMap(map, 3, h);
+							freeRespawnList(respawnList);
+						}else r = -6;
+						freeStorage(storage);
+					}else r = -5;
+					freePlayer(player1);
+				}else r = -4;
+				freeMonsterList(listMonster, nMonster);
+			}else r = -3;
+			freeResourceList(listResource, nResource);
+		}else r = -2;
+		freeItemList(listItem, nItem);
+	}else r = -1;
+	return r;
 }
