@@ -18,6 +18,7 @@ typedef struct s_monster{
 	char *name;
 	uint32_t id;
 	coordinate *coordinate;
+	int16_t exp;
 } monster;
 
 #include <player.h>

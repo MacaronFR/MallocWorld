@@ -74,13 +74,17 @@ int playerTurnFight(player *player, monster *monster) {
 	int res = -1;
 	char* value = malloc(sizeof (char) * (10 + 1));
 	while(res == -1) {
-		printc("Que souhaitez vous faire ?\n", 1, FOREGROUND_PURPLE);
+		printc("Que souhaitez vous faire ?\n", 2, FOREGROUND_GREEN, FOREGROUND_INTENSITY);
 		setText(2, FOREGROUND_BLUE, FOREGROUND_INTENSITY);
-		printf("1 - Attaquer    ");
-		printf("2 - Changer d'arme    ");
-		printf("3 - Changer d'armure    ");
-		printf("4 - Boire une potion    ");
-		printf("5 - Prendre la fuite    \n");
+		printf("+---+-------------+---+-------------------+---+---------------------+---+---------------------+---+---------------------+\n");
+		printf("| 1 - Attaquer    | 2 - Changer d'arme    | 3 - Changer d'armure    | 4 - Boire une potion    | 5 - Prendre la fuite    |\n");
+		printf("+---+-------------+---+-------------------+---+---------------------+---+---------------------+---+---------------------+\n");
+		setTextDefault()
+		/*printf("2 - Changer d'arme    |");
+		printf("3 - Changer d'armure    |");
+		printf("4 - Boire une potion    |");
+		printf("5 - Prendre la fuite    |\n");*/
+
 
 		fgets(value,10,stdin);
 		fflush(stdin);
