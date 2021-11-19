@@ -1,13 +1,54 @@
 #include <game.h>
 
-void moovPlayer(player *player, int ***map) {
-	/*
-	 if(TOP)
-	 	case = checkcase(player->cordinate.x, player->cordinate.y+1)
+void playerInterface() {
 
-	 */
+
 }
 
+void playerChooseSave() {
+
+}
+void playerTurn(player *player, int ***map) {
+	printc("\nSélectionner une direction : \n",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	setText(2, FOREGROUND_BLUE, FOREGROUND_INTENSITY);
+	printf("+---+-------+   +---+------+   +---+-------+   +---+------+\n");
+	printf("| 1 - NORTH |   | 2 - EAST |   | 3 - SOUTH |   | 4 - WEST |\n");
+	printf("+---+-------+   +---+------+   +---+-------+   +---+------+\n");
+	setTextDefault();
+	setText(1, FOREGROUND_BLUE);
+	printf("+---+-------------+\n");
+	printf("| 5 - Save & Quit |\n");
+	printf("+---+-------------+\n");
+	setTextDefault();
+
+	char* value = malloc(sizeof (char) * (10 + 1));
+	fgets(value,10,stdin);
+	fflush(stdin);
+
+	if(value[0] == '1') {
+
+	}
+	else if(value[0] == '2') {
+
+	}
+	else if(value[0] == '3') {
+
+	}
+	else if(value[0] == '4') {
+
+	}
+	else if(value[0] == '5') {
+
+	}
+	else {
+
+	}
+	free(value);
+}
+
+void playerWantMoov(player *player, direction direction) {
+	//checkCase();
+}
 void fight(player *player, monster *monster, respawn **list, int32_t x, int32_t y, int8_t lvl) {
 	int endFight = 0;
 	while(endFight == 0) {
@@ -36,6 +77,47 @@ void fight(player *player, monster *monster, respawn **list, int32_t x, int32_t 
 			printc("BUG dans la matrice : fight", 1, FOREGROUND_RED);
 		}
 	}
+}
+void recolte() {
 
 }
 
+void startGame() {
+	printc("Que souhaitez vous faire ?\n",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	setText(2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printf("+---+----------------------------+   +---+--------------------+   +---+----------------+\n");
+	printf("| 1 - Lancer une nouvelle partie |   | 2 - Charger une partie |   | 3 - Quitter le jeu |\n");
+	printf("+---+----------------------------+   +---+--------------------+   +---+----------------+\n");
+	setTextDefault();
+	char* value = malloc(sizeof (char) * (10 + 1));
+	fgets(value,10,stdin);
+	fflush(stdin);
+
+	if(value[0] == '1') {
+
+	}
+	else if(value[0] == '2') {
+
+	}
+	else if(value[0] == '3') {
+
+	}
+	else {
+		printc("Tu veux bien apprendre à lire ? ça me fera des vacances... -_-",1,FOREGROUND_YELLOW);
+	}
+}
+void initGame() {
+
+}
+void initNewGame() {
+
+}
+void loadGame() {
+
+}
+void saveGame() {
+
+}
+void endGame() {
+
+}

@@ -71,7 +71,7 @@ int playerEscape(player *player);
 int playerDoChoiceCategory(item **tabItem);
 
 //---------------------- Map ----------------------
-int playerMoov(player *player, direction direction);
+void playerMoov(player *player, int ***map, direction direction);
 int playerCraft(player *player);
 int playerMine(player *player);
 int playerChopWood(player *player);

@@ -5,8 +5,15 @@
 #include <player.h>
 #include <respawn.h>
 
+
+void playerTurn(player *player, int ***map);
+
+
+
 void startGame();
 void endGame();
+
+
 void fight(player *player, monster *monster, respawn **list, int32_t x, int32_t y, int8_t lvl);
 
 #endif //MALLOCWORLD_GAME_H

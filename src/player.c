@@ -81,15 +81,10 @@ int playerTurnFight(player *player, monster *monster) {
 	while(res == -1) {
 		printc("Que souhaitez vous faire ?\n", 2, FOREGROUND_GREEN, FOREGROUND_INTENSITY);
 		setText(2, FOREGROUND_BLUE, FOREGROUND_INTENSITY);
-		printf("+---+-------------+---+-------------------+---+---------------------+---+---------------------+---+---------------------+\n");
-		printf("| 1 - Attaquer    | 2 - Changer d'arme    | 3 - Changer d'armure    | 4 - Boire une potion    | 5 - Prendre la fuite    |\n");
-		printf("+---+-------------+---+-------------------+---+---------------------+---+---------------------+---+---------------------+\n");
+		printf("+---+----------+   +---+----------------+   +---+------------------+   +---+------------------+   +---+------------------+\n");
+		printf("| 1 - Attaquer |   | 2 - Changer d'arme |   | 3 - Changer d'armure |   | 4 - Boire une potion |   | 5 - Prendre la fuite |\n");
+		printf("+---+----------+   +---+----------------+   +---+------------------+   +---+------------------+   +---+------------------+\n");
 		setTextDefault();
-		/*printf("2 - Changer d'arme    |");
-		printf("3 - Changer d'armure    |");
-		printf("4 - Boire une potion    |");
-		printf("5 - Prendre la fuite    |\n");*/
-
 
 		fgets(value,10,stdin);
 		fflush(stdin);
@@ -202,7 +197,36 @@ int playerDoChoiceCategory(item** tabItem) {
 }
 
 //---------------------- Map ----------------------
-int playerMoov(player *player, direction direction) {}
+void playerMoov(player *player, int*** map, direction direction) {
+	switch (direction) {
+		case NORTH: {
+			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 0;
+			player->coordinate->y++;
+			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 1;
+			break;
+		}
+		case EAST: {
+			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 0;
+			player->coordinate->x++;
+			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 1;
+			break;
+		}
+		case SOUTH: {
+			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 0;
+			player->coordinate->y--;
+			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 1;
+			break;
+		}
+		case WEST: {
+			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 0;
+			player->coordinate->x--;
+			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 1;
+			break;
+		}
+		default:
+			printc("error matrice : playerMoov",1,FOREGROUND_RED);
+	}
+}
 int playerCraft(player *player) {}
 int playerMine(player *player) {}
 int playerChopWood(player *player) {}
