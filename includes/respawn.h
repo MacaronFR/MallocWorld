@@ -21,12 +21,13 @@ typedef struct s_respawn{
 	struct s_respawn *next;
 	uint32_t x;
 	uint32_t y;
+	int8_t level;
 } respawn;
 
-void addMonsterRespawn(monster *m, respawn **list, int32_t x, int32_t y);
-void addResourceRespawn(resource *r, respawn **list, int32_t x, int32_t y);
-void checkRespawn(respawn **list);
-void makeRespawn(respawn *r);
+void addMonsterRespawn(monster *m, respawn **list, int32_t x, int32_t y, int8_t level);
+void addResourceRespawn(resource *r, respawn **list, int32_t x, int32_t y, int8_t level);
+void checkRespawn(respawn **list, int ***map);
+void makeRespawn(respawn *r, int ***map);
 void freeRespawnList(respawn *r);
 
 #endif //MALLOCWORLD_RESPAWN_H

@@ -96,8 +96,8 @@ void testMacaron(int argc, char **argv) {
 
 int main(int argc, char **argv) {
 	//int*** map = generateMap(123);
-	player *player = createPlayer();
-	playerTurnFight(player, NULL);
+	//player *player = createPlayer();
+	//playerTurnFight(player, NULL);
 
 
 	/*
@@ -131,19 +131,27 @@ int main(int argc, char **argv) {
 	freeItemList(itemList, nItem);
 	return 0;*/
 
-/*
+
 	respawn *r = NULL;
 	size_t nItem, nResource, nMonstre;
 	item **itemList = load_items("../", &nItem);
 	resource **resourceList = loadResources("../", &nResource, itemList, nItem);
 	monster **monsterList = loadMonsters("../", &nMonstre);
-	addMonsterRespawn(monsterList[0], &r, 0, 0);
-	addResourceRespawn(resourceList[0], &r, 0,1);
-	checkRespawn(&r);
-	checkRespawn(&r);
+	int portal[4][2];
+	int ***map = generateMap(atoi(argv[1]), portal);
+	addMonsterRespawn(monsterList[0], &r, 0, 0, 0);
+	addResourceRespawn(resourceList[0], &r, 0,1, 0);
+	printf("%d %d\n", map[0][0][0], map[0][0][1]);
+	checkRespawn(&r, map);
+	printf("%d %d\n", map[0][0][0], map[0][0][1]);
+	checkRespawn(&r, map);
+	printf("%d %d\n", map[0][0][0], map[0][0][1]);
+	checkRespawn(&r, map);
+	printf("%d %d\n", map[0][0][0], map[0][0][1]);
 	freeItemList(itemList, nItem);
 	freeResourceList(resourceList, nResource);
 	freeMonsterList(monsterList, nMonstre);
 	freeRespawnList(r);
-	return 0;*/
+	freeMap(map, 3, 100);
+	return 0;
 }

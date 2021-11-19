@@ -1,6 +1,6 @@
 #include <respawn.h>
 
-void addMonsterRespawn(monster *m, respawn **list, int32_t x, int32_t y){
+void addMonsterRespawn(monster *m, respawn **list, int32_t x, int32_t y, int8_t level){
 	respawn *new = malloc(sizeof(respawn));
 	new->left = m->respawn;
 	new->ptr.m = m;
@@ -8,10 +8,11 @@ void addMonsterRespawn(monster *m, respawn **list, int32_t x, int32_t y){
 	new->x = x;
 	new->y = y;
 	new->next = *list;
+	new->level = level;
 	*list = new;
 }
 
-void addResourceRespawn(resource *r, respawn **list, int32_t x, int32_t y){
+void addResourceRespawn(resource *r, respawn **list, int32_t x, int32_t y, int8_t level){
 	respawn *new = malloc(sizeof(respawn));
 	new->left = r->respawn;
 	new->ptr.r = r;
@@ -19,17 +20,18 @@ void addResourceRespawn(resource *r, respawn **list, int32_t x, int32_t y){
 	new->x = x;
 	new->y = y;
 	new->next = *list;
+	new->level = level;
 	*list = new;
 }
 
-void checkRespawn(respawn **list){
+void checkRespawn(respawn **list, int ***map){
 	respawn *tmp = NULL;
 	respawn *prev = NULL;
 	respawn *l = *list;
 	while(l != NULL){
 		l->left--;
 		if(l->left <= 0){
-			makeRespawn(l);
+			makeRespawn(l, map);
 			if(prev == NULL){
 				*list = l->next;
 			}else{
@@ -45,12 +47,14 @@ void checkRespawn(respawn **list){
 	}
 }
 
-void makeRespawn(respawn *r){
+void makeRespawn(respawn *r, int ***map){
 	switch(r->ptrType){
 		case MONSTER:
+			map[r->level][r->x][r->y] = r->ptr.m->id;
 			printf("Respawn Monster id = %d name = \"%s\" at (%d. %d)\n", r->ptr.m->id, r->ptr.m->name, r->x, r->y);
 			return;
 		case RESOURCE:
+			map[r->level][r->x][r->y] = r->ptr.r->id;
 			printf("Respawn Resource id = %d at (%d. %d)\n", r->ptr.r->id, r->x, r->y);
 			return;
 	}
