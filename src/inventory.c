@@ -14,21 +14,20 @@
 inventory* createInventory(){
     inventory* inv = malloc(sizeof(inventory));
     if(inv == NULL){
+#ifdef DEBUG
         fprintf(stderr, "Error : Out of memory");
+#endif
         return NULL;
     }
-    if(initInventory(inv) == -1){
-        return NULL;
-    }
+	for(int i = 0; i < MAX_SLOTS_INVENTORY; i++){
+		inv->slots[i].item = NULL;
+		inv->slots[i].quantity = 0;
+	}
     return inv;
 }
 
 int initInventory(inventory* inventory){
-	for(int i = 0; i < MAX_SLOTS_INVENTORY; i++){
-		inventory->slots[i].item = NULL;
-		inventory->slots[i].quantity = 0;
-	}
-	return 1;
+
 }
 
 void freeInventory(inventory* inventory){
@@ -47,6 +46,9 @@ void freeInventory(inventory* inventory){
 
 storage *createStorage(){
 	storage *s = malloc(sizeof(storage));
+	if(s == NULL){
+		return NULL;
+	}
 	s->size = 0;
 	s->slots = NULL;
 	return s;

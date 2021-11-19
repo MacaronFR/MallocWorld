@@ -18,7 +18,7 @@ set(SRCS
         src/terminalManager.c
         src/craft.c
         src/resource.c
-        src/respawn.c)
+        src/respawn.c src/save.c)
 
 #Permet l'affichage de debug lors du déroulement du programme
 #À commenter pour version release

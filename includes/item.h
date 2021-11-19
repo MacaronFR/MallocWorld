@@ -50,7 +50,7 @@ typedef struct s_item{
 } item;
 
 item *load_item(const char *filename);
-item **load_items(const char *dir, size_t *nItem);
+item **loadItems(const char *dir, size_t *nItem);
 void freeItemList(item **items, size_t length);
 bool checkCraftValidity(item **items, int length);
 void freeItem(item *item);

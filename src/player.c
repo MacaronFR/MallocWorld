@@ -10,19 +10,24 @@
 //---------------------- Creation et Destruction ----------------------
 player *createPlayer() {
     player *player1 = malloc(sizeof(player));
-    initPlayer(player1);
+	if(player1 == NULL){
+		return NULL;
+	}
+	inventory* inventory = createInventory();
+	if(inventory == NULL){
+		free(player1);
+		return NULL;
+	}
+	initInventory(inventory);
+	player1->inventory = inventory;
+	player1->level = 1;
+	player1->life = 100;
+	player1->maxLife = 100;
+	player1->exp = 0;
+	player1->stuff = NULL;
     return player1;
 }
-void initPlayer(player *player) {
-    inventory* inventory = createInventory();
-    initInventory(inventory);
-    player->inventory = inventory;
-    player->level = 1;
-    player->life = 100;
-    player->maxLife = 100;
-    player->exp = 0;
-	player->stuff = NULL;
-}
+
 void freePlayer(player *player) {
     freeInventory(player->inventory);
     free(player);
@@ -79,7 +84,7 @@ int playerTurnFight(player *player, monster *monster) {
 		printf("+---+-------------+---+-------------------+---+---------------------+---+---------------------+---+---------------------+\n");
 		printf("| 1 - Attaquer    | 2 - Changer d'arme    | 3 - Changer d'armure    | 4 - Boire une potion    | 5 - Prendre la fuite    |\n");
 		printf("+---+-------------+---+-------------------+---+---------------------+---+---------------------+---+---------------------+\n");
-		setTextDefault()
+		setTextDefault();
 		/*printf("2 - Changer d'arme    |");
 		printf("3 - Changer d'armure    |");
 		printf("4 - Boire une potion    |");

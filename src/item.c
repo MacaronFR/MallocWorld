@@ -157,10 +157,10 @@ item *load_item(const char *filename){
 	return res;
 }
 
-item **load_items(const char *dir, size_t *n){
+item **loadItems(const char *dir, size_t *nItem){
 	item *tmp;
 	item **res = NULL, **tmpRealloc;
-	int nItem = 0;
+	int n = 0;
 	DIR *item_dir;
 	struct dirent *en;
 	item_dir = opendir(dir);
@@ -182,13 +182,13 @@ item **load_items(const char *dir, size_t *n){
 #endif
 				tmp = load_item(file);
 				if(tmp != NULL){
-					nItem++;
-					tmpRealloc = realloc(res, nItem * sizeof(item*));
+					n++;
+					tmpRealloc = realloc(res, n * sizeof(item*));
 					if(tmpRealloc == NULL){
 #ifdef DEBUG
 						fprintf(stderr, "No more memory available\n");
 #endif
-						freeItemList(res, nItem - 1);
+						freeItemList(res, n - 1);
 						free(res);
 						free(file);
 						free(tmp);
@@ -196,14 +196,14 @@ item **load_items(const char *dir, size_t *n){
 						return NULL;
 					}
 					res = tmpRealloc;
-					res[nItem - 1] = tmp;
+					res[n - 1] = tmp;
 				}
 			}
 		}
 		closedir(item_dir);
 	}
 	free(file);
-	*n = nItem;
+	*nItem = n;
 	return res;
 }
 
