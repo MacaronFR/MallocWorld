@@ -323,6 +323,8 @@ item *copyItem(item *i){
 	return res;
 }
 
+
+
 //-------------- CHECK TYPE ITEM --------------
 bool isItem(item *item) {       return (item->type & ITEMS) != 0;}
 bool isRessource(item *item) {  return (item->type & RESSOURCES) != 0;}

@@ -39,7 +39,7 @@ typedef enum e_items {
 }items;*/
 
 typedef struct s_item{
-    uint16_t type; // type de l'objet (ressources/item arme/armure/outil/potion/arbre/roche/plante épée/lance/…
+    uint16_t type; // type de l'objet (ressources/item arme/armure/outil/potion/arbre/roche/plante
     int32_t id; //id objet
     uint8_t flag; // zone / nb degat / % de reduction / nb de soin
     int8_t durability; //durabilité ou cout en durabilité

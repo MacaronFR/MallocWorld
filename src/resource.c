@@ -125,3 +125,12 @@ void freeResourceList(resource **r, size_t n){
 	}
 	free(r);
 }
+
+item *checkResourceId(resource **listResource, int id) {
+	resource *pointeur = listResource[0];
+	while(pointeur != NULL) {
+		if(pointeur->id == id)
+			return copyItem(pointeur->item);
+	}
+	return NULL;
+}

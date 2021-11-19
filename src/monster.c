@@ -10,7 +10,6 @@ monster *createMonster(monster *m){
 	res->strength = m->strength;
 	return res;
 }
-
 void freeMonster(monster *m){
 	free(m->name);
 	free(m);
@@ -87,7 +86,6 @@ monster *loadMonster(const char *fn){
 #endif
 	return res;
 }
-
 monster **loadMonsters(const char *dir, size_t *n){
 	monster *tmp;
 	monster **res = NULL, **tmpRealloc;
@@ -137,10 +135,18 @@ monster **loadMonsters(const char *dir, size_t *n){
 	*n = nResource;
 	return res;
 }
-
 void freeMonsterList(monster **m, size_t n){
 	for(size_t i = 0; i < n; ++i){
 		freeMonster(m[i]);
 	}
 	free(m);
+}
+
+monster *checkMonsterId(monster **listMonster, int id) {
+	monster *pointeur = listMonster[0];
+	while(pointeur != NULL) {
+		if(pointeur->id == id)
+			return createMonster(pointeur);
+	}
+	return NULL;
 }

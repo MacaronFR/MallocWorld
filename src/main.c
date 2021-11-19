@@ -99,8 +99,8 @@ void testMacaron(int argc, char **argv) {
 
 int main(int argc, char **argv) {
 	//int*** map = generateMap(123);
-	//player *player = createPlayer();
-	//playerTurnFight(player, NULL);
+	player *player = createPlayer();
+	playerTurnFight(player, NULL);
 
 
 	/*
@@ -156,7 +156,7 @@ int main(int argc, char **argv) {
 	freeMonsterList(monsterList, nMonstre);
 	freeRespawnList(r);
 	freeMap(map, 3, 100);
-	return 0;*/
+	return 0;*//*
 	int portal[4][2];
 	int h,w;
 	int ***map = loadSave("./saves/test.mw", NULL, NULL, NULL, portal, &h, &w);
@@ -166,10 +166,10 @@ int main(int argc, char **argv) {
 		}
 		printf("\n");
 	}
-	freeMap(map, 1, h);
+	freeMap(map, 1, h);*/
 	return 0;
 }
-
+/*
 int mainF(int argc, char **argv){
 	char filename[256];
 	bool res = true;
@@ -225,4 +225,4 @@ int mainF(int argc, char **argv){
 		freeItemList(listItem, nItem);
 	}else r = -1;
 	return r;
-}
+}*/
