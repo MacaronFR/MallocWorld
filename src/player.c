@@ -68,42 +68,45 @@ void printLife(player *player) {
 //|--------------------------------------------| ACTION |--------------------------------------------|
 //---------------------- Fight ----------------------
 int playerTurnFight(player *player, monster *monster) {
-	int value, res;
-	while(res != 1) {
-		setText(1, FOREGROUND_GREEN);
-		printf("Que souhaitez vous faire ?\n");
+	cleanTerminal();
+	printPlayer(player);
+	int choice = 0;
+	int res = -1;
+	char* value = malloc(sizeof (char) * (10 + 1));
+	while(res == -1) {
+		printc("Que souhaitez vous faire ?\n", 1, FOREGROUND_PURPLE);
 		setText(2, FOREGROUND_BLUE, FOREGROUND_INTENSITY);
 		printf("1 - Attaquer    ");
 		printf("2 - Changer d'arme    ");
 		printf("3 - Changer d'armure    ");
 		printf("4 - Boire une potion    ");
-		printf("5 - Prendre la fuite    ");
+		printf("5 - Prendre la fuite    \n");
 
-		scanf("%d", &value);
-		switch (value) {
-			case 1: {
-				res = playerDoDamage(player, monster);
-			}
-			case 2: {
-				res = playerSwitchWeapon(player);
-			}
-			case 3: {
-				res = playerSwitchArmor(player);
-			}
-			case 4: {
-				res = playerUsePotion(player);
-			}
-			case 5: {
-				res = playerEscape(player);
-			}
-			default: {
-				setText(1, FOREGROUND_YELLOW);
-				printf("L'action spécifié est incorrecte\n");
-				setTextDefault();
-				res = -1;
-			}
+		fgets(value,10,stdin);
+		fflush(stdin);
+		if(value[0] == '1') {
+			res = playerDoDamage(player, monster);
+		}
+		else if(value[0] == '2') {
+			printf("vu\n");
+			res = playerSwitchWeapon(player);
+		}
+		else if(value[0] == '3') {
+			res = playerSwitchArmor(player);
+		}
+		else if(value[0] == '4') {
+			res = playerUsePotion(player);
+		}
+		else if(value[0] == '5') {
+			res = playerEscape(player);
+		}
+		else {
+			printc("L'action spécifié est incorrecte\n", 1, FOREGROUND_YELLOW);
+			res = -1;
 		}
 	}
+	free(value);
+	return res-1;
 }
 int playerDoDamage(player *player, monster *monster) {
 	if (player->stuff != NULL) {
@@ -115,18 +118,17 @@ int playerDoDamage(player *player, monster *monster) {
 	return 1;
 }
 int playerSwitchWeapon(player *player) {
-	item** tabItem = malloc(sizeof(item*) * MAX_SLOTS_INVENTORY);
-	inventoryContainCategory(player->inventory, WEAPONS, tabItem);
-	if(tabItem[0] == NULL) {
+	item** tabItem = getItemCategory(player->inventory, WEAPONS);
+	if(tabItem == NULL) {
 		printf("Tu n'as pas d'autre arme, si tu n'es pas content démerde toi avec tes poings! \n");
 		return -1;
 	}
 	int value = playerDoChoiceCategory(tabItem);
-	if(value >= 0 && value < 10 && tabItem[value]!=NULL) {
-		player->stuff->weapon = tabItem[value];
+	if(value > 0 && value < 11 && tabItem[value-1]!=NULL) {
+		player->stuff->weapon = tabItem[value-1];
 		return 1;
 	}
-	else if(value == 10) {
+	else if(value == 11) {
 		printf("Réfléchi avant de lancer une action la prochaine fois -_-");
 		return -1;
 	}
@@ -136,18 +138,17 @@ int playerSwitchWeapon(player *player) {
 	}
 }
 int playerSwitchArmor(player *player) {
-	item* tabItem[MAX_SLOTS_INVENTORY];
-	inventoryContainCategory(player->inventory, ARMORS, tabItem);
-	if(tabItem[0] == NULL) {
+	item** tabItem = getItemCategory(player->inventory, ARMORS);
+	if(tabItem == NULL) {
 		printf("T'as pas d'armure mon gars, va falloir que t'encaisse sans broncher! \n");
 		return -1;
 	}
 	int value = playerDoChoiceCategory(tabItem);
-	if(value >= 0 && value < 10 && tabItem[value]!=NULL) {
-		player->stuff->armor = tabItem[value];
+	if(value > 0 && value < 11 && tabItem[value-1]!=NULL) {
+		player->stuff->armor = tabItem[value-1];
 		return 1;
 	}
-	else if(value == 10) {
+	else if(value == 11) {
 		printf("Réfléchi avant de lancer une action la prochaine fois -_-");
 		return -1;
 	}
@@ -157,18 +158,17 @@ int playerSwitchArmor(player *player) {
 	}
 }
 int playerUsePotion(player *player) {
-	item* tabItem[MAX_SLOTS_INVENTORY];
-	inventoryContainCategory(player->inventory, POTIONS, tabItem);
-	if(tabItem[0] == NULL) {
+	item** tabItem = getItemCategory(player->inventory, POTIONS);
+	if(tabItem == NULL) {
 		printf("Des popo, des po..., ah non... :'( \n");
 		return -1;
 	}
 	int value = playerDoChoiceCategory(tabItem);
-	if(value >= 0 && value < 10 && tabItem[value]!=NULL) {
-		player->life += tabItem[value]->flag;
+	if(value > 0 && value < 11 && tabItem[value-1]!=NULL) {
+		player->life += tabItem[value-1]->flag;
 		return 1;
 	}
-	else if(value == 10) {
+	else if(value == 11) {
 		printf("Réfléchi avant de lancer une action la prochaine fois -_-");
 		return -1;
 	}
@@ -184,12 +184,12 @@ int playerEscape(player *player) {
 int playerDoChoiceCategory(item** tabItem) {
 	printf("Fait ton choix :\n");
 	for (int i = 0; tabItem[i] != NULL; i++) {
-		printf("| %d - %s |", i, tabItem[i]->name);
+		printf("| %d - %s |", i+1, tabItem[i]->name);
 	}
-	printf("| 10 - Annuler |");
-	int value;
-	scanf("%d", &value);
-	return value;
+	printf("| 11 - Annuler |");
+	char* value = malloc(sizeof (char) * (2 + 1));
+	fgets(value,2,stdin);
+	return atoi(value);
 }
 
 //---------------------- Map ----------------------

@@ -87,17 +87,25 @@ int indexSlotInInventory(inventory *inventory, int32_t id, int start){
 	return -1;
 }
 
-void inventoryContainCategory(inventory *inventory, category category, item** tabItem) {
-	tabItem[MAX_SLOTS_INVENTORY];
-	for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++)
-		tabItem[i] = NULL;
-	int index = 0;
+item **getItemCategory(inventory *inventory, category category) {
+	item **tabItem;
+	int count = 0;
 	for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
-		if((inventory->slots[i].item->type & category) == category) {
-			tabItem[index] = inventory->slots[i].item;
-			index++;
+		if(inventory->slots[i].item != NULL && (inventory->slots[i].item->type & category) == category) {
+			count++;
 		}
 	}
+	if(count == 0)
+		return NULL;
+	tabItem = malloc(sizeof (item*) * count);
+	count = 0;
+	for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
+		if(inventory->slots[i].item != NULL && (inventory->slots[i].item->type & category) == category) {
+			tabItem[count] = inventory->slots[i].item;
+			count++;
+		}
+	}
+	return tabItem;
 }
 
 //---------------------- Récupération et Modification ----------------------

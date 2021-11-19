@@ -8,7 +8,7 @@
 #include <stdint.h>
 
 #include <terminalManager.h>
-#include <monster.h>
+
 #include <inventory.h>
 #include <item.h>
 #include <utils.h>
@@ -41,6 +41,8 @@ typedef struct s_player {
 	stuff *stuff;
 	coordinate *coordinate;
 }player;
+
+#include <monster.h>
 
 player* createPlayer();
 void initPlayer(player *player);

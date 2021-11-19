@@ -63,7 +63,9 @@ void testItem() {
 	printFlag(1, "ITEM");
 }
 
-int main(int argc, char **argv) {
+void testMacaron(int argc, char **argv) {
+	testItem();
+	/*
 	FILE *f = fopen("/home/macaron/Documents/res.csv", "w");
 	int portal[4][2];
 	int ***map = generateMap(atoi(argv[1]), portal);
@@ -92,16 +94,12 @@ int main(int argc, char **argv) {
 	return 0;*/
 }
 
-int main2(int argc, char **argv) {
-	/*int*** map = generateMap(123);
-	player *player = createPlayer();*/
-	//testPlayer(player);
-	/*player *player = createPlayer();
-	testPlayer(player);
-	//testInventory(player->inventory);
+int main(int argc, char **argv) {
+	//int*** map = generateMap(123);
+	player *player = createPlayer();
+	playerTurnFight(player, NULL);
 
-	testItem();
-	*/
+
 	/*
 	inventory *inv = createInventory();
 	initInventory(inv);

@@ -37,7 +37,7 @@ void freeStorage(storage *);
 bool isStackFull(slot *slot);
 int indexEmptySlot(inventory* inventory);
 int indexSlotInInventory(inventory *inventory, int32_t id, int start);
-void inventoryContainCategory(inventory *inventory, category category, item** tabItem);
+item **getItemCategory(inventory *inventory, category category);
 
 //---------------------- Récupération et Modification ----------------------
 bool addItemInInventory(inventory *inventory, item* add);
