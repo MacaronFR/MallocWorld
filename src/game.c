@@ -1,7 +1,14 @@
 #include <game.h>
 
+void moovPlayer(player *player, int ***map) {
+	/*
+	 if(TOP)
+	 	case = checkcase(player->cordinate.x, player->cordinate.y+1)
 
-void fight(player *player, monster *monster, respawn **list, int8_t lvl, int32_t x, int32_t y) {
+	 */
+}
+
+void fight(player *player, monster *monster, respawn **list, int32_t x, int32_t y, int8_t lvl) {
 	int endFight = 0;
 	while(endFight == 0) {
 		endFight = playerTurnFight(player, monster);
