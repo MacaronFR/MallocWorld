@@ -323,6 +323,15 @@ item *copyItem(item *i){
 	return res;
 }
 
+item *getItem(item **itemList, int nItem, int32_t id){
+	for(int i = 0; i < nItem; ++i){
+		if(itemList[i]->id == id){
+			return itemList[i];
+		}
+	}
+	return NULL;
+}
+
 //-------------- CHECK TYPE ITEM --------------
 bool isItem(item *item) {       return (item->type & ITEMS) != 0;}
 bool isRessource(item *item) {  return (item->type & RESSOURCES) != 0;}
