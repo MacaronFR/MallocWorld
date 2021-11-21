@@ -134,3 +134,13 @@ resource *findResource(resource **r, size_t nResource, int32_t id){
 	}
 	return NULL;
 }
+
+// TODO à m'expliquer
+item *checkResourceId(resource **listResource, int id) {
+	resource *pointeur = listResource[0];
+	while(pointeur != NULL) {
+		if(pointeur->id == id)
+			return copyItem(pointeur->item);
+	}
+	return NULL;
+}

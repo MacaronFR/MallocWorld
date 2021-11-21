@@ -161,3 +161,13 @@ monster *findMonster(monster **monsterList, size_t nMonster, int32_t id){
 	}
 	return NULL;
 }
+
+//TODO à m'explquer
+monster *checkMonsterId(monster **listMonster, int id) {
+	monster *pointeur = listMonster[0];
+	while(pointeur != NULL) {
+		if(pointeur->id == id)
+			return createMonster(pointeur);
+	}
+	return NULL;
+}

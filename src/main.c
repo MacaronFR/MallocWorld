@@ -172,7 +172,6 @@ int main(int argc, char **argv) {
 	freeMap(map, l);
 	freeItemList(itemList, nItem);
 	return 0;
-
 }
 
 int mainF(int argc, char **argv){
@@ -204,7 +203,7 @@ int mainF(int argc, char **argv){
 							h = 100;
 							w = 100;
 						}else{
-							map = loadSave("./saves/test.mw", &respawnList, player1, storage);
+							//map = loadSave("", &respawnList, player1, storage);
 						}
 						if(map != NULL){
 							//game();

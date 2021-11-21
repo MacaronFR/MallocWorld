@@ -13,6 +13,7 @@
 typedef struct s_coordinate {
 	int x;
 	int y;
+	int zone;
 }coordinate;
 
 typedef enum e_direction {
