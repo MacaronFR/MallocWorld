@@ -152,3 +152,12 @@ void freeMonsterList(monster **m, size_t n){
 	}
 	free(m);
 }
+
+monster *findMonster(monster **monsterList, size_t nMonster, int32_t id){
+	for(int i = 0; i < nMonster; ++i){
+		if(monsterList[i]->id == id){
+			return monsterList[i];
+		}
+	}
+	return NULL;
+}

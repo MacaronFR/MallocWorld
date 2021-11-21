@@ -28,6 +28,7 @@ void freeMonster(monster *m);
 monster *loadMonster(const char *filename);
 monster **loadMonsters(const char *dir, size_t *nMonster);
 void freeMonsterList(monster **monsterList, size_t nMonster);
+monster *findMonster(monster **monsterList, size_t nMonster, int32_t id);
 
 void monsterTakeDamage(monster *monster, int amount);
 void monsterIncrementTime(monster *monster);
