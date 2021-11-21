@@ -17,7 +17,7 @@ int32_t getFieldValue(char *buf, FILE *stream){
 	int64_t res = strtoll(buf + 1, &check, 0);
 	if(check != buf + strlen(buf) - 1 || res < INT32_MIN || res > INT32_MAX){
 #ifdef DEBUG
-		fprintf(stderr, "Bad item file syntax : Item field value must be an integer between %d and %d (given '%s'", INT32_MIN, INT32_MAX, buf + 1);
+		fprintf(stderr, "Bad item file syntax : Item field value must be an integer between %d and %d (given '%s')\n", INT32_MIN, INT32_MAX, buf + 1);
 #endif
 		errno = ERANGE;
 		return -1;
