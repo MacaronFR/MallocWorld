@@ -1,6 +1,7 @@
 #include <save.h>
+#include <perlin.h>
 
-int ***loadSave(const char *fileName, respawn **respawnList, player *player, storage *storage, int portal[4][2], int *h, int *w){
+level *loadSave(const char *fileName, respawn **respawnList, player *player, storage *storage, int portal[4][2], int *l){
 	char buf[256];
 	FILE *f = fopen(fileName, "r");
 	if(f == NULL){
@@ -16,59 +17,71 @@ int ***loadSave(const char *fileName, respawn **respawnList, player *player, sto
 		fclose(f);
 		return NULL;
 	}
-	int ***map = malloc(sizeof(int **) * 1);
-	getSize(f, h, w);
-	map[0] = loadZone(f, 1, buf, 256, *w, *h);
+	*l = getLevelNumber(f, buf, 256);
+	level *map = malloc(sizeof(level) * (*l));
+	for(int i = 0; i < *l; ++i){
+		map[i].level = loadZone(f, i + 1, buf, 256, &(map[i].w), &(map[i].h));
+	}
+	if(m_fgets(buf, 256, f) == NULL || strcmp(buf, "=== PLAYER ===") != 0){
+#ifdef DEBUG
+		fprintf(stderr, "Bad map file syntax : Map file must have === PLAYER ===\n");
+#endif
+		fclose(f);
+		freeMap(map, *l);
+		*l = 0;
+		return NULL;
+	}
 	return map;
 }
 
 void getSize(FILE *f, int *w, int *h){
 	long start = ftell(f);
 	long cur = 0;
-	bool prev = false;
+	long prev = 0;
 	*h = 0;
 	*w = 0;
-	while(cur != '\n'){
+	/*while(cur != '\n'){
 		cur = fgetc(f);
-	}
+	}*/
 	cur = 0;
-	while(cur != '\n'){
+	while((cur != '\n' && cur != '=') && (cur != '-' || prev != '-')){
+		prev = cur;
 		cur = fgetc(f);
 		if(cur == ' '){
 			(*w)++;
 		}
 	}
+	if(*w == 0 && (cur == '-' || cur == '=')){
+		fseek(f, start, SEEK_SET);
+		return;
+	}
 	(*w)++;
-	while(cur != '-' || !prev){
+	while(cur != '=' && (cur != '-' || prev != '-')){
 		if(cur == '\n'){
 			(*h)++;
 		}
-		if(cur != '-' && prev){
-			prev = false;
-		}
-		if(cur == '-' && !prev){
-			prev = true;
-		}
+		prev = cur;
 		cur = fgetc(f);
 	}
 	fseek(f, start, SEEK_SET);
 }
 
-int **loadZone(FILE *f, int zone, char *buf, int bufSize, int x, int y){
+int **loadZone(FILE *f, int zone, char *buf, int bufSize, int *w, int *h){
 	int k;
-	char zoneName[14];
+	char zoneName[20];
 	int **level;
 	sprintf(zoneName, "-- ZONE %d --", zone);
 	if(m_fgets(buf, bufSize, f) == NULL || strcmp(buf, zoneName) != 0){
 #ifdef DEBUG
-		fprintf(stderr, "Bad map file syntax : first zone must start with %s\n", zoneName);
+		fprintf(stderr, "Bad map file syntax : zone must start with %s\n", zoneName);
 #endif
 		return NULL;
 	}
-	level = malloc(sizeof(int*) * y);
-	for(int i = 0; i < y; ++i){
-		level[i] = malloc(sizeof(int) * x);
-		for(int j = 0; j < x; ++j){
+	getSize(f, w, h);
+	level = malloc(sizeof(int*) * (*h));
+	for(int i = 0; i < *h; ++i){
+		level[i] = malloc(sizeof(int) * (*w));
+		for(int j = 0; j < *w; ++j){
 			k = 0;
 			buf[k] = fgetc(f);
 			while(buf[k] != ' ' && buf[k] != '\n'){
@@ -80,4 +93,20 @@ int **loadZone(FILE *f, int zone, char *buf, int bufSize, int x, int y){
 		}
 	}
 	return level;
+}
+
+int getLevelNumber(FILE *f, char *buf, size_t bufSize){
+	char zoneName[20];
+	long start = ftell(f);
+	int res = 0;
+	sprintf(zoneName, "-- ZONE %d --", res + 1);
+	do{
+		m_fgets(buf, bufSize, f);
+		if(strcmp(zoneName, buf) == 0){
+			res++;
+			sprintf(zoneName, "-- ZONE %d --", res + 1);
+		}
+	}while(strcmp(buf, "=== PLAYER ===") != 0);
+	fseek(f, start, SEEK_SET);
+	return res;
 }
