@@ -157,17 +157,22 @@ int main(int argc, char **argv) {
 	freeRespawnList(r);
 	freeMap(map, 3, 100);
 	return 0;*/
+
 	int portal[4][2];
-	int h,w;
-	int ***map = loadSave("./saves/test.mw", NULL, NULL, NULL, portal, &h, &w);
-	for(int i = 0; i < h; ++i){
-		for(int j = 0; j < w; ++j){
-			printf("%d, ", map[0][i][j]);
-		}
-		printf("\n");
+	int l;
+	size_t nItem;
+	item **itemList = loadItems("./items/", &nItem);
+	storage *s = createStorage();
+	player *p1 = createPlayer();
+	level *map = loadSave("./saves/test.mw", NULL, p1, s, portal, &l, itemList, nItem);
+	for(int i = 0; i < s->size; ++i){
+		printf("%d, %d, %d\n", i, s->slots[i].item->id, s->slots[i].quantity);
 	}
-	freeMap(map, 1, h);
+	freePlayer(p1);
+	freeMap(map, l);
+	freeItemList(itemList, nItem);
 	return 0;
+
 }
 
 int mainF(int argc, char **argv){
@@ -187,7 +192,7 @@ int mainF(int argc, char **argv){
 					storage *storage = createStorage();
 					if(storage != NULL){
 						int portal[4][2];
-						int ***map;
+						level *map;
 						int h, w;
 						char c = 0;
 						printf("Créer un monde ? (Y/n) : ");
@@ -199,7 +204,7 @@ int mainF(int argc, char **argv){
 							h = 100;
 							w = 100;
 						}else{
-							//map = loadSave("", &respawnList, player1, storage);
+							map = loadSave("./saves/test.mw", &respawnList, player1, storage);
 						}
 						if(map != NULL){
 							//game();
@@ -211,7 +216,7 @@ int mainF(int argc, char **argv){
 								scanf("%s", filename);
 								//res = saveGame(filename, map, &respawnList, player1, storage);
 							}while(!res);
-							freeMap(map, 3, h);
+							freeMap(map, 3);
 							freeRespawnList(respawnList);
 						}else r = -6;
 						freeStorage(storage);
