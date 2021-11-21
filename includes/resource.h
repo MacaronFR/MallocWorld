@@ -14,5 +14,6 @@ typedef struct s_resource{
 resource *loadResource(const char *filename, item **itemList, size_t nItem);
 resource **loadResources(const char *dir, size_t *nResource, item **itemList, size_t nItem);
 void freeResourceList(resource **r, size_t nResource);
+resource *findResource(resource **r, size_t nResource, int32_t id);
 
 #endif //MALLOCWORLD_RESOURCE_H

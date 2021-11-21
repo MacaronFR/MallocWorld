@@ -125,3 +125,12 @@ void freeResourceList(resource **r, size_t n){
 	}
 	free(r);
 }
+
+resource *findResource(resource **r, size_t nResource, int32_t id){
+	for(int i = 0; i < nResource; ++i){
+		if(r[i]->id == id){
+			return r[i];
+		}
+	}
+	return NULL;
+}
