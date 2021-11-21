@@ -3,7 +3,7 @@
 void freeMap(level *map, int level){
 	for(int i = 0; i < level; ++i){
 		for(int j = 0; j < map[i].h; ++j){
-			free(map[i][j]);
+			free(map[i].level[j]);
 		}
 		free(map[i].level);
 	}
