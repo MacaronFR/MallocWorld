@@ -8,6 +8,7 @@ monster *createMonster(monster *m){
 	res->life = m->life;
 	res->respawn = m->respawn;
 	res->strength = m->strength;
+	res->zone = m->zone;
 	return res;
 }
 
@@ -82,8 +83,15 @@ monster *loadMonster(const char *fn){
 	res->name = malloc(sizeof(char) * strlen(buf) - 1);
 	strncpy(res->name, buf + 1, strlen(buf) - 2);
 	res->name[strlen(buf) - 2] = 0;
+	tmp = getFieldValue(buf, f);
+	if(tmp == -1 && (errno == EINVAL || errno == ERANGE)){
+		free(res);
+		fclose(f);
+		return NULL;
+	}
+	res->zone = tmp;
 #ifdef VERBOSE
-	fprintf(stderr, "monster {\n\tid = %d,\n\tlife = %d,\n\trespawn = %d\n\tstrength = %d\n\tname = %s\n}\n", res->id, res->life, res->respawn, res->strength, res->name);
+	fprintf(stderr, "monster {\n\tid = %d,\n\tlife = %d,\n\trespawn = %d\n\tstrength = %d\n\tname = %s\n\tzone = %d\n}\n", res->id, res->life, res->respawn, res->strength, res->name, res->zone);
 #endif
 	return res;
 }
