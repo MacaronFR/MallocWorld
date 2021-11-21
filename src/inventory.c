@@ -26,22 +26,22 @@ inventory* createInventory(){
     return inv;
 }
 
-int initInventory(inventory* inventory){
-
-}
-
 void freeInventory(inventory* inventory){
-	item *tmp;
 	for(int i = 0; i < MAX_SLOTS_INVENTORY; i++){
 		if(inventory->slots[i].item != NULL){
-			for(int j = 0; j < inventory->slots[i].quantity; ++j){
-				tmp = inventory->slots[i].item->next;
-				freeItem(inventory->slots[i].item);
-				inventory->slots[i].item = tmp;
-			}
+			freeInventorySlot(&(inventory->slots[i]));
 		}
 	}
 	free(inventory);
+}
+
+void freeInventorySlot(slot *s){
+	item *tmp;
+	for(int j = 0; j < s->quantity; ++j){
+		tmp = s->item->next;
+		freeItem(s->item);
+		s->item = tmp;
+	}
 }
 
 storage *createStorage(){
@@ -114,7 +114,6 @@ item **getItemCategory(inventory *inventory, category category) {
 bool addItemInInventory(inventory *inventory, item *add) {
     int slot = indexSlotInInventory(inventory, add->id, 0);
     int emptySlot;
-
     while(slot != -1) {
         if(!isStackFull(&(inventory->slots[slot]))) {
             add->next = inventory->slots[slot].item;

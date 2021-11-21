@@ -29,6 +29,7 @@ typedef struct s_storage{
 int initInventory(inventory* inventory);
 inventory* createInventory();
 void freeInventory(inventory* inventory);
+void freeInventorySlot(slot *s);
 
 storage *createStorage();
 void freeStorage(storage *);
