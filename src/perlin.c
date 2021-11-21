@@ -1,21 +1,23 @@
 #include <perlin.h>
 
-void freeMap(int ***map, int level, int h){
+void freeMap(level *map, int level){
 	for(int i = 0; i < level; ++i){
-		for(int j = 0; j < h; ++j){
+		for(int j = 0; j < map[i].h; ++j){
 			free(map[i][j]);
 		}
-		free(map[i]);
+		free(map[i].level);
 	}
 	free(map);
 }
 
-int ***generateMap(int seed, int portal[4][2]){
-	int ***map = malloc(sizeof(int **) * 3);
+level *generateMap(int seed, int portal[4][2]){
+	level *map = malloc(sizeof(level) * 3);
 	int *p;
 	for(int i = 0; i < 3; i++){
 		p = generatePerm(seed * ((i + 1)* seed));
-		map[i] = generateLevel(100, 100, i + 1, p, seed, 5 * (i+1), portal);
+		map[i].level = generateLevel(100, 100, i + 1, p, seed, 5 * (i+1), portal);
+		map[i].h = 100;
+		map[i].w = 100;
 		free(p);
 	}
 	return map;
