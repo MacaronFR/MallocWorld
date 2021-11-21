@@ -18,7 +18,6 @@ player *createPlayer() {
 		free(player1);
 		return NULL;
 	}
-	initInventory(inventory);
 	player1->inventory = inventory;
 	player1->level = 1;
 	player1->life = 100;
