@@ -4,8 +4,12 @@
 #include <respawn.h>
 #include <perlin.h>
 
-level *loadSave(const char *fileName, respawn **respawnList, player *player, storage *storage, int portal[4][2], int *l, item **itemList, int nItem);
-bool saveGame(const char *fileName, level *map, respawn **respawnList, player *player, storage *storage, int level);
+level *loadSave(const char *fileName, respawn **respawnList, player *player, storage *storage, int portal[4][2], int *level, item **itemList, int nItem, resource **resourceList, size_t nResource, monster **monsterList, size_t nMonster);
+bool saveGame(const char *fileName, level *map, respawn *respawnList, player *player, storage *storage, int level);
+bool writeMap(level *map, int level, FILE *f);
+bool writePlayer(player *p, FILE *f);
+bool writeStorage(storage *s, FILE *f);
+bool writeRespawn(respawn *r, FILE *f);
 void getSize(FILE *f, int *h, int *w);
 int **loadZone(FILE *f, int zone, char *buf, int bufSize, int *x, int *y);
 int getLevelNumber(FILE *f, char *buf, size_t bufSize);
