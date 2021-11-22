@@ -1,7 +1,7 @@
 #include <save.h>
 #include <perlin.h>
 
-level *loadSave(const char *fileName, respawn **respawnList, player *player, storage *storage, int portal[4][2], int *l, item **itemList, int nItem){
+level *loadSave(const char *fileName, respawn **respawnList, player *player, storage *storage, int portal[4][2], int *l, item **itemList, int nItem, resource **resourceList, size_t nResource, monster **monsterList, size_t nMonster){
 	char buf[256];
 	FILE *f = fopen(fileName, "r");
 	if(f == NULL){
@@ -38,6 +38,7 @@ level *loadSave(const char *fileName, respawn **respawnList, player *player, sto
 		return NULL;
 	}
 	loadStorage(storage, buf, 256, f, itemList, nItem);
+	loadRespawn(respawnList, buf, 256, f, resourceList, nResource, monsterList, nMonster);
 	return map;
 }
 

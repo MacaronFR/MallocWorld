@@ -160,11 +160,14 @@ int main(int argc, char **argv) {
 
 	int portal[4][2];
 	int l;
-	size_t nItem;
+	size_t nItem, nResource, nMonster;
 	item **itemList = loadItems("./items/", &nItem);
+	resource **resourceList = loadResources("./resources/", &nResource, itemList, nItem);
+	monster **monsterList = loadMonsters("./monsters/", &nMonster);
 	storage *s = createStorage();
 	player *p1 = createPlayer();
-	level *map = loadSave("./saves/test.mw", NULL, p1, s, portal, &l, itemList, nItem);
+	respawn *r = NULL;
+	level *map = loadSave("./saves/test.mw", &r, p1, s, portal, &l, itemList, nItem, resourceList, nResource, monsterList, nMonster);
 	for(int i = 0; i < s->size; ++i){
 		printf("%d, %d, %d\n", i, s->slots[i].item->id, s->slots[i].quantity);
 	}
