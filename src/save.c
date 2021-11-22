@@ -296,7 +296,7 @@ bool writeMap(level *map, int level, FILE *f){
 }
 
 bool writePlayer(player *p, FILE *f){
-	fprintf(f, "=== PLAYER ===\n{%d}\n{%d}/{%d}\n{%d}/{%d}\n-- INVENTORY --\n", p->level, p->exp, 100, p->life, p->maxLife);
+	fprintf(f, "=== PLAYER ===\n{%d}\n{%d}/{%d}\n{%d}/{%d}\n-- INVENTORY --\n", p->level, p->exp, 100 * p->level, p->life, p->maxLife);
 	for(int i = 0; i < MAX_SLOTS_INVENTORY; ++i){
 		if(p->inventory->slots[i].item != NULL){
 			fprintf(f,"{%d}@{%d}@{%hhd}\n", p->inventory->slots[i].quantity, p->inventory->slots[i].item->id, p->inventory->slots[i].item->durability);
