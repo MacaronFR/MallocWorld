@@ -199,19 +199,27 @@ int main(int argc, char **argv){
 					if(storage != NULL){
 						int portal[4][2];
 						level *map;
+						int h, w;
 						char c = 0;
-						printf("Créer un monde ? (Y/n) : ");
+						printStartMenu();
 						fflush(stdin);
 						scanf("%c", &c);
-						if(tolower(c) != 'n'){
+						if(tolower(c) == '1'){
 							srand(time(NULL));
 							map = generateMap(rand(), portal);
-							l = 3;
-						}else{
+							h = 100;
+							w = 100;
+						}
+						else if(tolower(c) == '2'){
 							map = loadSave("./saves/test.mw", &respawnList, player1, storage, portal, &l, listItem, nItem, listResource, nResource, listMonster, nMonster);
 							for(int i = 0; i < 4; ++i){
 								printf("%d, %d\n", portal[i][0], portal[i][1]);
-							}
+							}						}
+						else if(tolower(c) == '3'){
+							printCredit();
+						}
+						else{
+							printc("J'ai venu, j'ai lu, j'ai pas comprendu",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
 						}
 						if(map != NULL){
 							//game();
