@@ -68,7 +68,6 @@ void printLife(player *player) {
     setTextDefault();
 }
 
-
 //|--------------------------------------------| ACTION |--------------------------------------------|
 //---------------------- Fight ----------------------
 int playerTurnFight(player *player, monster *monster) {

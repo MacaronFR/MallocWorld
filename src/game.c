@@ -1,26 +1,13 @@
 #include <game.h>
 
-void playerInterface() {
 
-
-}
 
 void playerChooseSave() {
 
 }
 void playerTurn(player *player, int ***map) {
-	printc("\nSélectionner une direction : \n",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
-	setText(2, FOREGROUND_BLUE, FOREGROUND_INTENSITY);
-	printf("+---+-------+   +---+------+   +---+-------+   +---+------+\n");
-	printf("| 1 - NORTH |   | 2 - EAST |   | 3 - SOUTH |   | 4 - WEST |\n");
-	printf("+---+-------+   +---+------+   +---+-------+   +---+------+\n");
-	setTextDefault();
-	setText(1, FOREGROUND_BLUE);
-	printf("+---+-------------+\n");
-	printf("| 5 - Save & Quit |\n");
-	printf("+---+-------------+\n");
-	setTextDefault();
 
+	printPlayerInterface();
 	char* value = malloc(sizeof (char) * (10 + 1));
 	fgets(value,10,stdin);
 	fflush(stdin);
@@ -83,27 +70,26 @@ void recolte() {
 }
 
 void startGame() {
+	cleanTerminal();
+	printStartMenu();
 
-
-
-	/*printf("+---+----------------------------+   +---+--------------------+   +---+----------------+\n");
-	printf("| 1 - Lancer une nouvelle partie |   | 2 - Charger une partie |   | 3 - Quitter le jeu |\n");
-	printf("+---+----------------------------+   +---+--------------------+   +---+----------------+\n");
-	setTextDefault();*/
 	char* value = malloc(sizeof (char) * (10 + 1));
 	fgets(value,10,stdin);
 	fflush(stdin);
 	if(value[0] == '1') {
-
+		//start new game
 	}
 	else if(value[0] == '2') {
-
+		// load game
 	}
 	else if(value[0] == '3') {
-
+		// credit
+	}
+	else if(value[0] == '4') {
+		return;
 	}
 	else {
-		printc("Tu veux bien apprendre à lire ? ça me fera des vacances... -_-",1,FOREGROUND_YELLOW);
+		printc("Un aventurier qui ne sait pas lire... nous voilà bien partie. (-_-) \n",1,FOREGROUND_YELLOW);
 	}
 }
 void initGame() {
@@ -144,4 +130,56 @@ void printStartMenu() {
 		   "    |                                       |\n"
 		   "    |  ,-------------------------------------,\n"
 		   "    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+}
+void printPlayerInterface() {
+
+	printc(	    "\n / \\----------------------------------------,\n"
+				   " \\_,|                                       |\n"
+				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc("A votre tour, bouger vous le cul!",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+	printc("     |\n"
+		   "    |                                       |\n"
+		   "    |                                       |\n"
+		   "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc("1 - NORTH",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printc("     |\n"
+		   "    |                    ^                   |\n"
+		   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc("4 - WEST    <-O->    2 - EAST",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc("             |\n"
+		   "    |                    v                   |\n"
+		   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc("3 - SOUTH",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	printc("                         |\n"
+		   "    |                                       |\n"
+		   "    |                                       |\n"
+		   "    |  ,-------------------------------------,\n"
+		   "    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+
+
+
+
+
+
+
+	// printMap();
+	printc("\nSélectionner une direction : \n",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	setText(2, FOREGROUND_BLUE, FOREGROUND_INTENSITY);
+	printf("+---+-------+   +---+------+   +---+-------+   +---+------+\n");
+	printf("| 1 - NORTH |   | 2 - EAST |   | 3 - SOUTH |   | 4 - WEST |\n");
+	printf("+---+-------+   +---+------+   +---+-------+   +---+------+\n");
+	setTextDefault();
+	setText(1, FOREGROUND_BLUE);
+	printf("+---+-------------+\n");
+	printf("| 5 - Save & Quit |\n");
+	printf("+---+-------------+\n");
+	setTextDefault();
+}
+void printCredit() {
+	printc("Jeux Mallocworld développé par :\n"
+		   "	-	Denis TURBIEZ		@Macaron\n"
+		   "	-	Basile PULIN		@Barlords\n"
+		   "	-	Jean ....			@Jean\n",
+		   2,FOREGROUND_GREEN,FOREGROUND_INTENSITY
+	);
 }

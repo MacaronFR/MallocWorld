@@ -18,5 +18,7 @@ void fight(player *player, monster *monster, respawn **list, int32_t x, int32_t 
 
 // --------------------------------- AFFICHAGE ---------------------------------
 void printStartMenu();
+void printPlayerInterface();
+void printCredit();
 
 #endif //MALLOCWORLD_GAME_H
