@@ -112,12 +112,6 @@ void initGame() {
 void initNewGame() {
 
 }
-void loadGame() {
-
-}
-void saveGame() {
-
-}
 void endGame() {
 
 }

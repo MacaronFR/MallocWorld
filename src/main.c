@@ -171,6 +171,7 @@ int main(int argc, char **argv) {
 	for(int i = 0; i < s->size; ++i){
 		printf("%d, %d, %d\n", i, s->slots[i].item->id, s->slots[i].quantity);
 	}
+	saveGame("./saves/new.mw", map, r, p1, s, l);
 	freePlayer(p1);
 	freeMap(map, l);
 	freeItemList(itemList, nItem);
@@ -180,7 +181,7 @@ int main(int argc, char **argv) {
 int mainF(int argc, char **argv){
 	char filename[256];
 	bool res = true;
-	int r = 0;
+	int r = 0, l;
 	respawn *respawnList = NULL;//Liste de respawn
 	size_t nItem, nResource, nMonster;
 	item **listItem = loadItems("./items/", &nItem);
@@ -206,7 +207,7 @@ int mainF(int argc, char **argv){
 							h = 100;
 							w = 100;
 						}else{
-							//map = loadSave("", &respawnList, player1, storage);
+							map = loadSave("", &respawnList, player1, storage, portal, &l, listItem, nItem, listResource, nResource, listMonster, nMonster);
 						}
 						if(map != NULL){
 							//game();

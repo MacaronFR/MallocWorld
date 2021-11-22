@@ -257,3 +257,62 @@ bool loadRespawn(respawn **r, char *buf, size_t bufSize, FILE *f, resource **res
 	}
 	return true;
 }
+
+bool saveGame(const char *fileName, level *map, respawn *respawnList, player *player, storage *storage, int level){
+	FILE *f = fopen(fileName, "w");
+	writeMap(map, level, f);
+	writePlayer(player, f);
+	writeStorage(storage, f);
+	writeRespawn(respawnList, f);
+}
+
+bool writeMap(level *map, int level, FILE *f){
+	fprintf(f, "=== MAP ===\n");
+	for(int i = 0; i < level; ++i){
+		fprintf(f, "-- ZONE %d --\n", i+1);
+		for(int j = 0; j < map[i].h; ++j){
+			for(int k = 0; k < map[i].w; ++k){
+				fprintf(f, "%d", map[i].level[j][k]);
+				if(k != map[i].w - 1){
+					fprintf(f, " ");
+				}
+			}
+			fprintf(f, "\n");
+		}
+	}
+}
+
+bool writePlayer(player *p, FILE *f){
+	fprintf(f, "=== PLAYER ===\n{%d}\n{%d}/{%d}\n{%d}/{%d}\n-- INVENTORY --\n", p->level, p->exp, 100, p->life, p->maxLife);
+	for(int i = 0; i < MAX_SLOTS_INVENTORY; ++i){
+		if(p->inventory->slots[i].item != NULL){
+			fprintf(f,"{%d}@{%d}@{%hhd}\n", p->inventory->slots[i].quantity, p->inventory->slots[i].item->id, p->inventory->slots[i].item->durability);
+		}else{
+			fprintf(f, "{0}@{0}@{0}\n");
+		}
+	}
+}
+
+bool writeStorage(storage *s, FILE *f){
+	fprintf(f, "-- STORAGE --\n");
+	for(int i = 0; i < s->size; ++i){
+		fprintf(f, "{%d}@{%d}\n", s->slots[i].quantity, s->slots[i].item->id);
+	}
+}
+
+bool writeRespawn(respawn *r, FILE *f){
+	char type;
+	uint32_t id;
+	fprintf(f, "=== RESPAWN ===");
+	while(r != NULL){
+		if(r->ptrType == MONSTER){
+			type = 'M';
+			id = r->ptr.m->id;
+		}else if(r->ptrType == RESOURCE){
+			type = 'R';
+			id = r->ptr.r->id;
+		}
+		fprintf(f, "\n{%c}@{%d}@{%zu}@{%d}@{%d}@{%d}",type, id, r->left, r->x, r->y, r->level);
+		r = r->next;
+	}
+}
