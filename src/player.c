@@ -143,7 +143,7 @@ int playerSwitchWeapon(player *player) {
 int playerSwitchArmor(player *player) {
 	item** tabItem = getItemCategory(player->inventory, ARMORS);
 	if(tabItem == NULL) {
-		printf("T'as pas d'armure mon gars, va falloir que t'encaisse sans broncher! \n");
+		printf("T'as pas d'armure mon gars, va falloir que t'encaisse sans broncher!   (°v`(O=('-'Q)\n");
 		return -1;
 	}
 	int value = playerDoChoiceCategory(tabItem);

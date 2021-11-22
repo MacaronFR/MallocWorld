@@ -9,6 +9,7 @@
 #include <respawn.h>
 #include <time.h>
 #include <ctype.h>
+#include <game.h>
 #include <save.h>
 
 void printFlag(int pos, char *class) {
@@ -99,8 +100,10 @@ void testMacaron(int argc, char **argv) {
 
 int main(int argc, char **argv) {
 	//int*** map = generateMap(123);
-	//player *player = createPlayer();
-	//playerTurnFight(player, NULL);
+	/*player *player = createPlayer();
+	playerTurnFight(player, NULL);*/
+
+	startGame();
 
 
 	/*
@@ -158,7 +161,7 @@ int main(int argc, char **argv) {
 	freeMap(map, 3, 100);
 	return 0;*/
 
-	int portal[4][2];
+	/*int portal[4][2];
 	int l;
 	size_t nItem;
 	item **itemList = loadItems("./items/", &nItem);
@@ -171,7 +174,7 @@ int main(int argc, char **argv) {
 	freePlayer(p1);
 	freeMap(map, l);
 	freeItemList(itemList, nItem);
-	return 0;
+	return 0;*/
 }
 
 int mainF(int argc, char **argv){

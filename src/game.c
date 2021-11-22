@@ -83,16 +83,16 @@ void recolte() {
 }
 
 void startGame() {
-	printc("Que souhaitez vous faire ?\n",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
-	setText(2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-	printf("+---+----------------------------+   +---+--------------------+   +---+----------------+\n");
+
+
+
+	/*printf("+---+----------------------------+   +---+--------------------+   +---+----------------+\n");
 	printf("| 1 - Lancer une nouvelle partie |   | 2 - Charger une partie |   | 3 - Quitter le jeu |\n");
 	printf("+---+----------------------------+   +---+--------------------+   +---+----------------+\n");
-	setTextDefault();
+	setTextDefault();*/
 	char* value = malloc(sizeof (char) * (10 + 1));
 	fgets(value,10,stdin);
 	fflush(stdin);
-
 	if(value[0] == '1') {
 
 	}
@@ -120,4 +120,34 @@ void saveGame() {
 }
 void endGame() {
 
+}
+
+// --------------------------------- AFFICHAGE ---------------------------------
+void printStartMenu() {
+	printc(	    "\n / \\----------------------------------------,\n"
+				   " \\_,|                                       |\n"
+				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc("Bienvenue dans Mallocworld !!!",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+	printc("     |\n"
+		   "    |                                       |\n"
+		   "    |                                       |\n"
+		   "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc("1 - Lancer une nouvelle partie",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printc("     |\n"
+		   "    |                                       |\n"
+		   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc("2 - Charger une partie",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc("             |\n"
+		   "    |                                       |\n"
+		   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc("3 - Credit",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	printc("                         |\n"
+		   "    |                                       |\n"
+		   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc("4 - Quitter le jeu",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+	printc("                 |\n"
+		   "    |                                       |\n"
+		   "    |                                       |\n"
+		   "    |  ,-------------------------------------,\n"
+		   "    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 }
