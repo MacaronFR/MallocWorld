@@ -98,7 +98,7 @@ void testMacaron(int argc, char **argv) {
 	return 0;*/
 }
 
-int main(int argc, char **argv) {
+int mainT(int argc, char **argv) {
 	//int*** map = generateMap(123);
 	/*player *player = createPlayer();
 	playerTurnFight(player, NULL);*/
@@ -181,9 +181,9 @@ int main(int argc, char **argv) {
 	return 0;*/
 }
 
-int mainF(int argc, char **argv){
+int main(int argc, char **argv){
 	char filename[256];
-	bool res = true;
+	bool res = false;
 	int r = 0, l;
 	respawn *respawnList = NULL;//Liste de respawn
 	size_t nItem, nResource, nMonster;
@@ -199,7 +199,6 @@ int mainF(int argc, char **argv){
 					if(storage != NULL){
 						int portal[4][2];
 						level *map;
-						int h, w;
 						char c = 0;
 						printf("Créer un monde ? (Y/n) : ");
 						fflush(stdin);
@@ -207,10 +206,12 @@ int mainF(int argc, char **argv){
 						if(tolower(c) != 'n'){
 							srand(time(NULL));
 							map = generateMap(rand(), portal);
-							h = 100;
-							w = 100;
+							l = 3;
 						}else{
-							map = loadSave("", &respawnList, player1, storage, portal, &l, listItem, nItem, listResource, nResource, listMonster, nMonster);
+							map = loadSave("./saves/test.mw", &respawnList, player1, storage, portal, &l, listItem, nItem, listResource, nResource, listMonster, nMonster);
+							for(int i = 0; i < 4; ++i){
+								printf("%d, %d\n", portal[i][0], portal[i][1]);
+							}
 						}
 						if(map != NULL){
 							//game();
@@ -220,7 +221,7 @@ int mainF(int argc, char **argv){
 								}
 								printf("sauvegarder à : ");
 								scanf("%s", filename);
-								//res = saveGame(filename, map, &respawnList, player1, storage);
+								res = saveGame(filename, map, respawnList, player1, storage, l);
 							}while(!res);
 							freeMap(map, 3);
 							freeRespawnList(respawnList);

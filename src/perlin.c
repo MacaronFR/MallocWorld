@@ -51,7 +51,7 @@ int **generateLevel(int h, int w, int level, int *p, int seed, int maxMonstre, i
 			x = (rand() % 98) + 1;
 			y = (rand() % 98) + 1;
 		}while(!checkZone(map, x, y, 1));
-		map[x][y] = -2;
+		map[x][y] = -3;
 		portal[3][0] = x;
 		portal[3][1] = y;
 	}

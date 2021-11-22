@@ -20,7 +20,7 @@ level *loadSave(const char *fileName, respawn **respawnList, player *player, sto
 	*l = getLevelNumber(f, buf, 256);
 	level *map = malloc(sizeof(level) * (*l));
 	for(int i = 0; i < *l; ++i){
-		map[i].level = loadZone(f, i + 1, buf, 256, &(map[i].w), &(map[i].h));
+		map[i].level = loadZone(f, i + 1, buf, 256, &(map[i].w), &(map[i].h), portal);
 	}
 	if(m_fgets(buf, 256, f) == NULL || strcmp(buf, "=== PLAYER ===") != 0){
 #ifdef DEBUG
@@ -71,7 +71,7 @@ void getSize(FILE *f, int *w, int *h){
 	fseek(f, start, SEEK_SET);
 }
 
-int **loadZone(FILE *f, int zone, char *buf, int bufSize, int *w, int *h){
+int **loadZone(FILE *f, int zone, char *buf, int bufSize, int *w, int *h, int portal[4][2]){
 	int k;
 	char zoneName[20];
 	int **level;
@@ -95,6 +95,15 @@ int **loadZone(FILE *f, int zone, char *buf, int bufSize, int *w, int *h){
 			}
 			buf[k] = '\0';
 			level[i][j] = atoi(buf);
+			if(level[i][j] == -2 || level[i][j] == -3){
+				if(zone == 2 && level[i][j] == -3){
+					portal[3][1] = i;
+					portal[3][0] = j;
+				}else{
+					portal[zone - 1][1] = i;
+					portal[zone - 1][0] = j;
+				}
+			}
 		}
 	}
 	return level;
@@ -214,7 +223,7 @@ bool loadStorage(storage *s, char *buf, size_t bufSize, FILE *f, item **itemList
 			return false;
 		}
 		for(int i = 0; i < val1; ++i){
-			addItemInStorage(s, tmp);
+			addItemInStorage(s, copyItem(tmp));
 		}
 	}
 	return true;
@@ -260,10 +269,14 @@ bool loadRespawn(respawn **r, char *buf, size_t bufSize, FILE *f, resource **res
 
 bool saveGame(const char *fileName, level *map, respawn *respawnList, player *player, storage *storage, int level){
 	FILE *f = fopen(fileName, "w");
+	if(f == NULL){
+		return false;
+	}
 	writeMap(map, level, f);
 	writePlayer(player, f);
 	writeStorage(storage, f);
 	writeRespawn(respawnList, f);
+	return true;
 }
 
 bool writeMap(level *map, int level, FILE *f){
