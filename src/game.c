@@ -63,15 +63,21 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 	fgets(value, 10, stdin);
 	fflush(stdin);
 	if (value[0] == NORTH) {
-		if(checkMoov(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster)) {
+		if(move(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
 			playerMoov(player,map,NORTH);
 		}
 	} else if (value[0] == EAST) {
-
+		if(move(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
+			playerMoov(player,map,EAST);
+		}
 	} else if (value[0] == SOUTH) {
-
+		if(move(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
+			playerMoov(player,map,SOUTH);
+		}
 	} else if (value[0] == WEST) {
-
+		if(move(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
+			playerMoov(player,map,WEST);
+		}
 	} else if (value[0] == '5') {
 		return 0;
 	}
@@ -80,35 +86,89 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 	}
 	free(value);
 }
-bool checkMoov(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster) {
+bool move(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList) {
+	int id;
 	if(direction == NORTH) {
-		if(player->coordinate->y-- >= 0) {
-			int id = map[player->coordinate->zone-1].level[player->coordinate->y-1][player->coordinate->x];
-			int res = checkCaseIdType(id,listResource,nResource,listMonster,nMonster);
-			switch(res) {
-				case 1:
-					checkRecolte(player, findResource(listResource,nResource,id));
-					break;
-				case 2: // Monster
-					return true;
-			}
+		if(player->abs_coord.y-1 >= 0) {
+			return tryMove(player,map,direction,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y-1);
 		}
+	}
+	if(direction == EAST) {
+		if(player->abs_coord.x+1 < map->w) {
+			return tryMove(player,map,direction,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x+1,player->abs_coord.y);
+		}
+	}
+	if(direction == SOUTH) {
+		if(player->abs_coord.y+1 < map->h) {
+			return tryMove(player,map,direction,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y+1);
+		}
+	}
+	if(direction == WEST) {
+		if(player->abs_coord.x-1 >= 0) {
+			return tryMove(player,map,direction,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x-1,player->abs_coord.y);
+		}
+	}
+}
+bool tryMove(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList, int x, int y) {
+	int id, resCase, resFight;
+	item *tool;
+	resource *resource;
+	id = map[player->abs_coord.zone-1].level[player->abs_coord.y-1][player->abs_coord.x];
+	resCase = checkCaseIdType(id,listResource,nResource,listMonster,nMonster);
+	switch(resCase) {
+		case -1:
+			printc("Case invalide!!!\n",2, FOREGROUND_RED, FOREGROUND_INTENSITY);
+			return false;
+		case 3: // Ressource
+			resource = findResource(listResource,nResource,id);
+			tool = checkRecolte(player, resource);
+			if(tool != NULL) {
+				if((resource->flag & 1) != 0) {
+					tool->durability -= (getItem(listItem, nItem, tool->id)->durability * (10 / 100));
+				} else if((resource->flag & 2) != 0) {
+					tool->durability -= (getItem(listItem, nItem, tool->id)->durability * (20 / 100));
+				} else if((resource->flag & 4) != 0) {
+					tool->durability -= (getItem(listItem, nItem, tool->id)->durability * (40 / 100));
+				}
+				addItemInInventory(player->inventory, getItem(listItem,nItem, findResource(listResource,nResource,id)->item->id));
+				return true;
+			}
+			printc("Tu ne peux pas récupérer la ressource\n",2, FOREGROUND_RED, FOREGROUND_INTENSITY);
+			return false;
+		case 20: // Monster
+			resFight = fight(player, createMonster(findMonster(listMonster,nMonster,id)),&respawnList,x,y,player->abs_coord.zone);
+			if(resFight == -1 || resFight == 0)
+				return false;
+			return true;
 	}
 }
 int checkCaseIdType(int id, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster) {
 	resource *res1 = findResource(listResource,nResource,id);
 	if(res1 != NULL)
-		return 1;
+		return 3;
 	monster *res2 = findMonster(listMonster,nMonster,id);
 	if(res2 != NULL)
-		return 2;
+		return 20;
+	return id;
 }
-bool checkRecolte(player *player, resource *resource) {
-	if(resource->)
-	item ** listItem = getItemCategory(player->inventory,)
+item *checkRecolte(player *player, resource *resource) {
+	item **listTool = getItemCategory(player->inventory, TOOLS);
+	int i = 0;
+	if(listTool == NULL)
+		return NULL;
+	while(listTool[i] != NULL) {
+		//if((listTool[i]->type & 1023) == (resource->item->type & 1023) && (listTool[i]->flag & resource->flag) != 0)
+		if(listTool[i]->durability > 0 && (listTool[i]->type & resource->item->type) != 0 && (listTool[i]->flag & resource->flag) != 0) {
+			item *tmp = listTool[i];
+			free(listTool);
+			return tmp;
+		}
+	}
+	free(listTool);
+	return NULL;
 }
 
-void fight(player *player, monster *monster, respawn **list, int32_t x, int32_t y, int8_t lvl) {
+int fight(player *player, monster *monster, respawn **list, int32_t x, int32_t y, int8_t lvl) {
 	int endFight = 0;
 	while(endFight == 0) {
 		endFight = playerTurnFight(player, monster);
@@ -124,13 +184,16 @@ void fight(player *player, monster *monster, respawn **list, int32_t x, int32_t 
 		case -1: {
 			printc("Vous avez été découpé, brulé, broyé... Quelle mort tragique... :'(", 1, FOREGROUND_RED);
 			//endGame();
+			return -1;
 		}
 		case 1: {
 			printc("Vous avez fuit le combat ?!  Tapette !!!", 1, FOREGROUND_YELLOW);
+			return 0;
 		}
 		case 2: {
 			addMonsterRespawn(monster,list,x,y,lvl);
 			playerWinExp(player, monster->exp);
+			return 1;
 		}
 		default: {
 			printc("BUG dans la matrice : fight", 1, FOREGROUND_RED);
@@ -138,7 +201,7 @@ void fight(player *player, monster *monster, respawn **list, int32_t x, int32_t 
 	}
 }
 
-// --------------------------------- AFFICHAGE ---------------------------------
+//// --------------------------------- AFFICHAGE ---------------------------------
 void printStartMenu() {
 	cleanTerminal();
 	printc(	    "\n / \\----------------------------------------,\n"

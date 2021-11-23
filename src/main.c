@@ -181,11 +181,7 @@ int mainT(int argc, char **argv) {
 	return 0;*/
 }
 
-int mainF(){
-	char *tmp = selectSave();
-	printf("%s", tmp);
-	free(tmp);
-int main(){
+int mainF() {
 	int portal[4][2];
 	player *p1 = createPlayer();
 	p1->abs_coord.x = 0;
@@ -214,7 +210,7 @@ int main(){
 	freePlayer(p1);
 }
 
-int mainF(int argc, char **argv){
+int main(int argc, char **argv){
 	char filename[256];
 	bool res = false;
 	int r = 0, l;
@@ -251,7 +247,7 @@ int mainF(int argc, char **argv){
 								printc("Level & maps created!\n", 1, FOREGROUND_GREEN);
 								h = 100;
 								w = 100;
-								inGame(player1, map, storage, listItem, nItem, listResource, nResource, listMonster, nMonster, &respawnList, l);
+								inGame(player1, map, storage, listItem, nItem, listResource, nResource, listMonster, nMonster, respawnList, l);
 
 							} else if (tolower(c) == '2') {
 								map = loadSave("./saves/test.mw", &respawnList, player1, storage, portal, &l, listItem,

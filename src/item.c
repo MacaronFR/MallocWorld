@@ -335,9 +335,6 @@ item *getItem(item **itemList, int nItem, int32_t id){
 //-------------- CHECK TYPE ITEM --------------
 bool isItem(item *item) {       return (item->type & ITEMS) == ITEMS;}
 bool isRessource(item *item) {  return (item->type & RESSOURCES) == RESSOURCES;}
-bool isWood(item* item) {       return (item->type & WOODS) == WOODS;}
-bool isOres(item* item) {       return (item->type & ORES) == ORES;}
-bool isPlant(item* item) {      return (item->type & PLANTS) == PLANTS;}
 bool isArmor(item* item) {      return (item->type & ARMORS) == ARMORS;}
 bool isWeapon(item* item) {     return (item->type & WEAPONS) == WEAPONS;}
 bool isTool(item* item) {       return (item->type & TOOLS) == TOOLS;}

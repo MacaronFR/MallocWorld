@@ -3,6 +3,7 @@
 
 #include <respawn.h>
 #include <perlin.h>
+#include <player.h>
 
 typedef struct s_saveFile{
 	char *name;

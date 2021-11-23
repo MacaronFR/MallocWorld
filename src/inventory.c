@@ -99,7 +99,7 @@ item **getItemCategory(inventory *inventory, category category) {
 	}
 	if(count == 0)
 		return NULL;
-	tabItem = malloc(sizeof (item*) * count);
+	tabItem = malloc(sizeof (item*) * (count+1));
 	count = 0;
 	for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
 		if(inventory->slots[i].item != NULL && (inventory->slots[i].item->type & category) == category) {
@@ -107,6 +107,7 @@ item **getItemCategory(inventory *inventory, category category) {
 			count++;
 		}
 	}
+	tabItem[count+1] = NULL;
 	return tabItem;
 }
 
