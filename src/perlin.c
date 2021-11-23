@@ -16,8 +16,8 @@ level *generateMap(int seed, int portal[4][2]){
 	for(int i = 0; i < 3; i++){
 		p = generatePerm(seed * ((i + 1)* seed));
 		map[i].level = generateLevel(100, 100, i + 1, p, seed, 5 * (i+1), portal);
-		map[i].h = 100;
-		map[i].w = 100;
+		map[i].h = 50;
+		map[i].w = 50;
 		free(p);
 	}
 	return map;

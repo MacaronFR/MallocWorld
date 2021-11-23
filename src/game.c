@@ -5,33 +5,7 @@
 void playerChooseSave() {
 
 }
-void playerTurn(player *player, int ***map) {
 
-	printPlayerInterface();
-	char* value = malloc(sizeof (char) * (10 + 1));
-	fgets(value,10,stdin);
-	fflush(stdin);
-
-	if(value[0] == '1') {
-
-	}
-	else if(value[0] == '2') {
-
-	}
-	else if(value[0] == '3') {
-
-	}
-	else if(value[0] == '4') {
-
-	}
-	else if(value[0] == '5') {
-
-	}
-	else {
-
-	}
-	free(value);
-}
 
 void playerWantMoov(player *player, direction direction) {
 	//checkCase();
@@ -65,103 +39,142 @@ void fight(player *player, monster *monster, respawn **list, int32_t x, int32_t 
 		}
 	}
 }
-void recolte() {
 
+
+void inGame(player *player, level *map, storage *storage, item **listItem, resource **listResource, monster **listMonster) {
+	bool end = false;
+	while(!end) {
+		cleanTerminal();
+		tempPrintMap(player, map);
+		printPlayer(player);
+		switch (playerTurn(player, map, storage, listItem, listResource, listMonster)){
+			case -1: {
+				// joueur mort
+				end = true;
+				break;
+			}
+			case 0:{
+				// le joueur à quitté la partie
+				break;
+			}
+			case 1:{
+				// tour de jeu normal
+				break;
+			}
+			case 2:{
+				// le joueur à gagné
+				break;
+			}
+		}
+	}
 }
-
-void startGame() {
-	cleanTerminal();
-	printStartMenu();
-
-	char* value = malloc(sizeof (char) * (10 + 1));
-	fgets(value,10,stdin);
+int playerTurn(player *player, level *map, storage *storage, item **listItem, resource **listResource, monster **listMonster) {
+	printPlayerInterface();
+	char *value = malloc(sizeof(char) * (10 + 1));
+	fgets(value, 10, stdin);
 	fflush(stdin);
-	if(value[0] == '1') {
-		//start new game
-	}
-	else if(value[0] == '2') {
-		// load game
-	}
-	else if(value[0] == '3') {
-		// credit
-	}
-	else if(value[0] == '4') {
-		return;
+	if (value[0] == NORTH) {
+
+	} else if (value[0] == EAST) {
+
+	} else if (value[0] == SOUTH) {
+
+	} else if (value[0] == WEST) {
+
+	} else if (value[0] == '5') {
+		return 0;
 	}
 	else {
-		printc("Un aventurier qui ne sait pas lire... nous voilà bien partie. (-_-) \n",1,FOREGROUND_YELLOW);
+		printc("Un aventurier qui ne sait pas lire une rose des vents... nous voilà bien partie. (-_-) \n", 1, FOREGROUND_YELLOW);
 	}
-}
-void initGame() {
-
-}
-void initNewGame() {
-
-}
-void endGame() {
-
+	free(value);
 }
 
 // --------------------------------- AFFICHAGE ---------------------------------
 void printStartMenu() {
+	cleanTerminal();
 	printc(	    "\n / \\----------------------------------------,\n"
-				   " \\_,|                                       |\n"
-				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
-	printc("Bienvenue dans Mallocworld !!!",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
-	printc("     |\n"
-		   "    |                                       |\n"
-		   "    |                                       |\n"
-		   "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
-	printc("1 - Lancer une nouvelle partie",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-	printc("     |\n"
-		   "    |                                       |\n"
-		   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc("2 - Charger une partie",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-	printc("             |\n"
-		   "    |                                       |\n"
-		   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc("3 - Credit",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
-	printc("                         |\n"
-		   "    |                                       |\n"
-		   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc("4 - Quitter le jeu",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
-	printc("                 |\n"
-		   "    |                                       |\n"
-		   "    |                                       |\n"
-		   "    |  ,-------------------------------------,\n"
-		   "    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+				   	" \\_,|                                       |\n"
+				   	"    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				   "Bienvenue dans Mallocworld !!!",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+	printc(											      "     |\n"
+		   			"    |                                       |\n"
+		   			"    |                                       |\n"
+					"    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				  "1 - Lancer une nouvelle partie",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printc(												 "     |\n"
+				    "    |                                       |\n"
+				    "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(		 		  "2 - Charger une partie",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(							 			 "             |\n"
+				    "    |                                       |\n"
+				    "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(		 		  "3 - Credit",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	printc(				   			 "                         |\n"
+				    "    |                                       |\n"
+				    "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(		 		  "4 - Quitter le jeu",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+	printc(									 "                 |\n"
+				    "    |                                       |\n"
+				    "    |                                       |\n"
+				    "    |  ,-------------------------------------,\n"
+				    "    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printf("\n\n");
+}
+void tempPrintMap(player *player, level *map) {
+	for(int i=0 ; i<map->h ; i++) {
+		printMapLineSeparator(map->w);
+		printc("|",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+		for (int j=0; j<map->w ; j++) {
+			setTextDefault();
+			printf("%2d", map->level[i][j]);
+			printc("|",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+		}
+		printf("\n");
+	}
+	printMapLineSeparator(map->w);
+	printf("\n\n");
 }
 void printPlayerInterface() {
 
-	printc(	    "\n / \\----------------------------------------,\n"
-				   " \\_,|                                       |\n"
+	printc(	    "\n / \\-------------------------------------------,\n"
+				   " \\_,|                                          |\n"
 				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc("A votre tour, bouger vous le cul!",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
 	printc("     |\n"
-		   "    |                                       |\n"
-		   "    |                                       |\n"
-		   "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
-	printc("1 - NORTH",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-	printc("     |\n"
-		   "    |                    ^                   |\n"
-		   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc("4 - WEST    <-O->    2 - EAST",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+		   "    |                                          |\n"
+		   "    |                                          |\n"
+		   "    |                    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				    "1 - NORTH",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(							  "             |\n"
+		   "    |                                          |\n"
+		   "    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc("^",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printc("                     |\n"
+		   "    |      ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc("WEST - 4    ",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc("<–+–>",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printc("    2 - EAST",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc("       |\n"
+		   "    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc("v",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printc("                     |\n"
+		   "    |                                          |\n"
+		   "    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc("3 - SOUTH",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
 	printc("             |\n"
-		   "    |                    v                   |\n"
-		   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc("3 - SOUTH",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
-	printc("                         |\n"
-		   "    |                                       |\n"
-		   "    |                                       |\n"
-		   "    |  ,-------------------------------------,\n"
-		   "    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+		   "    |                                          |\n"
+		   "    |                                          |\n"
+		   "    |                            ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc("5 - Quitter",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+	printc("   |\n"
+		   "    |                                          |\n"
+		   "    |  ,----------------------------------------,\n"
+		   "    \\_/________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printf("\n\n");
 
 
-
-
-
-
-
+	/*
 	// printMap();
 	printc("\nSélectionner une direction : \n",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
 	setText(2, FOREGROUND_BLUE, FOREGROUND_INTENSITY);
@@ -173,7 +186,7 @@ void printPlayerInterface() {
 	printf("+---+-------------+\n");
 	printf("| 5 - Save & Quit |\n");
 	printf("+---+-------------+\n");
-	setTextDefault();
+	setTextDefault();*/
 }
 void printCredit() {
 	printc("Jeux Mallocworld développé par :\n"
@@ -182,4 +195,14 @@ void printCredit() {
 		   "	-	Jean ....			@Jean\n",
 		   2,FOREGROUND_GREEN,FOREGROUND_INTENSITY
 	);
+}
+
+
+void printMapLineSeparator(int count) {
+	setText(2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	for(int i=0 ; i<count ; i++) {
+		printf("+--");
+	}
+	printf("+\n");
+	setTextDefault();
 }

@@ -2,22 +2,25 @@
 #define MALLOCWORLD_GAME_H
 
 #include <player.h>
-#include <player.h>
+#include <perlin.h>
 #include <respawn.h>
 
 
-void playerTurn(player *player, int ***map);
 
 
+void inGame(player *player1, level *map, storage *storage, item **listItem, resource **listResource, monster **listMonster);
+int playerTurn(player *player, level *map, storage *storage, item **listItem, resource **listResource, monster **listMonster);
 
-void startGame();
-void endGame();
 
 
 void fight(player *player, monster *monster, respawn **list, int32_t x, int32_t y, int8_t lvl);
 
+
+
 // --------------------------------- AFFICHAGE ---------------------------------
 void printStartMenu();
+void tempPrintMap(player *player, level *map);
+void printMapLineSeparator(int count);
 void printPlayerInterface();
 void printCredit();
 

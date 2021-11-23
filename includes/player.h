@@ -59,6 +59,7 @@ void printPlayer(player *player);
 void printLevel(player *player);
 void printExp(player *player);
 void printLife(player *player);
+void printBar(float value, float max, int size);
 
 //|--------------------------------------------| ACTION |--------------------------------------------|
 //---------------------- Fight ----------------------
