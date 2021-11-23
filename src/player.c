@@ -5,6 +5,7 @@
 #include <stdint-gcc.h>
 
 #include <player.h>
+#include <perlin.h>
 
 
 //---------------------- Creation et Destruction ----------------------
@@ -195,30 +196,34 @@ int playerDoChoiceCategory(item** tabItem) {
 }
 
 //---------------------- Map ----------------------
-void playerMoov(player *player, int*** map, direction direction) {
+void playerMoov(player *player, level *map, direction direction) {
 	switch (direction) {
 		case NORTH: {
-			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 0;
-			player->coordinate->y++;
-			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 1;
+			map[player->abs_coord.zone].level[player->abs_coord.y][player->abs_coord.x] = 0;
+			player->abs_coord.y--;
+			player->relative_coord.y--;
+			map[player->abs_coord.zone].level[player->abs_coord.y][player->abs_coord.x] = 1;
 			break;
 		}
 		case EAST: {
-			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 0;
-			player->coordinate->x++;
-			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 1;
+			map[player->abs_coord.zone].level[player->abs_coord.y][player->abs_coord.x] = 0;
+			player->abs_coord.x++;
+			player->relative_coord.x++;
+			map[player->abs_coord.zone].level[player->abs_coord.y][player->abs_coord.x] = 1;
 			break;
 		}
 		case SOUTH: {
-			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 0;
-			player->coordinate->y--;
-			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 1;
+			map[player->abs_coord.zone].level[player->abs_coord.y][player->abs_coord.x] = 0;
+			player->abs_coord.y++;
+			player->relative_coord.y++;
+			map[player->abs_coord.zone].level[player->abs_coord.y][player->abs_coord.x] = 1;
 			break;
 		}
 		case WEST: {
-			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 0;
-			player->coordinate->x--;
-			map[player->coordinate->zone][player->coordinate->y][player->coordinate->x] = 1;
+			map[player->abs_coord.zone].level[player->abs_coord.y][player->abs_coord.x] = 0;
+			player->abs_coord.x--;
+			player->relative_coord.x--;
+			map[player->abs_coord.zone].level[player->abs_coord.y][player->abs_coord.x] = 1;
 			break;
 		}
 		default:
@@ -231,5 +236,21 @@ int playerChopWood(player *player) {}
 int playerCutGrass(player *player) {}
 int playerCraftItem(player *player, int id) {}
 
-
-
+void displayPlayerOnMap(player *p, level *map){
+	if(p->relative_coord.x < 3 && p->abs_coord.x >= 3){
+		p->relative_coord.x++;
+	}else if(p->relative_coord.x > 6 && p->abs_coord.x < map->w - 3){
+		p->relative_coord.x--;
+	}
+	if(p->relative_coord.y < 3 && p->abs_coord.y >= 3){
+		p->relative_coord.y++;
+	}else if(p->relative_coord.y > 6 && p->abs_coord.y < map->h - 3){
+		p->relative_coord.y--;
+	}
+	for(int i = p->abs_coord.y - p->relative_coord.y; i < p->abs_coord.y - p->relative_coord.y + 10; ++i){
+		for(int j = p->abs_coord.x - p->relative_coord.x; j < p->abs_coord.x - p->relative_coord.x + 10; ++j){
+			printf("|%2d", map->level[i][j]);
+		}
+		printf("|\n+--+--+--+--+--+--+--+--+--+--+\n");
+	}
+}

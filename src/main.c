@@ -182,9 +182,32 @@ int mainT(int argc, char **argv) {
 }
 
 int main(){
-	char *tmp = selectSave();
-	printf("%s", tmp);
-	free(tmp);
+	int portal[4][2];
+	player *p1 = createPlayer();
+	p1->abs_coord.x = 0;
+	p1->abs_coord.y = 0;
+	p1->abs_coord.zone = 0;
+	p1->relative_coord.x = 0;
+	p1->relative_coord.y = 0;
+	level *map = generateMap(1, portal);
+	map[0].level[0][0] = 1;
+	displayPlayerOnMap(p1, map);
+	printf("\n");
+	playerMoov(p1, map, SOUTH);
+	playerMoov(p1, map, EAST);
+	playerMoov(p1, map, SOUTH);
+	playerMoov(p1, map, SOUTH);
+	playerMoov(p1, map, SOUTH);
+	playerMoov(p1, map, SOUTH);
+	playerMoov(p1, map, SOUTH);
+	playerMoov(p1, map, SOUTH);
+	displayPlayerOnMap(p1, map);
+	printf("\n");
+	playerMoov(p1, map, SOUTH);
+	displayPlayerOnMap(p1, map);
+	printf("\n");
+	freeMap(map, 3);
+	freePlayer(p1);
 }
 
 int mainF(int argc, char **argv){

@@ -12,6 +12,7 @@
 #include <inventory.h>
 #include <item.h>
 #include <utils.h>
+#include <perlin.h>
 
 
 typedef enum e_experience {
@@ -39,7 +40,8 @@ typedef struct s_player {
     uint16_t exp;
     uint8_t level;
 	stuff *stuff;
-	coordinate *coordinate;
+	coordinate abs_coord;
+	coordinate relative_coord;
 }player;
 
 #include <monster.h>
@@ -71,12 +73,13 @@ int playerEscape(player *player);
 int playerDoChoiceCategory(item **tabItem);
 
 //---------------------- Map ----------------------
-void playerMoov(player *player, int ***map, direction direction);
+void playerMoov(player *player, level *map, direction direction);
 int playerCraft(player *player);
 int playerMine(player *player);
 int playerChopWood(player *player);
 int playerCutGrass(player *player);
 int playerCraftItem(player *player, int id);
+void displayPlayerOnMap(player *p, level *map);
 
 
 #endif //MALLOCWORLD_PLAYER_H
