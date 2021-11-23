@@ -19,7 +19,7 @@ void fight(player *player, monster *monster, respawn **list, int32_t x, int32_t 
 
 // --------------------------------- AFFICHAGE ---------------------------------
 void printStartMenu();
-void tempPrintMap(player *player, level *map);
+void tempPrintMap(level *map);
 void printMapLineSeparator(int count);
 void printPlayerInterface();
 void printCredit();

@@ -45,7 +45,7 @@ void inGame(player *player, level *map, storage *storage, item **listItem, resou
 	bool end = false;
 	while(!end) {
 		cleanTerminal();
-		tempPrintMap(player, map);
+		tempPrintMap(map);
 		printPlayer(player);
 		switch (playerTurn(player, map, storage, listItem, listResource, listMonster)){
 			case -1: {
@@ -121,14 +121,56 @@ void printStartMenu() {
 				    "    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printf("\n\n");
 }
-void tempPrintMap(player *player, level *map) {
+void tempPrintMap(level *map) {
 	for(int i=0 ; i<map->h ; i++) {
 		printMapLineSeparator(map->w);
-		printc("|",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+		printc("|",1,FOREGROUND_BLUE);
 		for (int j=0; j<map->w ; j++) {
 			setTextDefault();
-			printf("%2d", map->level[i][j]);
-			printc("|",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+			int id = map->level[i][j];
+			switch(id) {
+				case -3:
+				case -2:
+					setText( 2, FOREGROUND_RED,BACKGROUND_CYAN);
+					break;
+				case -1:
+					setText( 2, FOREGROUND_RED,BACKGROUND_RED);
+					break;
+				case 0:
+					setText( 2, FOREGROUND_BLACK, BACKGROUND_BLACK);
+					break;
+				case 1:
+					setText( 3, FOREGROUND_CYAN, FOREGROUND_INTENSITY,BACKGROUND_PURPLE);
+					break;
+				case 2:
+					setText( 3, FOREGROUND_RED, FOREGROUND_INTENSITY,BACKGROUND_CYAN);
+					break;
+				case 3:
+				case 6:
+				case 9:
+					setText( 3, FOREGROUND_RED,FOREGROUND_INTENSITY,BACKGROUND_GREEN);
+					break;
+				case 4:
+				case 7:
+				case 10:
+					setText( 2, FOREGROUND_BLACK ,BACKGROUND_WHITE);
+					break;
+				case 5:
+				case 8:
+				case 11:
+					setText(3, FOREGROUND_PURPLE,FOREGROUND_INTENSITY,BACKGROUND_YELLOW);
+					break;
+				case 99:
+					setText( 2, FOREGROUND_BLACK,BACKGROUND_RED);
+					break;
+				default:
+					setText( 1, FOREGROUND_RED);
+					break;
+
+			}
+			printf("%2d",id);
+			setTextDefault();
+			printc("|", 1, FOREGROUND_BLUE);
 		}
 		printf("\n");
 	}
@@ -199,7 +241,7 @@ void printCredit() {
 
 
 void printMapLineSeparator(int count) {
-	setText(2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	setText(1,FOREGROUND_BLUE);
 	for(int i=0 ; i<count ; i++) {
 		printf("+--");
 	}
