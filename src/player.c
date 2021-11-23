@@ -252,6 +252,7 @@ int playerCutGrass(player *player) {}
 int playerCraftItem(player *player, int id) {}
 
 void displayPlayerOnMap(player *p, level *map){
+	int startx, starty, endx, endy;
 	if(p->relative_coord.x < 3 && p->abs_coord.x >= 3){
 		p->relative_coord.x++;
 	}else if(p->relative_coord.x > 6 && p->abs_coord.x < map->w - 3){
@@ -262,8 +263,14 @@ void displayPlayerOnMap(player *p, level *map){
 	}else if(p->relative_coord.y > 6 && p->abs_coord.y < map->h - 3){
 		p->relative_coord.y--;
 	}
-	for(int i = p->abs_coord.y - p->relative_coord.y; i < p->abs_coord.y - p->relative_coord.y + 10; ++i){
-		for(int j = p->abs_coord.x - p->relative_coord.x; j < p->abs_coord.x - p->relative_coord.x + 10; ++j){
+	startx = p->abs_coord.x - p->relative_coord.x;
+	starty = p->abs_coord.y - p->relative_coord.y;
+	endx = p->abs_coord.x - p->relative_coord.x + 10;
+	endx = endx < map->w ? endx : map->w;
+	endy = p->abs_coord.y - p->relative_coord.y + 10;
+	endy = endy < map->h ? endy : map->h;
+	for(int i = starty; i < endy; ++i){
+		for(int j = startx; j < endx; ++j){
 			printf("|%2d", map->level[i][j]);
 		}
 		printf("|\n+--+--+--+--+--+--+--+--+--+--+\n");
