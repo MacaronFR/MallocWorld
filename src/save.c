@@ -329,3 +329,49 @@ bool writeRespawn(respawn *r, FILE *f){
 		r = r->next;
 	}
 }
+
+char *selectSave(){
+	saveFile *list = NULL;
+	saveFile *tmp;
+	char *res;
+	int i = 0, choice = -1;
+	DIR *item_dir;
+	struct dirent *en;
+	item_dir = opendir("./saves/");
+	if(!item_dir){
+		//TODO le dossier save est casser
+	}
+	while((en = readdir(item_dir)) != NULL){
+		if(en->d_type == DT_REG){
+			tmp = list;
+			list = malloc(sizeof(saveFile));
+			list->next = tmp;
+			list->name = malloc(sizeof(en->d_name));
+			strcpy(list->name, en->d_name);
+			list->index = i;
+			++i;
+		}
+	}
+	closedir(item_dir);
+	tmp = list;
+	while(tmp != NULL){
+		printf("%d - %s\n", tmp->index, tmp->name);
+		tmp = tmp->next;
+	}
+	while(choice < 0 || choice >= i){
+		printf("quel sauvegarde ?\n");
+		fflush(stdin);
+		scanf("%d", &choice);
+	}
+	while(list != NULL){
+		if(list->index != choice){
+			free(list->name);
+		}else{
+			res = list->name;
+		}
+		tmp = list->next;
+		free(list);
+		list = tmp;
+	}
+	return res;
+}

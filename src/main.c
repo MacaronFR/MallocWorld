@@ -181,7 +181,13 @@ int mainT(int argc, char **argv) {
 	return 0;*/
 }
 
-int main(int argc, char **argv){
+int main(){
+	char *tmp = selectSave();
+	printf("%s", tmp);
+	free(tmp);
+}
+
+int mainF(int argc, char **argv){
 	char filename[256];
 	bool res = false;
 	int r = 0, l;
