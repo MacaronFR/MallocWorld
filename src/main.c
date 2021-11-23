@@ -238,43 +238,49 @@ int mainF(int argc, char **argv){
 						int portal[4][2];
 						level *map;
 						int h, w;
-						char c = 0;
-						printStartMenu();
-						fflush(stdin);
-						scanf("%c", &c);
-						if(tolower(c) == '1'){
-							srand(time(NULL));
-							map = generateMap(rand(), portal);
-							l = 3;
-							printc("Level & maps created!\n",1,FOREGROUND_GREEN);
-							h = 100;
-							w = 100;
-							inGame(player1, map, storage, listItem, listResource, listMonster);
-						}
-						else if(tolower(c) == '2'){
-							map = loadSave("./saves/test.mw", &respawnList, player1, storage, portal, &l, listItem, nItem, listResource, nResource, listMonster, nMonster);
-							for(int i = 0; i < 4; ++i){
-								printf("%d, %d\n", portal[i][0], portal[i][1]);
-							}						}
-						else if(tolower(c) == '3'){
-							printCredit();
-						}
-						else{
-							printc("J'ai venu, j'ai lu, j'ai pas comprendu",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
-						}
-						if(map != NULL){
-							//game();
-							do{
-								if(res){
-									printf("Erreur lors de la sauvegarde\n");
+						bool again = true;
+						while(again) {
+							char c = 0;
+							printStartMenu();
+							fflush(stdin);
+							scanf("%c", &c);
+							if (tolower(c) == '1') {
+								srand(time(NULL));
+								map = generateMap(rand(), portal);
+								l = 3;
+								printc("Level & maps created!\n", 1, FOREGROUND_GREEN);
+								h = 100;
+								w = 100;
+								inGame(player1, map, storage, listItem, nItem, listResource, nResource, listMonster, nMonster, &respawnList, l);
+
+							} else if (tolower(c) == '2') {
+								map = loadSave("./saves/test.mw", &respawnList, player1, storage, portal, &l, listItem,
+											   nItem, listResource, nResource, listMonster, nMonster);
+								for (int i = 0; i < 4; ++i) {
+									printf("%d, %d\n", portal[i][0], portal[i][1]);
 								}
-								printf("sauvegarder à : ");
-								scanf("%s", filename);
-								res = saveGame(filename, map, respawnList, player1, storage, l);
-							}while(!res);
-							freeMap(map, 3);
-							freeRespawnList(respawnList);
-						}else r = -6;
+							} else if (tolower(c) == '3') {
+								printCredit();
+							} else if (tolower(c) == '4') {
+								again = false;
+							} else {
+								printc("J'ai venu, j'ai lu, j'ai pas comprendu", 2, FOREGROUND_RED,FOREGROUND_INTENSITY);
+							}
+							if (map != NULL) {
+								/*
+								do {
+									if (res) {
+										printf("Erreur lors de la sauvegarde\n");
+									}
+									printf("sauvegarder à : ");
+									scanf("%s", filename);
+									res = saveGame(filename, map, respawnList, player1, storage, l);
+								} while (!res);*/
+								freeMap(map, 3);
+								freeRespawnList(respawnList);
+
+							} else r = -6;
+						}
 						freeStorage(storage);
 					}else r = -5;
 					freePlayer(player1);

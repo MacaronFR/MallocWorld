@@ -16,27 +16,15 @@ typedef enum e_category {
     ITEMS = 32768,
     RESSOURCES = 16384,
 
-	WOODS = RESSOURCES + 8192,
-	ORES = RESSOURCES + 4096,
-	PLANTS = RESSOURCES + 2048,
+	ARMORS = ITEMS + 8192,
+	WEAPONS = ITEMS + 4096,
+	TOOLS = ITEMS + 2048,
+	POTIONS = ITEMS + 1024,
 
-	ARMORS = ITEMS + 8192,
-	WEAPONS = ITEMS + 4096,
-	TOOLS = ITEMS + 2048,
-	POTIONS = ITEMS + 1024
-}category;
-/*
-typedef enum e_ressources {
-	WOODS = RESSOURCES + 8192,
+	/*WOODS = RESSOURCES + 8192,
 	ORES = RESSOURCES + 4096,
-	PLANTS = RESSOURCES + 2048
-}ressources;
-typedef enum e_items {
-	ARMORS = ITEMS + 8192,
-	WEAPONS = ITEMS + 4096,
-	TOOLS = ITEMS + 2048,
-	POTIONS = ITEMS + 1024
-}items;*/
+	PLANTS = RESSOURCES + 2048,*/
+}category;
 
 typedef struct s_item{
     uint16_t type; // type de l'objet (ressources/item arme/armure/outil/potion/arbre/roche/plante

@@ -21,8 +21,6 @@ typedef struct s_monster{
 	uint8_t zone;
 } monster;
 
-#include <player.h>
-
 monster *createMonster(monster *m);
 void freeMonster(monster *m);
 monster *loadMonster(const char *filename);

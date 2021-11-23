@@ -2,6 +2,7 @@
 
 
 
+
 void playerChooseSave() {
 
 }
@@ -10,6 +11,103 @@ void playerChooseSave() {
 void playerWantMoov(player *player, direction direction) {
 	//checkCase();
 }
+
+
+
+void inGame(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList, int nbMap) {
+	bool end = false;
+	while(!end) {
+		cleanTerminal();
+		tempPrintMap(map);
+		printPlayer(player);
+		switch (playerTurn(player, map, storage, listItem,nItem, listResource,nResource, listMonster,nMonster, respawnList)){
+			case -1: {
+				gameOver();
+				end = true;
+				break;
+			}
+			case 0:{
+				printc("Voulez vous sauvegarder votre progression ?    [y/n]\n",2,FOREGROUND_GREEN, FOREGROUND_INTENSITY);
+				char choice[256];
+				scanf("%s", choice);
+				if(choice[0] == 'y') {
+					bool res = false;
+					char filename[256];
+					do {
+						if (res) {
+							printf("Erreur lors de la sauvegarde\n");
+						}
+						printc("sauvegarder à : ",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+						scanf("%s", filename);
+						res = saveGame(filename, map, respawnList, player, storage, nbMap);
+					} while (!res);
+					end = true;
+				}
+				break;
+			}
+			case 1:{
+				printc("Un nouveau tour commence...\n",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+				break;
+			}
+			case 2:{
+				winGame();
+				end = true;
+				break;
+			}
+		}
+	}
+}
+int playerTurn(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList) {
+	printPlayerInterface();
+	char *value = malloc(sizeof(char) * (10 + 1));
+	fgets(value, 10, stdin);
+	fflush(stdin);
+	if (value[0] == NORTH) {
+		if(checkMoov(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster)) {
+			playerMoov(player,map,NORTH);
+		}
+	} else if (value[0] == EAST) {
+
+	} else if (value[0] == SOUTH) {
+
+	} else if (value[0] == WEST) {
+
+	} else if (value[0] == '5') {
+		return 0;
+	}
+	else {
+		printc("Un aventurier qui ne sait pas lire une rose des vents... nous voilà bien partie. (-_-) \n", 1, FOREGROUND_YELLOW);
+	}
+	free(value);
+}
+bool checkMoov(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster) {
+	if(direction == NORTH) {
+		if(player->coordinate->y-- >= 0) {
+			int id = map[player->coordinate->zone-1].level[player->coordinate->y-1][player->coordinate->x];
+			int res = checkCaseIdType(id,listResource,nResource,listMonster,nMonster);
+			switch(res) {
+				case 1:
+					checkRecolte(player, findResource(listResource,nResource,id));
+					break;
+				case 2: // Monster
+					return true;
+			}
+		}
+	}
+}
+int checkCaseIdType(int id, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster) {
+	resource *res1 = findResource(listResource,nResource,id);
+	if(res1 != NULL)
+		return 1;
+	monster *res2 = findMonster(listMonster,nMonster,id);
+	if(res2 != NULL)
+		return 2;
+}
+bool checkRecolte(player *player, resource *resource) {
+	if(resource->)
+	item ** listItem = getItemCategory(player->inventory,)
+}
+
 void fight(player *player, monster *monster, respawn **list, int32_t x, int32_t y, int8_t lvl) {
 	int endFight = 0;
 	while(endFight == 0) {
@@ -38,56 +136,6 @@ void fight(player *player, monster *monster, respawn **list, int32_t x, int32_t 
 			printc("BUG dans la matrice : fight", 1, FOREGROUND_RED);
 		}
 	}
-}
-
-
-void inGame(player *player, level *map, storage *storage, item **listItem, resource **listResource, monster **listMonster) {
-	bool end = false;
-	while(!end) {
-		cleanTerminal();
-		tempPrintMap(map);
-		printPlayer(player);
-		switch (playerTurn(player, map, storage, listItem, listResource, listMonster)){
-			case -1: {
-				// joueur mort
-				end = true;
-				break;
-			}
-			case 0:{
-				// le joueur à quitté la partie
-				break;
-			}
-			case 1:{
-				// tour de jeu normal
-				break;
-			}
-			case 2:{
-				// le joueur à gagné
-				break;
-			}
-		}
-	}
-}
-int playerTurn(player *player, level *map, storage *storage, item **listItem, resource **listResource, monster **listMonster) {
-	printPlayerInterface();
-	char *value = malloc(sizeof(char) * (10 + 1));
-	fgets(value, 10, stdin);
-	fflush(stdin);
-	if (value[0] == NORTH) {
-
-	} else if (value[0] == EAST) {
-
-	} else if (value[0] == SOUTH) {
-
-	} else if (value[0] == WEST) {
-
-	} else if (value[0] == '5') {
-		return 0;
-	}
-	else {
-		printc("Un aventurier qui ne sait pas lire une rose des vents... nous voilà bien partie. (-_-) \n", 1, FOREGROUND_YELLOW);
-	}
-	free(value);
 }
 
 // --------------------------------- AFFICHAGE ---------------------------------
@@ -127,7 +175,7 @@ void tempPrintMap(level *map) {
 		printc("|",1,FOREGROUND_BLUE);
 		for (int j=0; j<map->w ; j++) {
 			setTextDefault();
-			int id = map->level[i][j];
+			int id = map[0].level[i][j];
 			switch(id) {
 				case -3:
 				case -2:
@@ -166,7 +214,6 @@ void tempPrintMap(level *map) {
 				default:
 					setText( 1, FOREGROUND_RED);
 					break;
-
 			}
 			printf("%2d",id);
 			setTextDefault();
@@ -177,42 +224,50 @@ void tempPrintMap(level *map) {
 	printMapLineSeparator(map->w);
 	printf("\n\n");
 }
+void printMapLineSeparator(int count) {
+	setText(1,FOREGROUND_BLUE);
+	for(int i=0 ; i<count ; i++) {
+		printf("+--");
+	}
+	printf("+\n");
+	setTextDefault();
+}
 void printPlayerInterface() {
 
-	printc(	    "\n / \\-------------------------------------------,\n"
-				   " \\_,|                                          |\n"
-				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
-	printc("A votre tour, bouger vous le cul!",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
-	printc("     |\n"
-		   "    |                                          |\n"
-		   "    |                                          |\n"
-		   "    |                    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
-	printc(				    "1 - NORTH",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-	printc(							  "             |\n"
-		   "    |                                          |\n"
-		   "    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc("^",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-	printc("                     |\n"
-		   "    |      ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc("WEST - 4    ",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-	printc("<–+–>",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-	printc("    2 - EAST",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-	printc("       |\n"
-		   "    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc("v",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-	printc("                     |\n"
-		   "    |                                          |\n"
-		   "    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc("3 - SOUTH",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-	printc("             |\n"
-		   "    |                                          |\n"
-		   "    |                                          |\n"
-		   "    |                            ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
-	printc("5 - Quitter",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
-	printc("   |\n"
-		   "    |                                          |\n"
-		   "    |  ,----------------------------------------,\n"
-		   "    \\_/________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(	"\n / \\-------------------------------------------,\n"
+				" \\_,|                                          |\n"
+				"    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				"A votre tour, bouger vous le cul!",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+	printc(													"     |\n"
+		   		"    |                                          |\n"
+		   		"    |                                          |\n"
+		   		"    |                    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				    			"1 - NORTH",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(							  				"             |\n"
+		   		"    |                                          |\n"
+		   		"    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(								"^",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printc(									"                     |\n"
+		   		"    |      ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(				"WEST - 4    ",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(							"<–+–>",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printc(									"    2 - EAST",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(												"       |\n"
+		   		"    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(								"v",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printc(									"                     |\n"
+		   		"    |                                          |\n"
+		   		"    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(								"3 - SOUTH",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(											"             |\n"
+		   		"    |                                          |\n"
+		   		"    |                                          |\n"
+		   		"    |                            ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(										"5 - Quitter",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+	printc(													"   |\n"
+		   		"    |                                          |\n"
+		   		"    |  ,----------------------------------------,\n"
+		   		"    \\_/________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printf("\n\n");
 
 
@@ -237,14 +292,4 @@ void printCredit() {
 		   "	-	Jean ....			@Jean\n",
 		   2,FOREGROUND_GREEN,FOREGROUND_INTENSITY
 	);
-}
-
-
-void printMapLineSeparator(int count) {
-	setText(1,FOREGROUND_BLUE);
-	for(int i=0 ; i<count ; i++) {
-		printf("+--");
-	}
-	printf("+\n");
-	setTextDefault();
 }

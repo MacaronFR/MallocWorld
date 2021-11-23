@@ -13,7 +13,8 @@
 #include <item.h>
 #include <utils.h>
 #include <perlin.h>
-
+#include <monster.h>
+#include <perlin.h>
 
 typedef enum e_experience {
     LEVEL1 = 10,
@@ -44,7 +45,7 @@ typedef struct s_player {
 	coordinate relative_coord;
 }player;
 
-#include <monster.h>
+
 
 player* createPlayer();
 void freePlayer(player *player);
