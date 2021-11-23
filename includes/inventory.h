@@ -53,7 +53,7 @@ void removeSlot(storage *s, int index);
 
 //---------------------- Affichage ----------------------
 void printInventory(inventory* inventory);
-void printLineSeparator(int count);
+void printInventoryLineSeparator(int count);
 void printSlot(inventory* inventory, int id);
 void printQuantity(inventory* inventory, int id);
 #endif

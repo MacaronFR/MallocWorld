@@ -55,20 +55,35 @@ void printPlayer(player *player) {
 }
 void printLevel(player *player) {
     setText(1,FOREGROUND_PURPLE);
-    printf("Lvl : %d\n", player->level);
+    printf("Lvl  : %d\n", player->level);
     setTextDefault();
 }
 void printExp(player *player) {
     setText(1,FOREGROUND_GREEN);
-    printf("Exp : %d\n", player->exp);
+    printf("Exp  : ");
+	printBar(player->exp, player->level*100.f, 50);
     setTextDefault();
 }
 void printLife(player *player) {
     setText(1,FOREGROUND_RED);
-    printf("Life : %d / %d\n", player-> life, player->maxLife);
+    printf("Life : ");
+	printBar(player->life, player->maxLife,50);
     setTextDefault();
 }
-
+void printBar(float value, float max, int size) {
+	char bar[size + 3];
+	bar[0] = '[';
+	int i;
+	for(i=0;i<size;i++){
+		if((i*(100/size)) <= (value/max)*100)
+			bar[i+1]='=';
+		else
+			bar[i+1]='_';
+	}
+	bar[i+1]=']';
+	bar[i+2]='\0';
+	printf("%s %d/%d\n",bar, (int)value, (int)max);
+}
 //|--------------------------------------------| ACTION |--------------------------------------------|
 //---------------------- Fight ----------------------
 int playerTurnFight(player *player, monster *monster) {

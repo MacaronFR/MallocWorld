@@ -103,7 +103,7 @@ int mainT(int argc, char **argv) {
 	/*player *player = createPlayer();
 	playerTurnFight(player, NULL);*/
 
-	startGame();
+
 
 
 	/*
@@ -181,6 +181,10 @@ int mainT(int argc, char **argv) {
 	return 0;*/
 }
 
+int mainF(){
+	char *tmp = selectSave();
+	printf("%s", tmp);
+	free(tmp);
 int main(){
 	int portal[4][2];
 	player *p1 = createPlayer();
@@ -216,16 +220,21 @@ int mainF(int argc, char **argv){
 	int r = 0, l;
 	respawn *respawnList = NULL;//Liste de respawn
 	size_t nItem, nResource, nMonster;
-	item **listItem = loadItems("./items/", &nItem);
+	item **listItem = loadItems("../items/", &nItem);
 	if(listItem != NULL){
-		resource **listResource = loadResources("./resources/", &nResource, listItem, nItem);
+		printc("ListItem loaded!\n",1,FOREGROUND_GREEN);
+		resource **listResource = loadResources("../resources/", &nResource, listItem, nItem);
 		if(listResource != NULL){
-			monster **listMonster = loadMonsters("./monsters/", &nMonster);
+			printc("ListResource loaded!\n",1,FOREGROUND_GREEN);
+			monster **listMonster = loadMonsters("../monsters/", &nMonster);
 			if(listMonster != NULL){
+				printc("ListMonster loaded!\n",1,FOREGROUND_GREEN);
 				player *player1 = createPlayer();
 				if(player1 != NULL){
+					printc("Player created!\n",1,FOREGROUND_GREEN);
 					storage *storage = createStorage();
 					if(storage != NULL){
+						printc("Storage created!\n",1,FOREGROUND_GREEN);
 						int portal[4][2];
 						level *map;
 						int h, w;
@@ -236,8 +245,11 @@ int mainF(int argc, char **argv){
 						if(tolower(c) == '1'){
 							srand(time(NULL));
 							map = generateMap(rand(), portal);
+							l = 3;
+							printc("Level & maps created!\n",1,FOREGROUND_GREEN);
 							h = 100;
 							w = 100;
+							inGame(player1, map, storage, listItem, listResource, listMonster);
 						}
 						else if(tolower(c) == '2'){
 							map = loadSave("./saves/test.mw", &respawnList, player1, storage, portal, &l, listItem, nItem, listResource, nResource, listMonster, nMonster);

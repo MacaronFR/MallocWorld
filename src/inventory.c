@@ -208,22 +208,20 @@ void removeSlot(storage *s, int index){
 
 //----------------------| AFFICHAGE |----------------------
 void printInventory(inventory* inventory) {
-    printLineSeparator(MAX_SLOTS_INVENTORY);
+	printInventoryLineSeparator(MAX_SLOTS_INVENTORY);
     for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
         printSlot(inventory, i);
     }
     printf(" <- Item\n");
-    printLineSeparator(MAX_SLOTS_INVENTORY);
+	printInventoryLineSeparator(MAX_SLOTS_INVENTORY);
     for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
         printQuantity(inventory, i);
     }
     printf(" <- Count/Durability\n");
-    printLineSeparator(MAX_SLOTS_INVENTORY);
+	printInventoryLineSeparator(MAX_SLOTS_INVENTORY);
 }
 void printSlot(inventory* inventory, int id) {
-    setText(1,FOREGROUND_BLUE);
-    printf("|");
-    setTextDefault();
+    printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
     if(inventory->slots[id].item != NULL) {
         item* item = inventory->slots[id].item;
         printf("%3d", item->id);
@@ -232,34 +230,29 @@ void printSlot(inventory* inventory, int id) {
         printf("   ");
     }
     if(id == MAX_SLOTS_INVENTORY-1) {
-        setText(1,FOREGROUND_BLUE);
-        printf("|");
-        setTextDefault();
+        printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
     }
 }
 void printQuantity(inventory* inventory, int id) {
-    setText(1, FOREGROUND_BLUE);
-    printf("|");
-    setTextDefault();
+	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
     if(inventory->slots[id].item != NULL) {
         item *item = inventory->slots[id].item;
-        if (isRessource(item))
-            printf("%3d", inventory->slots[id].quantity);
+        if (isRessource(item)) {
+			setTextDefault();
+			printf("%3d", inventory->slots[id].quantity);
+		}
         else{
-            setText(1, FOREGROUND_GREEN);
-            printf("%3d", item->durability);
             setTextDefault();
+            printf("%3d", item->durability);
         }
     }
     else
         printf("   ");
     if(id == MAX_SLOTS_INVENTORY-1) {
-        setText(1,FOREGROUND_BLUE);
-        printf("|");
-        setTextDefault();
+		printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
     }
 }
-void printLineSeparator(int count) {
+void printInventoryLineSeparator(int count) {
     setText(2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
     for(int i=0 ; i<count ; i++) {
         printf("+---");

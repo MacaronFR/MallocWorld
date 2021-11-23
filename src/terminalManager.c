@@ -97,7 +97,7 @@ void setText(int nbArgs, ...) {
 
 }
 void setTextDefault() {
-	printf("\033[0m");
+	printf("\033[0;40m");
 }
 void printc(char* str, int nbArgs, ...) {
 	int value;
@@ -112,6 +112,7 @@ void printc(char* str, int nbArgs, ...) {
 	}
 	printf("m");
 	printf(str);
+	setTextDefault();
 }
 
 #endif
