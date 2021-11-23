@@ -12,13 +12,13 @@
 #include <game.h>
 #include <save.h>
 
-void printFlag(int pos, char *class) {
+void printFlag(int pos, char *class){
 	setText(1, FOREGROUND_YELLOW);
-	if (pos == 0)
+	if(pos == 0)
 		printf("\n|-------------------| start TEST %s |-------------------\n", class);
-	else if (pos == 1)
+	else if(pos == 1)
 		printf("|-------------------| end TEST %s |-------------------\n", class);
-	else {
+	else{
 		setText(1, FOREGROUND_RED);
 		printf("ERROR 'printFlag' : pos can have value [0,1]");
 		setTextDefault();
@@ -26,23 +26,23 @@ void printFlag(int pos, char *class) {
 	setTextDefault();
 }
 
-void printPerlin(int res, FILE *f) {
+void printPerlin(int res, FILE *f){
 	fprintf(f, "%2d", res);
 }
 
-void testPlayer(player *player) {
+void testPlayer(player *player){
 	printFlag(0, "PLAYER");
 	printPlayer(player);
 	printFlag(1, "PLAYER");
 }
 
-void testInventory(inventory *inventory) {
+void testInventory(inventory *inventory){
 	printFlag(0, "INVENTORY");
 	printInventory(inventory);
 	printFlag(1, "INVENTORY");
 }
 
-void testItem() {
+void testItem(){
 	printFlag(0, "ITEM");
 	//item *res = load_item("../test.mw");
 	//if(res == NULL){
@@ -51,13 +51,13 @@ void testItem() {
 	//free(res);
 	size_t nItem;
 	item **itemList = loadItems("..", &nItem);
-	if (itemList != NULL) {
-		if (checkCraftValidity(itemList, nItem)) {
-			setText(1,FOREGROUND_GREEN);
+	if(itemList != NULL){
+		if(checkCraftValidity(itemList, nItem)){
+			setText(1, FOREGROUND_GREEN);
 			printf("testLoadItem : OK\n");
 			setTextDefault();
-		} else {
-			setText(1,FOREGROUND_RED);
+		}else{
+			setText(1, FOREGROUND_RED);
 			printf("testLoadItem : NIKK\n");
 			setTextDefault();
 		}
@@ -67,7 +67,7 @@ void testItem() {
 	printFlag(1, "ITEM");
 }
 
-void testMacaron(int argc, char **argv) {
+void testMacaron(int argc, char **argv){
 	testItem();
 	/*
 	FILE *f = fopen("/home/macaron/Documents/res.csv", "w");
@@ -98,7 +98,7 @@ void testMacaron(int argc, char **argv) {
 	return 0;*/
 }
 
-int mainT(int argc, char **argv) {
+int mainT(int argc, char **argv){
 	//int*** map = generateMap(123);
 	/*player *player = createPlayer();
 	playerTurnFight(player, NULL);*/
@@ -181,10 +181,6 @@ int mainT(int argc, char **argv) {
 	return 0;*/
 }
 
-int mainF(){
-	char *tmp = selectSave();
-	printf("%s", tmp);
-	free(tmp);
 int main(){
 	int portal[4][2];
 	player *p1 = createPlayer();
@@ -222,22 +218,21 @@ int mainF(int argc, char **argv){
 	size_t nItem, nResource, nMonster;
 	item **listItem = loadItems("../items/", &nItem);
 	if(listItem != NULL){
-		printc("ListItem loaded!\n",1,FOREGROUND_GREEN);
+		printc("ListItem loaded!\n", 1, FOREGROUND_GREEN);
 		resource **listResource = loadResources("../resources/", &nResource, listItem, nItem);
 		if(listResource != NULL){
-			printc("ListResource loaded!\n",1,FOREGROUND_GREEN);
+			printc("ListResource loaded!\n", 1, FOREGROUND_GREEN);
 			monster **listMonster = loadMonsters("../monsters/", &nMonster);
 			if(listMonster != NULL){
-				printc("ListMonster loaded!\n",1,FOREGROUND_GREEN);
+				printc("ListMonster loaded!\n", 1, FOREGROUND_GREEN);
 				player *player1 = createPlayer();
 				if(player1 != NULL){
-					printc("Player created!\n",1,FOREGROUND_GREEN);
+					printc("Player created!\n", 1, FOREGROUND_GREEN);
 					storage *storage = createStorage();
 					if(storage != NULL){
-						printc("Storage created!\n",1,FOREGROUND_GREEN);
+						printc("Storage created!\n", 1, FOREGROUND_GREEN);
 						int portal[4][2];
 						level *map;
-						int h, w;
 						char c = 0;
 						printStartMenu();
 						fflush(stdin);
@@ -245,22 +240,23 @@ int mainF(int argc, char **argv){
 						if(tolower(c) == '1'){
 							srand(time(NULL));
 							map = generateMap(rand(), portal);
+							player1->abs_coord.x = portal[0][0];
+							player1->abs_coord.y = portal[0][1] - 1;
+							player1->abs_coord.zone = 0;
 							l = 3;
-							printc("Level & maps created!\n",1,FOREGROUND_GREEN);
-							h = 100;
-							w = 100;
+							printc("Level & maps created!\n", 1, FOREGROUND_GREEN);
 							inGame(player1, map, storage, listItem, listResource, listMonster);
-						}
-						else if(tolower(c) == '2'){
-							map = loadSave("./saves/test.mw", &respawnList, player1, storage, portal, &l, listItem, nItem, listResource, nResource, listMonster, nMonster);
+						}else if(tolower(c) == '2'){
+							map = loadSave("./saves/test.mw", &respawnList, player1, storage, portal, &l, listItem,
+										   nItem, listResource, nResource, listMonster, nMonster);
 							for(int i = 0; i < 4; ++i){
 								printf("%d, %d\n", portal[i][0], portal[i][1]);
-							}						}
-						else if(tolower(c) == '3'){
+							}
+						}else if(tolower(c) == '3'){
 							printCredit();
-						}
-						else{
-							printc("J'ai venu, j'ai lu, j'ai pas comprendu",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+						}else{
+							printc("J'ai venu, j'ai lu, j'ai pas comprendu", 2, FOREGROUND_RED,
+								   FOREGROUND_INTENSITY);
 						}
 						if(map != NULL){
 							//game();
