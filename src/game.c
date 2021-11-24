@@ -4,7 +4,7 @@ void inGame(player *player, level *map, storage *storage, item **listItem, size_
 	bool end = false;
 	while(!end) {
 		cleanTerminal();
-		tempPrintMap(map);
+		displayPlayerOnMap(player,map);
 		printPlayer(player);
 		switch (playerTurn(player, map, storage, listItem,nItem, listResource,nResource, listMonster,nMonster, respawnList)){
 			case -1: {
@@ -70,27 +70,21 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 	free(value);
 }
 bool move(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList) {
-	int id;
-	if(direction == NORTH) {
-		if(player->abs_coord.y-1 >= 0) {
-			return tryMove(player,map,direction,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y-1);
-		}
+	switch(direction) {
+		case NORTH:
+			if(player->abs_coord.y-1 >= 0)
+				return tryMove(player,map,direction,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y-1);
+		case EAST:
+			if(player->abs_coord.x+1 < map->w)
+				return tryMove(player,map,direction,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x+1,player->abs_coord.y);
+		case SOUTH:
+			if(player->abs_coord.y+1 < map->h)
+				return tryMove(player,map,direction,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y+1);
+		case WEST:
+			if (player->abs_coord.x - 1 >= 0)
+				return tryMove(player, map, direction, listItem, nItem, listResource, nResource, listMonster, nMonster, respawnList, player->abs_coord.x - 1, player->abs_coord.y);
 	}
-	if(direction == EAST) {
-		if(player->abs_coord.x+1 < map->w) {
-			return tryMove(player,map,direction,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x+1,player->abs_coord.y);
-		}
-	}
-	if(direction == SOUTH) {
-		if(player->abs_coord.y+1 < map->h) {
-			return tryMove(player,map,direction,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y+1);
-		}
-	}
-	if(direction == WEST) {
-		if(player->abs_coord.x-1 >= 0) {
-			return tryMove(player,map,direction,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x-1,player->abs_coord.y);
-		}
-	}
+	return false;
 }
 bool tryMove(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList, int x, int y) {
 	int id, resCase, resFight;
@@ -104,20 +98,7 @@ bool tryMove(player *player, level *map, direction direction, item **listItem, s
 			return false;
 		case 3: // Ressource
 			resource = findResource(listResource,nResource,id);
-			tool = checkRecolte(player, resource);
-			if(tool != NULL) {
-				if((resource->flag & 1) != 0) {
-					tool->durability -= (getItem(listItem, nItem, tool->id)->durability * (10 / 100));
-				} else if((resource->flag & 2) != 0) {
-					tool->durability -= (getItem(listItem, nItem, tool->id)->durability * (20 / 100));
-				} else if((resource->flag & 4) != 0) {
-					tool->durability -= (getItem(listItem, nItem, tool->id)->durability * (40 / 100));
-				}
-				addItemInInventory(player->inventory, getItem(listItem,nItem, findResource(listResource,nResource,id)->item->id));
-				return true;
-			}
-			printc("Tu ne peux pas récupérer la ressource\n",2, FOREGROUND_RED, FOREGROUND_INTENSITY);
-			return false;
+			return tryRecolte(player, listItem, nItem, listResource, nResource, id);
 		case 20: // Monster
 			resFight = fight(player, createMonster(findMonster(listMonster,nMonster,id)),&respawnList,x,y,player->abs_coord.zone);
 			if(resFight == -1 || resFight == 0)
@@ -134,20 +115,37 @@ int checkCaseIdType(int id, resource **listResource, size_t nResource, monster *
 		return 20;
 	return id;
 }
-item *checkRecolte(player *player, resource *resource) {
+bool tryRecolte(player *player, item **listItem, size_t nItem, resource **listResource, size_t nResource, int id) {
 	item **listTool = getItemCategory(player->inventory, TOOLS);
+	resource *resource = findResource(listResource,nResource,id);
 	int i = 0;
 	if(listTool == NULL)
 		return NULL;
 	while(listTool[i] != NULL) {
-		//if((listTool[i]->type & 1023) == (resource->item->type & 1023) && (listTool[i]->flag & resource->flag) != 0)
+		//if(listTool[i]->durability > 0 && (listTool[i]->type & 1023) == (resource->item->type & 1023) && (listTool[i]->flag & resource->flag) != 0)
 		if(listTool[i]->durability > 0 && (listTool[i]->type & resource->item->type) != 0 && (listTool[i]->flag & resource->flag) != 0) {
-			item *tmp = listTool[i];
+			int8_t res;
+			if((resource->flag & 1) != 0) {
+				res = listTool[i]->durability - (getItem(listItem, nItem, listTool[i]->id)->durability * (10 / 100));
+				if(res < 0)
+					continue;
+			} else if((resource->flag & 2) != 0) {
+				res = listTool[i]->durability - (getItem(listItem, nItem, listTool[i]->id)->durability * (20 / 100));
+				if(res < 0)
+					continue;
+			} else if((resource->flag & 4) != 0) {
+				res = listTool[i]->durability - (getItem(listItem, nItem, listTool[i]->id)->durability * (40 / 100));
+				if(res < 0)
+					continue;
+			}
+			listTool[i]->durability = res;
+			addItemInInventory(player->inventory, getItem(listItem,nItem, findResource(listResource,nResource,id)->item->id));
 			free(listTool);
-			return tmp;
+			return true;
 		}
 	}
 	free(listTool);
+	printc("Tu ne peux pas récupérer la ressource\n",2, FOREGROUND_RED, FOREGROUND_INTENSITY);
 	return NULL;
 }
 
