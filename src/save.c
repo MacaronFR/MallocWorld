@@ -20,7 +20,7 @@ level *loadSave(const char *fileName, respawn **respawnList, player *player, sto
 	*l = getLevelNumber(f, buf, 256);
 	level *map = malloc(sizeof(level) * (*l));
 	for(int i = 0; i < *l; ++i){
-		map[i].level = loadZone(f, i + 1, buf, 256, &(map[i].w), &(map[i].h), portal);
+		map[i].level = loadZone(f, i + 1, buf, 256, &(map[i].w), &(map[i].h), portal, player);
 	}
 	if(m_fgets(buf, 256, f) == NULL || strcmp(buf, "=== PLAYER ===") != 0){
 #ifdef DEBUG
@@ -71,7 +71,7 @@ void getSize(FILE *f, int *w, int *h){
 	fseek(f, start, SEEK_SET);
 }
 
-int **loadZone(FILE *f, int zone, char *buf, int bufSize, int *w, int *h, int portal[4][2]){
+int **loadZone(FILE *f, int zone, char *buf, int bufSize, int *w, int *h, int portal[4][2], player *p1){
 	int k;
 	char zoneName[20];
 	int **level;
@@ -103,6 +103,11 @@ int **loadZone(FILE *f, int zone, char *buf, int bufSize, int *w, int *h, int po
 					portal[zone - 1][1] = i;
 					portal[zone - 1][0] = j;
 				}
+			}
+			if(level[i][j] == 1){
+				p1->abs_coord.x = j;
+				p1->abs_coord.y = i;
+				p1->abs_coord.zone = zone - 1;
 			}
 		}
 	}
