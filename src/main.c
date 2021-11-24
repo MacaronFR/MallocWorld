@@ -210,7 +210,7 @@ int mainF() {
 	freePlayer(p1);
 }
 
-int mainF(int argc, char **argv){
+int main(int argc, char **argv){
 	char filename[256];
 	bool res = false;
 	int r = 0, l;
@@ -245,7 +245,7 @@ int mainF(int argc, char **argv){
 							player1->abs_coord.zone = 0;
 							l = 3;
 							printc("Level & maps created!\n",1,FOREGROUND_GREEN);
-							inGame(player1, map, storage, listItem, listResource, listMonster);
+							inGame(player1,map,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,l);
 						} else if(tolower(c) == '2'){
 							map = loadSave("./saves/test.mw", &respawnList, player1, storage, portal, &l, listItem, nItem, listResource, nResource, listMonster, nMonster);
 							for(int i = 0; i < 4; ++i){

@@ -1,19 +1,5 @@
 #include <game.h>
 
-
-
-
-void playerChooseSave() {
-
-}
-
-
-void playerWantMoov(player *player, direction direction) {
-	//checkCase();
-}
-
-
-
 void inGame(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList, int nbMap) {
 	bool end = false;
 	while(!end) {
@@ -34,9 +20,6 @@ void inGame(player *player, level *map, storage *storage, item **listItem, size_
 					bool res = false;
 					char filename[256];
 					do {
-						if (res) {
-							printf("Erreur lors de la sauvegarde\n");
-						}
 						printc("sauvegarder à : ",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
 						scanf("%s", filename);
 						res = saveGame(filename, map, respawnList, player, storage, nbMap);
@@ -199,6 +182,13 @@ int fight(player *player, monster *monster, respawn **list, int32_t x, int32_t y
 			printc("BUG dans la matrice : fight", 1, FOREGROUND_RED);
 		}
 	}
+}
+
+void gameOver() {
+	printc("GAME OVER !!!\n",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+}
+void winGame() {
+	printc("VOUS AVEZ GAGNE !!!\n",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
 }
 
 //// --------------------------------- AFFICHAGE ---------------------------------
