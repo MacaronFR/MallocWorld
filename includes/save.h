@@ -11,7 +11,7 @@ typedef struct s_saveFile{
 	struct s_saveFile *next;
 } saveFile;
 
-level *loadSave(const char *fileName, respawn **respawnList, player *player, storage *storage, int portal[4][2], int *level, item **itemList, int nItem, resource **resourceList, size_t nResource, monster **monsterList, size_t nMonster);
+level *loadSave(const char *fileName, respawn **respawnList, player *player, storage *storage, int portal[4][2], int *level, item **itemList, size_t nItem, resource **resourceList, size_t nResource, monster **monsterList, size_t nMonster);
 bool saveGame(const char *fileName, level *map, respawn *respawnList, player *player, storage *storage, int level);
 bool writeMap(level *map, int level, FILE *f);
 bool writePlayer(player *p, FILE *f);
