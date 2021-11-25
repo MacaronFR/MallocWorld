@@ -25,6 +25,8 @@ player *createPlayer() {
 	player1->maxLife = 100;
 	player1->exp = 0;
 	player1->stuff = NULL;
+	player1->relative_coord.y = 4;
+	player1->relative_coord.x = 4;
     return player1;
 }
 

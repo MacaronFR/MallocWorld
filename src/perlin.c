@@ -42,8 +42,8 @@ int **generateLevel(int h, int w, int level, int *p, int seed, int maxMonstre, i
 		x = (rand() % 98) + 1;
 		y = (rand() % 98) + 1;
 	}while(!checkZone(map, x, y, 1));
-	map[x][y] = (level == 3) ? -3 : -2;
-	map[x + 1][y - 1] = 2;
+	map[y][x] = (level == 3) ? -3 : -2;
+	map[y + 1][x - 1] = 2;
 	portal[level - 1][0] = x;
 	portal[level - 1][1] = y;
 	if(level == 2){
@@ -51,7 +51,7 @@ int **generateLevel(int h, int w, int level, int *p, int seed, int maxMonstre, i
 			x = (rand() % 98) + 1;
 			y = (rand() % 98) + 1;
 		}while(!checkZone(map, x, y, 1));
-		map[x][y] = -3;
+		map[y][x] = -3;
 		portal[3][0] = x;
 		portal[3][1] = y;
 	}
@@ -61,7 +61,7 @@ int **generateLevel(int h, int w, int level, int *p, int seed, int maxMonstre, i
 bool checkZone(int **map, int x, int y, int length){
 	for(int i = -length; i < length; ++i){
 		for(int j = -length; j < length; ++j){
-			if(map[x + i][y + j] != 0){
+			if(map[y + i][x + j] != 0){
 				return false;
 			}
 		}

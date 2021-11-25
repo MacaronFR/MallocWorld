@@ -16,7 +16,7 @@ typedef struct s_monster{
 	uint8_t respawn;
 	uint16_t strength;
 	char *name;
-	uint32_t id;
+	int32_t id;
 	int16_t exp;
 	uint8_t zone;
 } monster;
