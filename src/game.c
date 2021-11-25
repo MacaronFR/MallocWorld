@@ -1,10 +1,11 @@
 #include <game.h>
-#include <ctype.h>
 
 void inGame(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList, int nbMap) {
-	cleanTerminal();
 	bool end = false;
 	while(!end) {
+		cleanTerminal();
+		displayPlayerOnMap(player,map);
+		printPlayer(player);
 		switch (playerTurn(player, map, storage, listItem,nItem, listResource,nResource, listMonster,nMonster, respawnList)){
 			case -1: {
 				gameOver();
@@ -13,7 +14,7 @@ void inGame(player *player, level *map, storage *storage, item **listItem, size_
 			}
 			case 0:{
 				printc("Voulez vous sauvegarder votre progression ?    [y/n]\n",2,FOREGROUND_GREEN, FOREGROUND_INTENSITY);
-				char choice[255];
+				char choice[256];
 				scanf("%s", choice);
 				if(choice[0] == 'y') {
 					bool res = false;
@@ -29,7 +30,6 @@ void inGame(player *player, level *map, storage *storage, item **listItem, size_
 			}
 			case 1:{
 				printc("Un nouveau tour commence...\n",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
-				checkRespawn(respawnList,map);
 				break;
 			}
 			case 2:{
@@ -41,45 +41,28 @@ void inGame(player *player, level *map, storage *storage, item **listItem, size_
 	}
 }
 int playerTurn(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList) {
-	bool end = false;
-	displayPlayerOnMap(player,map);
-	printPlayer(player);
 	printPlayerInterface();
-	while(!end)
-
-	char* value = malloc(sizeof(char) * (255));
-	scanf("%s", value);
-	/*
-	if (tolower(value[0]) == '1' || tolower(value[0]) == 'z') {
+	char *value = malloc(sizeof(char) * (10 + 1));
+	fflush(stdin);
+	fgets(value, 10, stdin);
+	if (value[0] == NORTH) {
 		if(move(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
-			playerMove(player,map,NORTH);
+			playerMoov(player,map,NORTH);
 		}
-	} else if (tolower(value[0]) == '2' || tolower(value[0]) == 'd') {
-		if(move(player,map,EAST,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
-			playerMove(player,map,EAST);
+	} else if (value[0] == EAST) {
+		if(move(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
+			playerMoov(player,map,EAST);
 		}
-	} else if (tolower(value[0]) == '3' || tolower(value[0]) == 's') {
-		if(move(player,map,SOUTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
-			playerMove(player,map,SOUTH);
+	} else if (value[0] == SOUTH) {
+		if(move(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
+			playerMoov(player,map,SOUTH);
 		}
-	} else if (tolower(value[0]) == '4' || tolower(value[0]) == 'q') {
-		if(move(player,map,WEST,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
-			playerMove(player,map,WEST);
+	} else if (value[0] == WEST) {
+		if(move(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
+			playerMoov(player,map,WEST);
 		}
-	} else if (tolower(value[0]) == '5') {
-		printf("Vous avez quité la partie");
-		return 0;
-	}*/
-	if (tolower(value[0]) == '1' || tolower(value[0]) == 'z') {
-		tryMove(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y-1);
-	} else if (tolower(value[0]) == '2' || tolower(value[0]) == 'd') {
-		tryMove(player,map,EAST,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x+1,player->abs_coord.y);
-	} else if (tolower(value[0]) == '3' || tolower(value[0]) == 's') {
-		tryMove(player,map,SOUTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y+1);
-	} else if (tolower(value[0]) == '4' || tolower(value[0]) == 'q') {
-		tryMove(player, map, WEST, listItem, nItem, listResource, nResource, listMonster, nMonster, respawnList, player->abs_coord.x - 1, player->abs_coord.y);
-	} else if (tolower(value[0]) == '5') {
-		printf("Vous avez quité la partie");
+	} else if (value[0] == '5') {
+		free(value);
 		return 0;
 	}
 	else {
@@ -87,23 +70,35 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 	}
 	free(value);
 }
-int tryMove(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList, int x, int y) {
-	printf("tryMove()\n");
-	if(player->abs_coord.y-1 < 0 || player->abs_coord.x+1 >= map->w || player->abs_coord.y+1 >= map->h || player->abs_coord.x - 1 < 0) //sortie de map
-		return 0;
-
+bool move(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList) {
+	switch(direction) {
+		case NORTH:
+			if(player->abs_coord.y-1 >= 0)
+				return tryMove(player,map,direction,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y-1);
+		case EAST:
+			if(player->abs_coord.x+1 < map->w)
+				return tryMove(player,map,direction,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x+1,player->abs_coord.y);
+		case SOUTH:
+			if(player->abs_coord.y+1 < map->h)
+				return tryMove(player,map,direction,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y+1);
+		case WEST:
+			if (player->abs_coord.x - 1 >= 0)
+				return tryMove(player, map, direction, listItem, nItem, listResource, nResource, listMonster, nMonster, respawnList, player->abs_coord.x - 1, player->abs_coord.y);
+	}
+	return false;
+}
+bool tryMove(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList, int x, int y) {
 	int id, resCase, resFight;
-	id = map[player->abs_coord.zone].level[player->abs_coord.y-1][player->abs_coord.x];
+	item *tool;
+	resource *resource;
+	id = map[player->abs_coord.zone-1].level[player->abs_coord.y-1][player->abs_coord.x];
 	resCase = checkCaseIdType(id,listResource,nResource,listMonster,nMonster);
-	printf("%d", resCase);
 	switch(resCase) {
 		case -1:
 			printc("Case invalide!!!\n",2, FOREGROUND_RED, FOREGROUND_INTENSITY);
-			return 0;
-		case 0:
-			playerMove(player,map,direction);
-			return true;
+			return false;
 		case 3: // Ressource
+			resource = findResource(listResource,nResource,id);
 			return tryRecolte(player, listItem, nItem, listResource, nResource, id);
 		case 20: // Monster
 			resFight = fight(player, createMonster(findMonster(listMonster,nMonster,id)),&respawnList,x,y,player->abs_coord.zone);
@@ -113,7 +108,6 @@ int tryMove(player *player, level *map, direction direction, item **listItem, si
 	}
 }
 int checkCaseIdType(int id, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster) {
-	printf("checkCaseIdType()\n");
 	resource *res1 = findResource(listResource,nResource,id);
 	if(res1 != NULL)
 		return 3;
@@ -123,7 +117,6 @@ int checkCaseIdType(int id, resource **listResource, size_t nResource, monster *
 	return id;
 }
 bool tryRecolte(player *player, item **listItem, size_t nItem, resource **listResource, size_t nResource, int id) {
-	printf("tryRecolte()\n");
 	item **listTool = getItemCategory(player->inventory, TOOLS);
 	resource *resource = findResource(listResource,nResource,id);
 	int i = 0;
@@ -158,7 +151,6 @@ bool tryRecolte(player *player, item **listItem, size_t nItem, resource **listRe
 }
 
 int fight(player *player, monster *monster, respawn **list, int32_t x, int32_t y, int8_t lvl) {
-	printf("fight()\n");
 	int endFight = 0;
 	while(endFight == 0) {
 		endFight = playerTurnFight(player, monster);
@@ -302,23 +294,23 @@ void printPlayerInterface() {
 		   		"    |                                          |\n"
 		   		"    |                                          |\n"
 		   		"    |                    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
-	printc(				    			"Z - NORTH",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(				    			"1 - NORTH",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
 	printc(							  				"             |\n"
 		   		"    |                                          |\n"
 		   		"    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(								"^",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 	printc(									"                     |\n"
 		   		"    |      ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc(				"WEST - Q    ",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(				"WEST - 4    ",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
 	printc(							"<–+–>",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-	printc(									"    D - EAST",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(									"    2 - EAST",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
 	printc(												"       |\n"
 		   		"    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(								"v",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 	printc(									"                     |\n"
 		   		"    |                                          |\n"
 		   		"    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc(								"S - SOUTH",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(								"3 - SOUTH",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
 	printc(											"             |\n"
 		   		"    |                                          |\n"
 		   		"    |                                          |\n"
@@ -330,12 +322,26 @@ void printPlayerInterface() {
 		   		"    \\_/________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printf("\n\n");
 
+
+	/*
+	// printMap();
+	printc("\nSélectionner une direction : \n",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	setText(2, FOREGROUND_BLUE, FOREGROUND_INTENSITY);
+	printf("+---+-------+   +---+------+   +---+-------+   +---+------+\n");
+	printf("| 1 - NORTH |   | 2 - EAST |   | 3 - SOUTH |   | 4 - WEST |\n");
+	printf("+---+-------+   +---+------+   +---+-------+   +---+------+\n");
+	setTextDefault();
+	setText(1, FOREGROUND_BLUE);
+	printf("+---+-------------+\n");
+	printf("| 5 - Save & Quit |\n");
+	printf("+---+-------------+\n");
+	setTextDefault();*/
 }
 void printCredit() {
 	printc("Jeux Mallocworld développé par :\n"
 		   "	-	Denis TURBIEZ		@Macaron\n"
 		   "	-	Basile PULIN		@Barlords\n"
-		   "	-	Jean-Jaures OKA		@Jean\n",
+		   "	-	Jean ....			@Jean\n",
 		   2,FOREGROUND_GREEN,FOREGROUND_INTENSITY
 	);
 }
