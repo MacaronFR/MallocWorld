@@ -47,7 +47,7 @@ typedef struct s_player {
 
 
 
-player* createPlayer();
+player* createPlayer(item **listItem, size_t nItem);
 void freePlayer(player *player);
 
 //---------------------- Etat du player ----------------------

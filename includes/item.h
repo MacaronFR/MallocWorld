@@ -43,7 +43,7 @@ void freeItemList(item **items, size_t length);
 bool checkCraftValidity(item **items, int length);
 void freeItem(item *item);
 item *copyItem(item *i);
-item *getItem(item **itemList, int nItem, int32_t id);
+item *getItem(item **itemList, size_t nItem, int32_t id);
 
 //-------------- CHECK TYPE ITEM --------------
 bool isItem(item *item);

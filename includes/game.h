@@ -16,7 +16,7 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 bool move(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList);
 int tryMove(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int x, int y);
 int checkCaseIdType(int id, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster);
-int tryRecolte(player *player, item **listItem, size_t nItem, resource **listResource, size_t nResource, respawn **listRespawn, int id);
+int tryRecolte(player *player, item **listItem, size_t nItem, resource **listResource, size_t nResource, respawn **listRespawn, int id,  int x, int y);
 
 int fight(player *player, monster *monster, respawn **listRespawn, int32_t x, int32_t y, int8_t lvl);
 void gameOver();

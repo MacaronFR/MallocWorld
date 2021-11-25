@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -9,7 +8,7 @@
 
 
 //---------------------- Creation et Destruction ----------------------
-player *createPlayer() {
+player *createPlayer(item **listItem, size_t nItem) {
     player *player1 = malloc(sizeof(player));
 	if(player1 == NULL){
 		return NULL;
@@ -27,6 +26,10 @@ player *createPlayer() {
 	player1->stuff = NULL;
 	player1->relative_coord.y = 4;
 	player1->relative_coord.x = 4;
+	addItemInInventory(player1->inventory, getItem(listItem,nItem,1));
+	addItemInInventory(player1->inventory, getItem(listItem,nItem,2));
+	addItemInInventory(player1->inventory, getItem(listItem,nItem,3));
+	addItemInInventory(player1->inventory, getItem(listItem,nItem,4));
     return player1;
 }
 

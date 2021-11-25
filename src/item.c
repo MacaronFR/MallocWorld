@@ -323,7 +323,7 @@ item *copyItem(item *i){
 	return res;
 }
 
-item *getItem(item **itemList, int nItem, int32_t id){
+item *getItem(item **itemList, size_t nItem, int32_t id){
 	for(int i = 0; i < nItem; ++i){
 		if(itemList[i]->id == id){
 			return itemList[i];

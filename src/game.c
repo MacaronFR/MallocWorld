@@ -16,12 +16,13 @@ void inGame(player *player, level *map, storage *storage, item **listItem, size_
 				scanf("%s", choice);
 				if(choice[0] == 'y') {
 					bool res = false;
-					char filename[256];
+					char* filename = malloc(sizeof(char) * 255);
 					do {
 						printc("sauvegarder à : ", 2, FOREGROUND_GREEN, FOREGROUND_INTENSITY);
 						scanf("%s", filename);
 						res = saveGame(filename, map, *respawnList, player, storage, nbMap);
 					} while (!res);
+					free(filename);
 					end = true;
 				}
 				break;
@@ -33,7 +34,6 @@ void inGame(player *player, level *map, storage *storage, item **listItem, size_
 				winGame();
 				end = true;
 				break;
-
 		}
 	}
 }
@@ -77,7 +77,7 @@ int tryMove(player *player, level *map, direction direction, item **listItem, si
 		return 0;
 	}
 
-	int id, resCase, resFight;
+	int id, resCase, res;
 	id = map[player->abs_coord.zone].level[y][x];
 	resCase = checkCaseIdType(id,listResource,nResource,listMonster,nMonster);
 	printf("resCase = %d\n", resCase);
@@ -89,10 +89,14 @@ int tryMove(player *player, level *map, direction direction, item **listItem, si
 			playerMove(player,map,direction);
 			return 1;
 		case 3: // Ressource
-			return tryRecolte(player, listItem, nItem, listResource, nResource,respawnList ,id);
+			res = tryRecolte(player, listItem, nItem, listResource, nResource, respawnList, id, x, y);
+			if(res == 1) {
+				playerMove(player,map,direction);
+			}
+			return res;
 		case 20: // Monster
-			resFight = fight(player, createMonster(findMonster(listMonster,nMonster,id)),respawnList,x,y,player->abs_coord.zone);
-			switch (resFight) {
+			res = fight(player, createMonster(findMonster(listMonster,nMonster,id)),respawnList,x,y,player->abs_coord.zone);
+			switch (res) {
 				case 0:
 					printf("T'as prit la fuite ?!  Tapette (-_-')");
 					return 1;
@@ -100,7 +104,7 @@ int tryMove(player *player, level *map, direction direction, item **listItem, si
 					playerMove(player,map,direction);
 					break;
 			}
-			return resFight;
+			return res;
 	}
 }
 int checkCaseIdType(int id, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster) {
@@ -113,35 +117,25 @@ int checkCaseIdType(int id, resource **listResource, size_t nResource, monster *
 		return 20;
 	return id;
 }
-int tryRecolte(player *player, item **listItem, size_t nItem, resource **listResource, size_t nResource, respawn **listRespawn, int id) {
+int tryRecolte(player *player, item **listItem, size_t nItem, resource **listResource, size_t nResource, respawn **listRespawn, int id,  int x, int y) {
 	printf("tryRecolte()\n");
 	item **listTool = getItemCategory(player->inventory, TOOLS);
 	resource *resource = findResource(listResource,nResource,id);
 	int i = 0;
-	if(listTool == NULL)
+	if(listTool == NULL) {
+		printc("Tu ne peux pas récupérer la ressource\n", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 		return 0;
+	}
 	while(listTool[i] != NULL) {
 		//if(listTool[i]->durability > 0 && (listTool[i]->type & 1023) == (resource->item->type & 1023) && (listTool[i]->flag & resource->flag) != 0)
-		if(listTool[i]->durability > 0 && (listTool[i]->type & resource->item->type) != 0 && (listTool[i]->flag & resource->flag) != 0) {
-			int8_t res;
-			if((resource->flag & 1) != 0) {
-				res = listTool[i]->durability - (getItem(listItem, nItem, listTool[i]->id)->durability * (10 / 100));
-				if(res < 0)
-					continue;
-			} else if((resource->flag & 2) != 0) {
-				res = listTool[i]->durability - (getItem(listItem, nItem, listTool[i]->id)->durability * (20 / 100));
-				if(res < 0)
-					continue;
-			} else if((resource->flag & 4) != 0) {
-				res = listTool[i]->durability - (getItem(listItem, nItem, listTool[i]->id)->durability * (40 / 100));
-				if(res < 0)
-					continue;
-			}
-			listTool[i]->durability = res;
+		if(listTool[i]->durability >= resource->item->durability && (listTool[i]->type & resource->item->type) != 0 && (listTool[i]->flag & resource->flag) != 0) {
+			listTool[i]->durability -= resource->item->durability;
 			addItemInInventory(player->inventory, getItem(listItem,nItem, findResource(listResource,nResource,id)->item->id));
+			addResourceRespawn(resource,listRespawn,x,y,player->abs_coord.zone);
 			free(listTool);
-			return true;
+			return 1;
 		}
+		i++;
 	}
 	free(listTool);
 	printc("Tu ne peux pas récupérer la ressource\n",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
@@ -192,7 +186,7 @@ void winGame() {
 //// --------------------------------- AFFICHAGE ---------------------------------
 void printStartMenu() {
 	cleanTerminal();
-	printc(	    "\n / \\----------------------------------------,\n"
+	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
 				   	" \\_,|                                       |\n"
 				   	"    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				   "Bienvenue dans Mallocworld !!!",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
@@ -285,7 +279,7 @@ void printMapLineSeparator(int count) {
 }
 void printPlayerInterface() {
 
-	printc(	"\n / \\-------------------------------------------,\n"
+	printc(	"\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
 				" \\_,|                                          |\n"
 				"    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				"A votre tour, bouger vous le cul!",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);

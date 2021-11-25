@@ -180,7 +180,7 @@ int mainT(int argc, char **argv) {
 	freeItemList(itemList, nItem);
 	return 0;*/
 }
-
+/*
 int mainF() {
 	int portal[4][2];
 	player *p1 = createPlayer();
@@ -208,7 +208,7 @@ int mainF() {
 	printf("\n");
 	freeMap(map, 3);
 	freePlayer(p1);
-}
+}*/
 
 int main(int argc, char **argv){
 	char filename[256];
@@ -225,7 +225,7 @@ int main(int argc, char **argv){
 			monster **listMonster = loadMonsters("../monsters/", &nMonster);
 			if(listMonster != NULL){
 				printc("ListMonster loaded!\n",1,FOREGROUND_GREEN);
-				player *player1 = createPlayer();
+				player *player1 = createPlayer(listItem,nItem);
 				if(player1 != NULL){
 					printc("Player created!\n",1,FOREGROUND_GREEN);
 					storage *storage = createStorage();

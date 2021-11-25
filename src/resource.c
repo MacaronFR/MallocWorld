@@ -127,7 +127,7 @@ void freeResourceList(resource **r, size_t n){
 }
 
 resource *findResource(resource **r, size_t nResource, int32_t id){
-	for(int i = 0; i < nResource; ++i){
+for(int i = 0; i < nResource; ++i){
 		if(r[i]->id == id){
 			return r[i];
 		}
