@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-//      https://man7.org/linux/man-pages/man5/terminal-colors.d.5.html
-
 #ifdef _WIN32
 #include <windows.h>
 

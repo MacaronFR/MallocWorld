@@ -6,10 +6,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <dirent.h>
-
 #include <terminalManager.h>
 #include <utils.h>
-
 
 typedef struct s_monster{
 	uint16_t life;
@@ -27,8 +25,5 @@ monster *loadMonster(const char *filename);
 monster **loadMonsters(const char *dir, size_t *nMonster);
 void freeMonsterList(monster **monsterList, size_t nMonster);
 monster *findMonster(monster **monsterList, size_t nMonster, int32_t id);
-
-void monsterTakeDamage(monster *monster, int amount);
-void monsterIncrementTime(monster *monster);
 
 #endif //MALLOCWORLD_MONSTER_H

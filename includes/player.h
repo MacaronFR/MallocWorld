@@ -16,19 +16,6 @@
 #include <monster.h>
 #include <perlin.h>
 
-typedef enum e_experience {
-    LEVEL1 = 10,
-    LEVEL2 = 20,
-    LEVEL3 = 30,
-    LEVEL4 = 40,
-    LEVEL5 = 50,
-    LEVEL6 = 60,
-    LEVEL7 = 70,
-    LEVEL8 = 80,
-    LEVEL9 = 90,
-    LEVEL10 = 100
-}experience;
-
 typedef struct s_stuff {
 	item* armor;
 	item* weapon;
@@ -77,9 +64,6 @@ int playerDoChoiceCategory(item **tabItem);
 //---------------------- Map ----------------------
 void playerMove(player *player, level *map, direction direction);
 int playerCraft(player *player);
-int playerMine(player *player);
-int playerChopWood(player *player);
-int playerCutGrass(player *player);
 int playerCraftItem(player *player, int id);
 void displayPlayerOnMap(player *p, level *map);
 

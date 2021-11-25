@@ -19,6 +19,7 @@ bool writeStorage(storage *s, FILE *f);
 bool writeRespawn(respawn *r, FILE *f);
 void getSize(FILE *f, int *h, int *w);
 int **loadZone(FILE *f, int zone, char *buf, int bufSize, int *x, int *y, int portal[4][2], player *p1);
+int **loadZoneArray(int zone, int h, int w, int portal[4][2], player *p1, FILE *f);
 int getLevelNumber(FILE *f, char *buf, size_t bufSize);
 bool loadPlayer(FILE *f, char *buf, size_t bufSize, player *p1, item **itemList, int nItem);
 bool loadInventory(inventory *inv, char *buf, size_t bufSize, FILE *f, item **itemList, size_t nItem);

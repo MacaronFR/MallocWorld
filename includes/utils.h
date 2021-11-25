@@ -8,8 +8,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-
-
 typedef struct s_coordinate {
 	int x;
 	int y;

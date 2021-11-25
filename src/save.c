@@ -24,7 +24,7 @@ level *loadSave(const char *fileName, respawn **respawnList, player *player, sto
 	}
 	if(m_fgets(buf, 256, f) == NULL || strcmp(buf, "=== PLAYER ===") != 0){
 #ifdef DEBUG
-		fprintf(stderr, "Bad map file syntax : Map file must have === PLAYER ===\n");
+		fprintf(stderr, "Bad save file syntax : Map file must have === PLAYER ===\n");
 #endif
 		fclose(f);
 		freeMap(map, *l);
@@ -37,8 +37,21 @@ level *loadSave(const char *fileName, respawn **respawnList, player *player, sto
 		*l=0;
 		return NULL;
 	}
-	loadStorage(storage, buf, 256, f, itemList, nItem);
-	loadRespawn(respawnList, buf, 256, f, resourceList, nResource, monsterList, nMonster);
+	if(!loadStorage(storage, buf, 256, f, itemList, nItem)){
+		fclose(f);
+		freePlayer(player);
+		freeMap(map, *l);
+		*l=0;
+		return NULL;
+	}
+	if(loadRespawn(respawnList, buf, 256, f, resourceList, nResource, monsterList, nMonster)){
+		fclose(f);
+		freeStorage(storage);
+		freePlayer(player);
+		freeMap(map, *l);
+		*l=0;
+		return NULL;
+	}
 	return map;
 }
 
@@ -72,7 +85,6 @@ void getSize(FILE *f, int *w, int *h){
 }
 
 int **loadZone(FILE *f, int zone, char *buf, int bufSize, int *w, int *h, int portal[4][2], player *p1){
-	int k;
 	char zoneName[20];
 	int **level;
 	sprintf(zoneName, "-- ZONE %d --", zone);
@@ -83,10 +95,17 @@ int **loadZone(FILE *f, int zone, char *buf, int bufSize, int *w, int *h, int po
 		return NULL;
 	}
 	getSize(f, w, h);
-	level = malloc(sizeof(int*) * (*h));
-	for(int i = 0; i < *h; ++i){
-		level[i] = malloc(sizeof(int) * (*w));
-		for(int j = 0; j < *w; ++j){
+	level = loadZoneArray(zone, *h, *w);
+	return level;
+}
+
+int **loadZoneArray(int zone, int h, int w, int portal[4][2], player *p1, FILE *f){
+	char buf[6];
+	int k;
+	int **level = malloc(sizeof(int*) * (h));
+	for(int i = 0; i < h; ++i){
+		level[i] = malloc(sizeof(int) * (w));
+		for(int j = 0; j < w; ++j){
 			k = 0;
 			buf[k] = fgetc(f);
 			while(buf[k] != ' ' && buf[k] != '\n'){
@@ -131,8 +150,7 @@ int getLevelNumber(FILE *f, char *buf, size_t bufSize){
 }
 
 bool loadPlayer(FILE *f, char *buf, size_t bufSize, player *p1, item **itemList, int nItem){
-	int32_t val1, val2, val3, val4;
-	item *tmp;
+	int32_t val1, val2, val3;
 	val1 = getFieldValue(buf, f);
 	if(val1 == -1 && (errno == EINVAL || errno == ERANGE)){
 		fclose(f);

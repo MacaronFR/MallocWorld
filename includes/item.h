@@ -20,10 +20,6 @@ typedef enum e_category {
 	WEAPONS = ITEMS + 4096,
 	TOOLS = ITEMS + 2048,
 	POTIONS = ITEMS + 1024,
-
-	/*WOODS = RESSOURCES + 8192,
-	ORES = RESSOURCES + 4096,
-	PLANTS = RESSOURCES + 2048,*/
 }category;
 
 typedef struct s_item{
@@ -44,30 +40,5 @@ bool checkCraftValidity(item **items, int length);
 void freeItem(item *item);
 item *copyItem(item *i);
 item *getItem(item **itemList, size_t nItem, int32_t id);
-
-//-------------- CHECK TYPE ITEM --------------
-bool isItem(item *item);
-bool isRessource(item *item);
-bool isWood(item* item);
-bool isOre(item* item);
-bool isPlant(item* item);
-bool isArmor(item* item);
-bool isWeapon(item* item);
-bool isTool(item* item);
-bool isPotion(item* item);
-/*
-bool isSword(item* item);
-bool isPickaxe(item* item);
-bool isHoe(item* item);
-bool isAxe(item* item);
-bool isSpear(item* item);
-bool isHammer(item* item);*/
-
-
-
-void useDurability(item* item);
-void repareItem(item* item);
-
-
 
 #endif //MALLOCWORLD_ITEM_H
