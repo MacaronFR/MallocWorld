@@ -6,10 +6,11 @@
 #include <respawn.h>
 #include <save.h>
 #include <item.h>
+#include <ctype.h>
+#include <time.h>
 
 
-
-
+level *createGame(int portal[4][2], player *p1, item **listItem, size_t nItem, int *lv);
 void inGame(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int nbMap);
 int playerTurn(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList);
 

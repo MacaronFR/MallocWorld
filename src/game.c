@@ -1,5 +1,20 @@
 #include <game.h>
-#include <ctype.h>
+
+level *createGame(int portal[4][2], player *p1, item **listItem, size_t nItem, int *lv){
+	srand(time(NULL));
+	level *map = generateMap(rand(), portal);
+	p1->abs_coord.x = portal[0][0];
+	p1->abs_coord.y = portal[0][1] - 1;
+	p1->abs_coord.zone = 0;
+	addItemInInventory(p1->inventory, copyItem(getItem(listItem,nItem,1)));
+	addItemInInventory(p1->inventory, copyItem(getItem(listItem,nItem,2)));
+	addItemInInventory(p1->inventory, copyItem(getItem(listItem,nItem,3)));
+	addItemInInventory(p1->inventory, copyItem(getItem(listItem,nItem,4)));
+	map[p1->abs_coord.zone].level[p1->abs_coord.y][p1->abs_coord.x] = 1;
+	*lv = 3;
+	printc("Level & maps created!\n",1,FOREGROUND_GREEN);
+	return map;
+}
 
 void inGame(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int nbMap) {
 	cleanTerminal();

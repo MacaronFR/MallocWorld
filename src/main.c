@@ -237,24 +237,15 @@ int main(int argc, char **argv){
 						printStartMenu();
 						scanf("%s", value);
 						if(tolower(value[0]) == '1'){
-							srand(time(NULL));
-							map = generateMap(rand(), portal);
-							player1->abs_coord.x = portal[0][0];
-							player1->abs_coord.y = portal[0][1] - 1;
-							player1->abs_coord.zone = 0;
-							addItemInInventory(player1->inventory, copyItem(getItem(listItem,nItem,1)));
-							addItemInInventory(player1->inventory, copyItem(getItem(listItem,nItem,2)));
-							addItemInInventory(player1->inventory, copyItem(getItem(listItem,nItem,3)));
-							addItemInInventory(player1->inventory, copyItem(getItem(listItem,nItem,4)));
-							map[player1->abs_coord.zone].level[player1->abs_coord.y][player1->abs_coord.x] = 1;
-							l = 3;
-							printc("Level & maps created!\n",1,FOREGROUND_GREEN);
+							map = createGame(portal, player1, listItem, nItem, &l);
 							inGame(player1,map,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,&respawnList,l);
 						} else if(tolower(value[0]) == '2'){
 							map = loadSave("./saves/test.mw", &respawnList, player1, storage, portal, &l, listItem, nItem, listResource, nResource, listMonster, nMonster);
 							for(int i = 0; i < 4; ++i){
 								printf("%d, %d\n", portal[i][0], portal[i][1]);
-							}						}
+							}
+							inGame(player1,map,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,&respawnList,l);
+						}
 						else if(tolower(value[0]) == '3'){
 							printCredit();
 						}
