@@ -181,7 +181,7 @@ int playerUsePotion(player *player) {
 	item** tabItem = getItemCategory(player->inventory, POTIONS);
 	if(tabItem == NULL) {
 		printf("Des popo, des po..., ah non... :'( \n");
-		return -1;
+		return 0;
 	}
 	int value = playerDoChoiceCategory(tabItem);
 	if(value > 0 && value < 11 && tabItem[value-1]!=NULL) {
@@ -190,11 +190,11 @@ int playerUsePotion(player *player) {
 	}
 	else if(value == 11) {
 		printf("Réfléchi avant de lancer une action la prochaine fois -_-");
-		return -1;
+		return 0;
 	}
 	else {
 		printf("Tu veux bien apprendre à lire ? ça me fera des vacances... -_-");
-		return -1;
+		return 0;
 	}
 }
 int playerEscape(player *player) {

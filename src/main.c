@@ -245,7 +245,7 @@ int main(int argc, char **argv){
 							map[player1->abs_coord.zone].level[player1->abs_coord.y][player1->abs_coord.x] = 1;
 							l = 3;
 							printc("Level & maps created!\n",1,FOREGROUND_GREEN);
-							inGame(player1,map,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,l);
+							inGame(player1,map,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,&respawnList,l);
 						} else if(tolower(value[0]) == '2'){
 							map = loadSave("./saves/test.mw", &respawnList, player1, storage, portal, &l, listItem, nItem, listResource, nResource, listMonster, nMonster);
 							for(int i = 0; i < 4; ++i){

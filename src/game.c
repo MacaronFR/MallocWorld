@@ -1,20 +1,16 @@
 #include <game.h>
 #include <ctype.h>
 
-void inGame(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList, int nbMap) {
+void inGame(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int nbMap) {
 	cleanTerminal();
 	bool end = false;
-	while(!end) {
-		cleanTerminal();
-		displayPlayerOnMap(player,map);
-		printPlayer(player);
+	while(!end) {;
 		switch (playerTurn(player, map, storage, listItem,nItem, listResource,nResource, listMonster,nMonster, respawnList)){
-			case -1: {
+			case -2:
 				gameOver();
 				end = true;
 				break;
-			}
-			case 0:{
+			case -1:
 				printc("Voulez vous sauvegarder votre progression ?    [y/n]\n",2,FOREGROUND_GREEN, FOREGROUND_INTENSITY);
 				char choice[256];
 				scanf("%s", choice);
@@ -22,54 +18,59 @@ void inGame(player *player, level *map, storage *storage, item **listItem, size_
 					bool res = false;
 					char filename[256];
 					do {
-						printc("sauvegarder à : ",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+						printc("sauvegarder à : ", 2, FOREGROUND_GREEN, FOREGROUND_INTENSITY);
 						scanf("%s", filename);
-						res = saveGame(filename, map, respawnList, player, storage, nbMap);
+						res = saveGame(filename, map, *respawnList, player, storage, nbMap);
 					} while (!res);
 					end = true;
 				}
 				break;
-			}
-			case 1:{
+			case 1:
 				printc("Un nouveau tour commence...\n",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
 				checkRespawn(respawnList,map);
 				break;
-			}
-			case 2:{
+			case 2:
 				winGame();
 				end = true;
 				break;
-			}
+
 		}
 	}
 }
-int playerTurn(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList) {
-	bool end = false;
-	displayPlayerOnMap(player,map);
-	printPlayer(player);
-	printPlayerInterface();
-	char* value = malloc(sizeof(char) * 255);
-	fflush(stdin);
-	scanf("%s", value);
-	if (tolower(value[0]) == 'z') {
-		tryMove(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y-1);
-	} else if (tolower(value[0]) == 'd') {
-		tryMove(player,map,EAST,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x+1,player->abs_coord.y);
-	} else if (tolower(value[0]) == 's') {
-		tryMove(player,map,SOUTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y+1);
-	} else if (tolower(value[0]) == 'q') {
-		tryMove(player, map, WEST, listItem, nItem, listResource, nResource, listMonster, nMonster, respawnList, player->abs_coord.x - 1, player->abs_coord.y);
-	} else if(tolower(value[0]) == 'a') {
-		playerUsePotion(player);
-	} else if (tolower(value[0]) == 'o' || tolower(value[0]) == '0') {
+int playerTurn(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList) {
+	int res = 0;
+	while(res == 0) {
+		displayPlayerOnMap(player,map);
+		printPlayer(player);
+		printPlayerInterface();
+		char* value = malloc(sizeof(char) * 255);
+		fflush(stdin);
+		scanf("%s", value);
+		cleanTerminal();
+		if (tolower(value[0]) == 'z') {
+			res = tryMove(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y-1);
+		} else if (tolower(value[0]) == 'd') {
+			res = tryMove(player,map,EAST,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x+1,player->abs_coord.y);
+		} else if (tolower(value[0]) == 's') {
+			res = tryMove(player,map,SOUTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y+1);
+		} else if (tolower(value[0]) == 'q') {
+			res = tryMove(player, map, WEST, listItem, nItem, listResource, nResource, listMonster, nMonster, respawnList, player->abs_coord.x - 1, player->abs_coord.y);
+		} else if(tolower(value[0]) == 'a') {
+			res = playerUsePotion(player);
+		} else if (tolower(value[0]) == 'o' || tolower(value[0]) == '0') {
+			res = -1;
+		} else {
+			printc("Un aventurier qui ne sait pas lire une rose des vents... nous voilà bien partie. (-_-) \n", 1, FOREGROUND_YELLOW);
+			res = 0;
+		}
 		free(value);
-		return 0;
-	} else {
-		printc("Un aventurier qui ne sait pas lire une rose des vents... nous voilà bien partie. (-_-) \n", 1, FOREGROUND_YELLOW);
 	}
-	free(value);
+	return res;
+
+
+
 }
-int tryMove(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList, int x, int y) {
+int tryMove(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int x, int y) {
 	printf("tryMove()\n");
 	if(player->abs_coord.y-1 < 0 || player->abs_coord.x+1 >= map->w || player->abs_coord.y+1 >= map->h || player->abs_coord.x - 1 < 0) //sortie de map
 		return 0;
@@ -77,21 +78,27 @@ int tryMove(player *player, level *map, direction direction, item **listItem, si
 	int id, resCase, resFight;
 	id = map[player->abs_coord.zone].level[player->abs_coord.y-1][player->abs_coord.x];
 	resCase = checkCaseIdType(id,listResource,nResource,listMonster,nMonster);
-	printf("%d", resCase);
+	printf("resCase = %d\n", resCase);
 	switch(resCase) {
-		case -1:
+		case -1: // Case infranchissable
 			printc("Case invalide!!!\n",2, FOREGROUND_RED, FOREGROUND_INTENSITY);
 			return 0;
-		case 0:
+		case 0: // Case vide
 			playerMove(player,map,direction);
-			return true;
+			return 1;
 		case 3: // Ressource
-			return tryRecolte(player, listItem, nItem, listResource, nResource, id);
+			return tryRecolte(player, listItem, nItem, listResource, nResource,respawnList ,id);
 		case 20: // Monster
-			resFight = fight(player, createMonster(findMonster(listMonster,nMonster,id)),&respawnList,x,y,player->abs_coord.zone);
-			if(resFight == -1 || resFight == 0)
-				return false;
-			return true;
+			resFight = fight(player, createMonster(findMonster(listMonster,nMonster,id)),respawnList,x,y,player->abs_coord.zone);
+			switch (resFight) {
+				case 0:
+					printf("T'as prit la fuite ?!  Tapette (-_-')");
+					return 1;
+				case 1:
+					playerMove(player,map,direction);
+					break;
+			}
+			return resFight;
 	}
 }
 int checkCaseIdType(int id, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster) {
@@ -104,13 +111,13 @@ int checkCaseIdType(int id, resource **listResource, size_t nResource, monster *
 		return 20;
 	return id;
 }
-bool tryRecolte(player *player, item **listItem, size_t nItem, resource **listResource, size_t nResource, int id) {
+int tryRecolte(player *player, item **listItem, size_t nItem, resource **listResource, size_t nResource, respawn **listRespawn, int id) {
 	printf("tryRecolte()\n");
 	item **listTool = getItemCategory(player->inventory, TOOLS);
 	resource *resource = findResource(listResource,nResource,id);
 	int i = 0;
 	if(listTool == NULL)
-		return NULL;
+		return 0;
 	while(listTool[i] != NULL) {
 		//if(listTool[i]->durability > 0 && (listTool[i]->type & 1023) == (resource->item->type & 1023) && (listTool[i]->flag & resource->flag) != 0)
 		if(listTool[i]->durability > 0 && (listTool[i]->type & resource->item->type) != 0 && (listTool[i]->flag & resource->flag) != 0) {
@@ -135,11 +142,11 @@ bool tryRecolte(player *player, item **listItem, size_t nItem, resource **listRe
 		}
 	}
 	free(listTool);
-	printc("Tu ne peux pas récupérer la ressource\n",2, FOREGROUND_RED, FOREGROUND_INTENSITY);
-	return NULL;
+	printc("Tu ne peux pas récupérer la ressource\n",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	return 0;
 }
 
-int fight(player *player, monster *monster, respawn **list, int32_t x, int32_t y, int8_t lvl) {
+int fight(player *player, monster *monster, respawn **listRespawn, int32_t x, int32_t y, int8_t lvl) {
 	printf("fight()\n");
 	int endFight = 0;
 	while(endFight == 0) {
@@ -163,7 +170,7 @@ int fight(player *player, monster *monster, respawn **list, int32_t x, int32_t y
 			return 0;
 		}
 		case 2: {
-			addMonsterRespawn(monster,list,x,y,lvl);
+			addMonsterRespawn(monster,listRespawn,x,y,lvl);
 			playerWinExp(player, monster->exp);
 			return 1;
 		}
@@ -305,7 +312,7 @@ void printPlayerInterface() {
 		   		"    |                                          |\n"
 		   		"    |                                          |\n"
 		   		"    |", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
-	printc(		   "A - Potion                   ",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	printc(		   "   A - Potion               ",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
 	printc(										"O - Quitter",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
 	printc(													"   |\n"
 		   		"    |                                          |\n"
