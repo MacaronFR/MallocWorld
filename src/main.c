@@ -243,6 +243,7 @@ int main(int argc, char **argv){
 							player1->abs_coord.x = portal[0][0];
 							player1->abs_coord.y = portal[0][1] - 1;
 							player1->abs_coord.zone = 0;
+							map[player1->abs_coord.zone].level[player1->abs_coord.y][player1->abs_coord.x] = 1;
 							l = 3;
 							printc("Level & maps created!\n",1,FOREGROUND_GREEN);
 							inGame(player1,map,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,l);
