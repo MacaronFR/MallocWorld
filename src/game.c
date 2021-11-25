@@ -71,12 +71,14 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 
 }
 int tryMove(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int x, int y) {
-	printf("tryMove()\n");
-	if(player->abs_coord.y-1 < 0 || player->abs_coord.x+1 >= map->w || player->abs_coord.y+1 >= map->h || player->abs_coord.x - 1 < 0) //sortie de map
+	printf("tryMove() %d\n",direction);
+	if(player->abs_coord.y-1 < 0 || player->abs_coord.x+1 >= map->w || player->abs_coord.y+1 >= map->h || player->abs_coord.x - 1 < 0) {//sortie de map
+		printc("La Terre est plate mon gars, tu ne peux pas aller plus loin! ¯\\_(\"/)_/¯",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 		return 0;
+	}
 
 	int id, resCase, resFight;
-	id = map[player->abs_coord.zone].level[player->abs_coord.y-1][player->abs_coord.x];
+	id = map[player->abs_coord.zone].level[y][x];
 	resCase = checkCaseIdType(id,listResource,nResource,listMonster,nMonster);
 	printf("resCase = %d\n", resCase);
 	switch(resCase) {
