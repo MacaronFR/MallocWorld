@@ -31,3 +31,21 @@ item *craftItem(inventory *inv, storage *s, item *toCraft){
 	}
 	return copyItem(toCraft);
 }
+
+item **getCraftableItem(item **listItem, size_t nItem, int zone){
+	item **craftable = NULL;
+	item **tmp;
+	int count = 0;
+	for(size_t i = 0; i < nItem; ++i){
+		if(listItem[i]->craft != NULL && (listItem[i]->flag & (1 << zone)) != 0){
+			tmp = realloc(craftable, (count + 1) * sizeof(item *));
+			if(tmp == NULL && craftable != NULL){
+				free(craftable);
+			}
+			tmp[count] = listItem[i];
+			count++;
+			craftable = tmp;
+		}
+	}
+	return listItem;
+}

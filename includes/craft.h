@@ -4,6 +4,7 @@
 #include <inventory.h>
 
 item *craftItem(inventory *inv, storage *s, item *toCraft);
+item **getCraftableItem(item **listItem, size_t nItem, int zone);
 
 
 #endif //MALLOCWORLD_CRAFT_H
