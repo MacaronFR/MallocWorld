@@ -43,8 +43,8 @@ void inGame(player *player, level *map, storage *storage, item **listItem, size_
 int playerTurn(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList) {
 	printPlayerInterface();
 	char *value = malloc(sizeof(char) * (10 + 1));
-	fgets(value, 10, stdin);
 	fflush(stdin);
+	fgets(value, 10, stdin);
 	if (value[0] == NORTH) {
 		if(move(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
 			playerMoov(player,map,NORTH);
@@ -62,6 +62,7 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 			playerMoov(player,map,WEST);
 		}
 	} else if (value[0] == '5') {
+		free(value);
 		return 0;
 	}
 	else {
