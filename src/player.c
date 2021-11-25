@@ -213,7 +213,7 @@ int playerDoChoiceCategory(item** tabItem) {
 }
 
 //---------------------- Map ----------------------
-void playerMoov(player *player, level *map, direction direction) {
+void playerMove(player *player, level *map, direction direction) {
 	switch (direction) {
 		case NORTH: {
 			map[player->abs_coord.zone].level[player->abs_coord.y][player->abs_coord.x] = 0;
@@ -271,10 +271,58 @@ void displayPlayerOnMap(player *p, level *map){
 	endx = endx < map->w ? endx : map->w;
 	endy = p->abs_coord.y - p->relative_coord.y + 10;
 	endy = endy < map->h ? endy : map->h;
+
+
 	for(int i = starty; i < endy; ++i){
+		printc("+--+--+--+--+--+--+--+--+--+--+\n|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 		for(int j = startx; j < endx; ++j){
-			printf("|%2d", map->level[i][j]);
+			setTextDefault();
+			int id = map[p->abs_coord.zone].level[i][j];
+			switch(id) {
+				case -3:
+				case -2:
+					setText( 2, FOREGROUND_RED,BACKGROUND_CYAN);
+					break;
+				case -1:
+					setText( 2, FOREGROUND_RED,BACKGROUND_RED);
+					break;
+				case 0:
+					setText( 2, FOREGROUND_BLACK, BACKGROUND_BLACK);
+					break;
+				case 1:
+					setText( 3, FOREGROUND_CYAN, FOREGROUND_INTENSITY,BACKGROUND_PURPLE);
+					break;
+				case 2:
+					setText( 3, FOREGROUND_RED, FOREGROUND_INTENSITY,BACKGROUND_CYAN);
+					break;
+				case 3:
+				case 6:
+				case 9:
+					setText( 3, FOREGROUND_RED,FOREGROUND_INTENSITY,BACKGROUND_GREEN);
+					break;
+				case 4:
+				case 7:
+				case 10:
+					setText( 2, FOREGROUND_BLACK ,BACKGROUND_WHITE);
+					break;
+				case 5:
+				case 8:
+				case 11:
+					setText(3, FOREGROUND_PURPLE,FOREGROUND_INTENSITY,BACKGROUND_YELLOW);
+					break;
+				case 99:
+					setText( 2, FOREGROUND_BLACK,BACKGROUND_RED);
+					break;
+				default:
+					setText( 1, FOREGROUND_RED);
+					break;
+			}
+			printf("%2d",id);
+			setTextDefault();
+			printc("|", 2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 		}
-		printf("|\n+--+--+--+--+--+--+--+--+--+--+\n");
+		printf("\n");
 	}
+	printc("+--+--+--+--+--+--+--+--+--+--+\n",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printf("\n\n");
 }
