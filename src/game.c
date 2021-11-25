@@ -47,19 +47,19 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 	fgets(value, 10, stdin);
 	if (value[0] == NORTH) {
 		if(move(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
-			playerMoov(player,map,NORTH);
+			playerMove(player,map,NORTH);
 		}
 	} else if (value[0] == EAST) {
 		if(move(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
-			playerMoov(player,map,EAST);
+			playerMove(player,map,EAST);
 		}
 	} else if (value[0] == SOUTH) {
 		if(move(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
-			playerMoov(player,map,SOUTH);
+			playerMove(player,map,SOUTH);
 		}
 	} else if (value[0] == WEST) {
 		if(move(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList)) {
-			playerMoov(player,map,WEST);
+			playerMove(player,map,WEST);
 		}
 	} else if (value[0] == '5') {
 		free(value);
@@ -87,7 +87,7 @@ bool move(player *player, level *map, direction direction, item **listItem, size
 	}
 	return false;
 }
-bool tryMove(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList, int x, int y) {
+int tryMove(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn *respawnList, int x, int y) {
 	int id, resCase, resFight;
 	item *tool;
 	resource *resource;
