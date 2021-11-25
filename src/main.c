@@ -242,6 +242,10 @@ int main(int argc, char **argv){
 							player1->abs_coord.x = portal[0][0];
 							player1->abs_coord.y = portal[0][1] - 1;
 							player1->abs_coord.zone = 0;
+							addItemInInventory(player1->inventory, copyItem(getItem(listItem,nItem,1)));
+							addItemInInventory(player1->inventory, copyItem(getItem(listItem,nItem,2)));
+							addItemInInventory(player1->inventory, copyItem(getItem(listItem,nItem,3)));
+							addItemInInventory(player1->inventory, copyItem(getItem(listItem,nItem,4)));
 							map[player1->abs_coord.zone].level[player1->abs_coord.y][player1->abs_coord.x] = 1;
 							l = 3;
 							printc("Level & maps created!\n",1,FOREGROUND_GREEN);

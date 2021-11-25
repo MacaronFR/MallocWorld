@@ -121,6 +121,7 @@ int tryRecolte(player *player, item **listItem, size_t nItem, resource **listRes
 	printf("tryRecolte()\n");
 	item **listTool = getItemCategory(player->inventory, TOOLS);
 	resource *resource = findResource(listResource,nResource,id);
+	item *tmp;
 	int i = 0;
 	if(listTool == NULL) {
 		printc("Tu ne peux pas récupérer la ressource\n", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
@@ -130,7 +131,12 @@ int tryRecolte(player *player, item **listItem, size_t nItem, resource **listRes
 		//if(listTool[i]->durability > 0 && (listTool[i]->type & 1023) == (resource->item->type & 1023) && (listTool[i]->flag & resource->flag) != 0)
 		if(listTool[i]->durability >= resource->item->durability && (listTool[i]->type & resource->item->type) != 0 && (listTool[i]->flag & resource->flag) != 0) {
 			listTool[i]->durability -= resource->item->durability;
-			addItemInInventory(player->inventory, getItem(listItem,nItem, findResource(listResource,nResource,id)->item->id));
+			tmp = copyItem(resource->item);
+			if(tmp == NULL){
+				free(listTool);
+				return -1;
+			}
+			addItemInInventory(player->inventory, tmp);
 			addResourceRespawn(resource,listRespawn,x,y,player->abs_coord.zone);
 			free(listTool);
 			return 1;

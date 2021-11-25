@@ -107,7 +107,7 @@ item **getItemCategory(inventory *inventory, category category) {
 			count++;
 		}
 	}
-	tabItem[count+1] = NULL;
+	tabItem[count] = NULL;
 	return tabItem;
 }
 
