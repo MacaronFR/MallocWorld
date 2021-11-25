@@ -193,17 +193,17 @@ int mainF() {
 	map[0].level[0][0] = 1;
 	displayPlayerOnMap(p1, map);
 	printf("\n");
-	playerMoov(p1, map, SOUTH);
-	playerMoov(p1, map, EAST);
-	playerMoov(p1, map, SOUTH);
-	playerMoov(p1, map, SOUTH);
-	playerMoov(p1, map, SOUTH);
-	playerMoov(p1, map, SOUTH);
-	playerMoov(p1, map, SOUTH);
-	playerMoov(p1, map, SOUTH);
+	playerMove(p1, map, SOUTH);
+	playerMove(p1, map, EAST);
+	playerMove(p1, map, SOUTH);
+	playerMove(p1, map, SOUTH);
+	playerMove(p1, map, SOUTH);
+	playerMove(p1, map, SOUTH);
+	playerMove(p1, map, SOUTH);
+	playerMove(p1, map, SOUTH);
 	displayPlayerOnMap(p1, map);
 	printf("\n");
-	playerMoov(p1, map, SOUTH);
+	playerMove(p1, map, SOUTH);
 	displayPlayerOnMap(p1, map);
 	printf("\n");
 	freeMap(map, 3);
@@ -233,11 +233,10 @@ int main(int argc, char **argv){
 						printc("Storage created!\n",1,FOREGROUND_GREEN);
 						int portal[4][2];
 						level *map;
-						char c = 0;
+						char* value = malloc(sizeof(char) * 255);
 						printStartMenu();
-						fflush(stdin);
-						scanf("%c", &c);
-						if(tolower(c) == '1'){
+						scanf("%s", value);
+						if(tolower(value[0]) == '1'){
 							srand(time(NULL));
 							map = generateMap(rand(), portal);
 							player1->abs_coord.x = portal[0][0];
@@ -247,17 +246,18 @@ int main(int argc, char **argv){
 							l = 3;
 							printc("Level & maps created!\n",1,FOREGROUND_GREEN);
 							inGame(player1,map,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,l);
-						} else if(tolower(c) == '2'){
+						} else if(tolower(value[0]) == '2'){
 							map = loadSave("./saves/test.mw", &respawnList, player1, storage, portal, &l, listItem, nItem, listResource, nResource, listMonster, nMonster);
 							for(int i = 0; i < 4; ++i){
 								printf("%d, %d\n", portal[i][0], portal[i][1]);
 							}						}
-						else if(tolower(c) == '3'){
+						else if(tolower(value[0]) == '3'){
 							printCredit();
 						}
 						else{
 							printc("J'ai venu, j'ai lu, j'ai pas comprendu",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
 						}
+						free(value);
 						if(map != NULL){
 							//game();
 							do{
