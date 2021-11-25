@@ -93,7 +93,7 @@ void testMacaron(int argc, char **argv) {
 		printf("portal %d (%d, %d)\n", i, portal[i][0], portal[i][1]);
 	}
 	return 0;
-	/*monster *tmp = loadMonster("../template_monster.mw");
+	/*monster *tmp = loadMonster("../_template_monster.mw");
 	freeMonster(tmp);
 	return 0;*/
 }
