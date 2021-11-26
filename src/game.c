@@ -107,7 +107,7 @@ int tryMove(player *player, level *map, direction direction,storage *storage, it
 			playerMove(player,map,direction);
 			return 1;
 		case 2: // PNJ
-
+			interactWithPNJ(player,storage,listItem,nItem);
 			return 1;
 		case 3: // Ressource
 			res = tryRecolte(player, listItem, nItem, listResource, nResource, respawnList, id, x, y);
@@ -198,7 +198,63 @@ int fight(player *player, monster *monster, respawn **listRespawn, int32_t x, in
 }
 void interactWithPNJ(player *player, storage *storage, item **listItem, size_t nItem) {
 	item **listCraftableItem = getCraftableItem(listItem, nItem, player->abs_coord.zone);
-	printInterfacePNJ(listCraftableItem);
+	bool quit = false;
+	while(!quit) {
+		printInterfacePNJ();
+		char* value = malloc(sizeof(char) * 255);
+		fflush(stdin);
+		scanf("%s", value);
+		cleanTerminal();
+		if (tolower(value[0]) == 'a') {
+			goToStorage(player,storage);
+		} else if (tolower(value[0]) == 'z') {
+			goToCrafting(player,listCraftableItem);
+		} else if (tolower(value[0]) == 'o') {
+			quit = true;
+		} else {
+			printc("erreur interactWithPNJ() \n", 1, FOREGROUND_YELLOW);
+		}
+		free(value);
+	}
+	free(listCraftableItem);
+}
+void goToStorage(player *player, storage *storage) {
+	bool quit = false;
+	while(!quit) {
+		printInterfaceStorage(storage);
+		char* value = malloc(sizeof(char) * 255);
+		fflush(stdin);
+		scanf("%s", value);
+		cleanTerminal();
+		if (tolower(value[0]) == 'a') {
+
+		} else if (tolower(value[0]) == 'z') {
+
+		} else if (tolower(value[0]) == 'o') {
+			quit = true;
+		} else {
+			printc("erreur goToStorage() \n", 1, FOREGROUND_YELLOW);
+		}
+		free(value);
+	}
+}
+void goToCrafting(player *player, item **listCraftableItem) {
+	bool quit = false;
+	while(!quit) {
+		printInterfaceCrafting(listCraftableItem);
+		int value;
+		fflush(stdin);
+		scanf("%d", &value);
+		cleanTerminal();
+		if(value == 0)
+			return;
+		for(int i=0 ; listCraftableItem[i] != NULL ; i++) {
+			if(listCraftableItem[i]->id == value) {
+				// crafter l'item
+			}
+		}
+		printc("id de d'item a crafter inconnu \n", 1, FOREGROUND_YELLOW);
+	}
 }
 
 void gameOver() {
