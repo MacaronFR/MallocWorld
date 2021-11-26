@@ -1,6 +1,17 @@
 #include <game.h>
+#include <unistd.h>
 
-int main(){
+void setDir(char *s){
+	char *command = malloc(strlen(s) + 1);
+	strcpy(command, s);
+	char *a = strrchr(command, '/');
+	a[1] = 0;
+	chdir(command);
+	system("pwd");
+}
+
+int main(int argc, char **argv){
+	setDir(argv[0]);
 	int r = 0, l;
 	int portal[4][2];
 	level *map = NULL;
