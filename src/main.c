@@ -27,7 +27,10 @@ int main(){
 						if(tolower(value[0]) == '1'){
 							map = createGame(portal, player1, listItem, nItem, &l);
 						} else if(tolower(value[0]) == '2'){
-							map = loadSave("./saves/test.mw", &respawnList, player1, storage, portal, &l, listItem, nItem, listResource, nResource, listMonster, nMonster);
+							char *save = selectSave();
+							printf(save);
+							map = loadSave(save, &respawnList, player1, storage, portal, &l, listItem, nItem, listResource, nResource, listMonster, nMonster);
+							free(save);
 							for(int i = 0; i < 4; ++i){
 								printf("%d, %d\n", portal[i][0], portal[i][1]);
 							}

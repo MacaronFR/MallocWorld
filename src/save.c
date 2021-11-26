@@ -349,6 +349,7 @@ bool writeRespawn(respawn *r, FILE *f){
 char *selectSave(){
 	saveFile *list = NULL;
 	saveFile *tmp;
+	char *name;
 	char *res;
 	int i = 0, choice = -1;
 	DIR *item_dir;
@@ -383,11 +384,15 @@ char *selectSave(){
 		if(list->index != choice){
 			free(list->name);
 		}else{
-			res = list->name;
+			name = list->name;
 		}
 		tmp = list->next;
 		free(list);
 		list = tmp;
 	}
+	res = malloc(strlen(name) + 9);
+	strcpy(res, "./saves/");
+	strcat(res, name);
+	free(name);
 	return res;
 }

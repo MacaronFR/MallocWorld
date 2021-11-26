@@ -32,9 +32,10 @@ void inGame(player *player, level *map, storage *storage, item **listItem, size_
 				if(choice[0] == 'y') {
 					bool res = false;
 					char* filename = malloc(sizeof(char) * 255);
+					strcpy(filename, "./saves/");
 					do {
 						printc("sauvegarder à : ", 2, FOREGROUND_GREEN, FOREGROUND_INTENSITY);
-						scanf("%s", filename);
+						scanf("%s", filename + 8);
 						res = saveGame(filename, map, *respawnList, player, storage, nbMap);
 					} while (!res);
 					free(filename);
