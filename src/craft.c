@@ -37,10 +37,13 @@ item **getCraftableItem(item **listItem, size_t nItem, int zone){
 	item **tmp;
 	int count = 0;
 	for(size_t i = 0; i < nItem; ++i){
-		if(listItem[i]->craft != NULL && (listItem[i]->flag & (1 << zone)) != 0){
+		if(listItem[i]->craft[0] != 0 && (listItem[i]->flag & (1 << zone)) != 0){
 			tmp = realloc(craftable, (count + 1) * sizeof(item *));
-			if(tmp == NULL && craftable != NULL){
-				free(craftable);
+			if(tmp == NULL){
+				if(craftable != NULL){
+					free(craftable);
+				}
+				return NULL;
 			}
 			tmp[count] = listItem[i];
 			count++;
@@ -56,5 +59,5 @@ item **getCraftableItem(item **listItem, size_t nItem, int zone){
 		craftable = tmp;
 		craftable[count] = NULL;
 	}
-	return listItem;
+	return craftable;
 }

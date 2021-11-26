@@ -271,7 +271,7 @@ chained_int *getCraftIds(item **items, int length){
 	return res;
 }
 
-bool checkCraftValidity(item **items, int length){
+bool checkCraftValidity(item **items, size_t length){
 	chained_int *ids = getIds(items, length);
 	chained_int *craftIds = getCraftIds(items, length);
 	chained_int *actualCraft = craftIds, *actualIds;

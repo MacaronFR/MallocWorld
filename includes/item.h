@@ -36,7 +36,7 @@ typedef struct s_item{
 item *load_item(const char *filename);
 item **loadItems(const char *dir, size_t *nItem);
 void freeItemList(item **items, size_t length);
-bool checkCraftValidity(item **items, int length);
+bool checkCraftValidity(item **items, size_t length);
 void freeItem(item *item);
 item *copyItem(item *i);
 item *getItem(item **itemList, size_t nItem, int32_t id);
