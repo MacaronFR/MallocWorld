@@ -25,7 +25,8 @@ typedef enum e_category {
 typedef struct s_item{
     uint16_t type; // type de l'objet (ressources/item arme/armure/outil/potion/arbre/roche/plante
     int32_t id; //id objet
-    uint8_t flag; // zone / nb degat / % de reduction / nb de soin
+    uint8_t flag; // zone /
+	int16_t damage; //nb degat / % de reduction / nb de soin
     int8_t durability; //durabilité ou cout en durabilité
 	uint8_t maxStack;
     int32_t *craft; // si item son craft en tableau d'id nécessaire

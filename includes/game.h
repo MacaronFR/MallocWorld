@@ -35,7 +35,7 @@ void printInterfacePlayer();
 void printInterfacePNJ();
 void printInterfaceStorage(storage *storage);
 void printInterfaceCrafting(item **listCraftableItem);
-
+void printStorage(storage *storage);
 void printCredit();
 
 #endif //MALLOCWORLD_GAME_H

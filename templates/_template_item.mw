@@ -2,6 +2,7 @@
 {type}
 {id}
 {zone}
+{damage/reduc/soin}
 {durabilité max}
 {empillement max}
 {Craft (sous la forme d'une list d'id ex : 1, 1, 4)}

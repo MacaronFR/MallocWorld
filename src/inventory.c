@@ -259,6 +259,27 @@ void printInventoryLineSeparator(int count) {
     setTextDefault();
 }
 
+void printStorage(storage *storage) {
+	int size = storage->size;
+	if(size == 0) {
+		printc("Votre stockage est vide !!!",2,FOREGROUND_INTENSITY,FOREGROUND_GREEN);
+		return;
+	}
+
+	printInventoryLineSeparator(size);
+	for(int i=0 ; i<storage->size ; i++) {
+		printSlot(storage->slots[i], i);
+	}
+	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printf(" <- Item\n");
+	printInventoryLineSeparator(size);
+	for(int i=0 ; i<storage->size ; i++) {
+		printQuantity(storage->slots[i], i);
+	}
+	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printf(" <- Count/Durability\n");
+	printInventoryLineSeparator(size);
+}
 
 
 void repairInventory(item **itemList, size_t nItem, inventory *inv){
