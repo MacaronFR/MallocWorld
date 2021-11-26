@@ -39,11 +39,12 @@ int main(int argc, char **argv){
 							map = createGame(portal, player1, listItem, nItem, &l);
 						} else if(tolower(value[0]) == '2'){
 							char *save = selectSave();
-							printf(save);
-							map = loadSave(save, &respawnList, player1, storage, portal, &l, listItem, nItem, listResource, nResource, listMonster, nMonster);
-							free(save);
-							for(int i = 0; i < 4; ++i){
-								printf("%d, %d\n", portal[i][0], portal[i][1]);
+							if(save != NULL){
+								map = loadSave(save, &respawnList, player1, storage, portal, &l, listItem, nItem,
+											   listResource, nResource, listMonster, nMonster);
+								free(save);
+							}else{
+								printf("No save present\n");
 							}
 						}
 						else if(tolower(value[0]) == '3'){
