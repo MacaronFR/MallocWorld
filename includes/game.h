@@ -21,7 +21,7 @@ int tryRecolte(player *player, item **listItem, size_t nItem, resource **listRes
 int fight(player *player, monster *monster, respawn **listRespawn, int32_t x, int32_t y);
 void interactWithPNJ(player *player, storage *storage, item **listItem, size_t nItem);
 void goToStorage(player *player, storage *storage);
-void goToCrafting(player *player, item **listCraftableItem);
+void goToCrafting(player *player,storage *storage, item **listCraftableItem);
 
 void gameOver();
 void winGame();
