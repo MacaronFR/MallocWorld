@@ -5,6 +5,7 @@
 
 #include <player.h>
 #include <perlin.h>
+#include <ctype.h>
 
 
 //---------------------- Creation et Destruction ----------------------
@@ -90,42 +91,35 @@ void printBar(float value, float max, int size) {
 int playerTurnFight(player *player, monster *monster) {
 	cleanTerminal();
 	printPlayer(player);
-	int choice = 0;
 	int res = -1;
-	char* value = malloc(sizeof (char) * (10 + 1));
-	while(res == -1) {
-		printc("Que souhaitez vous faire ?\n", 2, FOREGROUND_GREEN, FOREGROUND_INTENSITY);
-		setText(2, FOREGROUND_BLUE, FOREGROUND_INTENSITY);
-		printf("+---+----------+   +---+----------------+   +---+------------------+   +---+------------------+   +---+------------------+\n");
-		printf("| 1 - Attaquer |   | 2 - Changer d'arme |   | 3 - Changer d'armure |   | 4 - Boire une potion |   | 5 - Prendre la fuite |\n");
-		printf("+---+----------+   +---+----------------+   +---+------------------+   +---+------------------+   +---+------------------+\n");
-		setTextDefault();
 
+	while(res == -1) {
+		playerInterfaceFight();
+		char* value = malloc(sizeof (char) * 255);
 		fgets(value,10,stdin);
 		fflush(stdin);
-		if(value[0] == '1') {
+		if(tolower(value[0])  == 'a') {
 			res = playerDoDamage(player, monster);
 		}
-		else if(value[0] == '2') {
-			printf("vu\n");
+		else if(value[0] == 'z') {
 			res = playerSwitchWeapon(player);
 		}
-		else if(value[0] == '3') {
+		else if(value[0] == 'e') {
 			res = playerSwitchArmor(player);
 		}
-		else if(value[0] == '4') {
+		else if(value[0] == 'r') {
 			res = playerUsePotion(player);
 		}
-		else if(value[0] == '5') {
+		else if(value[0] == 't') {
 			res = playerEscape(player);
 		}
 		else {
 			printc("L'action spécifié est incorrecte\n", 1, FOREGROUND_YELLOW);
 			res = -1;
 		}
+		free(value);
 	}
-	free(value);
-	return res-1;
+	return res;
 }
 int playerDoDamage(player *player, monster *monster) {
 	if (player->stuff != NULL) {
@@ -134,7 +128,7 @@ int playerDoDamage(player *player, monster *monster) {
 	} else {
 		monster->life -= 1;
 	}
-	return 1;
+	return 0;
 }
 int playerSwitchWeapon(player *player) {
 	item** tabItem = getItemCategory(player->inventory, WEAPONS);
@@ -145,7 +139,7 @@ int playerSwitchWeapon(player *player) {
 	int value = playerDoChoiceCategory(tabItem);
 	if(value > 0 && value < 11 && tabItem[value-1]!=NULL) {
 		player->stuff->weapon = tabItem[value-1];
-		return 1;
+		return 0;
 	}
 	else if(value == 11) {
 		printf("Réfléchi avant de lancer une action la prochaine fois -_-");
@@ -165,7 +159,7 @@ int playerSwitchArmor(player *player) {
 	int value = playerDoChoiceCategory(tabItem);
 	if(value > 0 && value < 11 && tabItem[value-1]!=NULL) {
 		player->stuff->armor = tabItem[value-1];
-		return 1;
+		return 0;
 	}
 	else if(value == 11) {
 		printf("Réfléchi avant de lancer une action la prochaine fois -_-");
@@ -180,25 +174,31 @@ int playerUsePotion(player *player) {
 	item** tabItem = getItemCategory(player->inventory, POTIONS);
 	if(tabItem == NULL) {
 		printf("Des popo, des po..., ah non... :'( \n");
-		return 0;
+		return -1;
 	}
 	int value = playerDoChoiceCategory(tabItem);
 	if(value > 0 && value < 11 && tabItem[value-1]!=NULL) {
 		player->life += tabItem[value-1]->flag;
-		return 1;
+		return 0;
 	}
 	else if(value == 11) {
 		printf("Réfléchi avant de lancer une action la prochaine fois -_-");
-		return 0;
+		return -1;
 	}
 	else {
 		printf("Tu veux bien apprendre à lire ? ça me fera des vacances... -_-");
-		return 0;
+		return -1;
 	}
 }
 int playerEscape(player *player) {
-	printf("COURAGE FUYONS!!!!");
-	return 2;
+	int res = (rand()%100);
+	if(res < 30) {
+		printf("COURAGE FUYONS!!!!");
+		return 2;
+	}
+	printc("HEY! Reviens la toi!",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	return 0;
+
 }
 int playerDoChoiceCategory(item** tabItem) {
 	printf("Fait ton choix :\n");
@@ -246,12 +246,9 @@ void playerMove(player *player, level *map, direction direction) {
 			printc("error matrice : playerMoov",1,FOREGROUND_RED);
 	}
 }
-int playerCraft(player *player) {}
-int playerMine(player *player) {}
-int playerChopWood(player *player) {}
-int playerCutGrass(player *player) {}
-int playerCraftItem(player *player, int id) {}
 
+
+//---------------------- AFFICHAGE ----------------------
 void displayPlayerOnMap(player *p, level *map){
 	int startx, starty, endx, endy;
 	if(p->relative_coord.x < 3 && p->abs_coord.x >= 3){
@@ -324,4 +321,40 @@ void displayPlayerOnMap(player *p, level *map){
 	}
 	printc("+--+--+--+--+--+--+--+--+--+--+\n",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 	printf("\n\n");
+}
+
+void playerInterfaceFight() {
+
+	printc(	"\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
+			   " \\_,|                                          |\n"
+			   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				"Que souhaitez vous faire ?      ",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+	printc(													"     |\n"
+			   "    |                                          |\n"
+			   "    |                                          |\n"
+			   "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				   "A - Attaquer",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(							  				"             |\n"
+			   "    |                                          |\n"
+			   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(				"Z - Changer d'arme",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printc(									"                 |\n"
+			   "    |                                          |\n"
+			   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(				"E - Changer d'armure    ",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(												"       |\n"
+		       "    |                                          |\n"
+			   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(				"R - Boire une potion",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printc(									"                     |\n"
+			   "    |                                          |\n"
+			   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(				"T - Prendre la fuite",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(									"             |\n"
+			   "    |                                          |\n"
+			   "    |                                          |\n"
+			   "    |  ,----------------------------------------,\n"
+			   "    \\_/________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printf("\n\n");
+
 }

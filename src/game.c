@@ -57,7 +57,7 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 	while(res == 0) {
 		displayPlayerOnMap(player,map);
 		printPlayer(player);
-		printPlayerInterface();
+		printInterfacePlayer();
 		char* value = malloc(sizeof(char) * 255);
 		fflush(stdin);
 		scanf("%s", value);
@@ -97,11 +97,17 @@ int tryMove(player *player, level *map, direction direction, item **listItem, si
 	resCase = checkCaseIdType(id,listResource,nResource,listMonster,nMonster);
 	printf("resCase = %d\n", resCase);
 	switch(resCase) {
+		case -2:
+			res = playerInteractWithPNJ(player);
+			return 1;
 		case -1: // Case infranchissable
 			printc("Case invalide!!!\n",2, FOREGROUND_RED, FOREGROUND_INTENSITY);
 			return 0;
 		case 0: // Case vide
 			playerMove(player,map,direction);
+			return 1;
+		case 2: // PNJ
+
 			return 1;
 		case 3: // Ressource
 			res = tryRecolte(player, listItem, nItem, listResource, nResource, respawnList, id, x, y);
@@ -110,15 +116,9 @@ int tryMove(player *player, level *map, direction direction, item **listItem, si
 			}
 			return res;
 		case 20: // Monster
-			res = fight(player, createMonster(findMonster(listMonster,nMonster,id)),respawnList,x,y,player->abs_coord.zone);
-			switch (res) {
-				case 0:
-					printf("T'as prit la fuite ?!  Tapette (-_-')");
-					return 1;
-				case 1:
-					playerMove(player,map,direction);
-					break;
-			}
+			res = fight(player, createMonster(findMonster(listMonster,nMonster,id)),respawnList,x,y);
+			if(res == 1 || res == 2)
+				playerMove(player,map,direction);
 			return res;
 	}
 }
@@ -162,39 +162,43 @@ int tryRecolte(player *player, item **listItem, size_t nItem, resource **listRes
 	printc("Tu ne peux pas récupérer la ressource\n",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	return 0;
 }
-
-int fight(player *player, monster *monster, respawn **listRespawn, int32_t x, int32_t y, int8_t lvl) {
+int fight(player *player, monster *monster, respawn **listRespawn, int32_t x, int32_t y) {
 	printf("fight()\n");
-	int endFight = 0;
-	while(endFight == 0) {
-		endFight = playerTurnFight(player, monster);
+	int res = 0;
+	while(res == 0) {
+		res = playerTurnFight(player, monster);
 		if(monster->life <= 0)
-			endFight = 2;
+			res = 1;
 		else {
 			playerTakeDamage(player, monster->strength);
 			if(playerIsDead(player))
-				endFight = -1;
+				res = -2;
 		}
 	}
-	switch(endFight) {
-		case -1: {
+	switch(res) {
+		case -2: {
 			printc("Vous avez été découpé, brulé, broyé... Quelle mort tragique... :'(", 1, FOREGROUND_RED);
-			//endGame();
-			return -1;
+			return -2;
 		}
 		case 1: {
-			printc("Vous avez fuit le combat ?!  Tapette !!!", 1, FOREGROUND_YELLOW);
-			return 0;
+			addMonsterRespawn(monster,listRespawn,x,y,player->abs_coord.zone);
+			playerWinExp(player, monster->exp);
+			if(monster->id == 99)
+				return 2;
+			return 1;
 		}
 		case 2: {
-			addMonsterRespawn(monster,listRespawn,x,y,lvl);
-			playerWinExp(player, monster->exp);
+			printc("Vous avez fuit le combat ?!  Tapette !!!", 1, FOREGROUND_YELLOW);
 			return 1;
 		}
 		default: {
 			printc("BUG dans la matrice : fight", 1, FOREGROUND_RED);
 		}
 	}
+}
+void interactWithPNJ(player *player, storage *storage, item **listItem, size_t nItem) {
+	item **listCraftableItem = getCraftableItem(listItem, nItem, player->abs_coord.zone);
+	printInterfacePNJ(listCraftableItem);
 }
 
 void gameOver() {
@@ -298,7 +302,7 @@ void printMapLineSeparator(int count) {
 	printf("+\n");
 	setTextDefault();
 }
-void printPlayerInterface() {
+void printInterfacePlayer() {
 
 	printc(	"\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
 				" \\_,|                                          |\n"
@@ -338,6 +342,110 @@ void printPlayerInterface() {
 	printf("\n\n");
 
 }
+void printInterfacePNJ() {
+	cleanTerminal();
+	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
+				   " \\_,|                                       |\n"
+				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				   "Bienvenue a l'atelier !   Tous vos objets ont ete repare",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+	printc(											      "     |\n"
+				   "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				   "Attention ou vous mettez les doigts !",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+	printc(											      "     |\n"
+				   "    |                                                    |\n"
+				   "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				   "Que souhaitez vous faire ?",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	printc(											      "     |\n"
+				   "    |                                                    |\n"
+				   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(				   "A - Acceder au stockage",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	printc(											      "     |\n"
+															 "    |                                                    |\n"
+															 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(				   "Z - Acceder au catalogue de craft",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	printc(				   			 "      |\n"
+										"    |                                       |\n"
+										"    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(		 		  "O - Quitter l'atelier",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+	printc(									 "                 |\n"
+												"    |                                       |\n"
+												"    |                                       |\n"
+												"    |  ,-------------------------------------,\n"
+												"    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+
+	printf("\n\n");
+}
+void printInterfaceStorage(storage *storage) {
+	cleanTerminal();
+	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
+				   " \\_,|                                       |\n"
+				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				   "Voici le stocake",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+
+	printc(											      "     |\n"
+															 "    |                                                    |\n"
+															 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				   "Que souhaitez vous faire ?",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	printc(											      "     |\n"
+															 "    |                                                    |\n"
+															 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(				   "A - Deposer du matos",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(											      "     |\n"
+															 "    |                                                    |\n"
+															 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(				   "Z - Recuperer mon precieux",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(				   			 "      |\n"
+										"    |                                       |\n"
+										"    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(		 		  "O - Revenir a l'atelier",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+	printc(									 "                 |\n"
+												"    |                                       |\n"
+												"    |                                       |\n"
+												"    |  ,-------------------------------------,\n"
+												"    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+
+	printf("\n\n");
+}
+void printInterfacePNJ(item **listCraftableItem) {
+	cleanTerminal();
+	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
+				   " \\_,|                                       |\n"
+				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				   "Voici l'espace de conception",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+
+	printc(											      "     |\n"
+															 "    |                                                    |\n"
+															 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				   "Quel objet souhaitez vous creer ?",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	printc(											      "     |\n"
+															 "    |                                                    |\n"
+															 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+
+	for(int i=0 ; listCraftableItem[i] != NULL ; i++) {
+		setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+		printf("%d - %s",listCraftableItem[i]->id, listCraftableItem[i]->name);
+		printc(											      "     |\n"
+																 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	}
+
+	printc(				   "A - Acceder au stockage",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	printc(											      "     |\n"
+															 "    |                                                    |\n"
+															 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(				   "Z - Acceder au catalogue de craft",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	printc(				   			 "      |\n"
+										"    |                                       |\n"
+										"    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(		 		  "O - Quitter l'atelier",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+	printc(									 "                 |\n"
+												"    |                                       |\n"
+												"    |                                       |\n"
+												"    |  ,-------------------------------------,\n"
+												"    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+
+	printf("\n\n");
+}
+
 void printCredit() {
 	printc("Jeux Mallocworld développé par :\n"
 		   "	-	Denis TURBIEZ		@Macaron\n"
