@@ -63,13 +63,13 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 		scanf("%s", value);
 		cleanTerminal();
 		if (tolower(value[0]) == 'z') {
-			res = tryMove(player,map,NORTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y-1);
+			res = tryMove(player,map,NORTH,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y-1);
 		} else if (tolower(value[0]) == 'd') {
-			res = tryMove(player,map,EAST,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x+1,player->abs_coord.y);
+			res = tryMove(player,map,EAST,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x+1,player->abs_coord.y);
 		} else if (tolower(value[0]) == 's') {
-			res = tryMove(player,map,SOUTH,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y+1);
+			res = tryMove(player,map,SOUTH,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y+1);
 		} else if (tolower(value[0]) == 'q') {
-			res = tryMove(player, map, WEST, listItem, nItem, listResource, nResource, listMonster, nMonster, respawnList, player->abs_coord.x - 1, player->abs_coord.y);
+			res = tryMove(player, map, WEST,storage, listItem, nItem, listResource, nResource, listMonster, nMonster, respawnList, player->abs_coord.x - 1, player->abs_coord.y);
 		} else if(tolower(value[0]) == 'a') {
 			res = playerUsePotion(player);
 		} else if (tolower(value[0]) == 'o' || tolower(value[0]) == '0') {
@@ -85,7 +85,7 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 
 
 }
-int tryMove(player *player, level *map, direction direction, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int x, int y) {
+int tryMove(player *player, level *map, direction direction,storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int x, int y) {
 	printf("tryMove() %d\n",direction);
 	if(player->abs_coord.y-1 < 0 || player->abs_coord.x+1 >= map->w || player->abs_coord.y+1 >= map->h || player->abs_coord.x - 1 < 0) {//sortie de map
 		printc("La Terre est plate mon gars, tu ne peux pas aller plus loin! ¯\\_(\"/)_/¯",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
@@ -98,7 +98,7 @@ int tryMove(player *player, level *map, direction direction, item **listItem, si
 	printf("resCase = %d\n", resCase);
 	switch(resCase) {
 		case -2:
-			res = playerInteractWithPNJ(player);
+			interactWithPNJ(player, storage, listItem, nItem);
 			return 1;
 		case -1: // Case infranchissable
 			printc("Case invalide!!!\n",2, FOREGROUND_RED, FOREGROUND_INTENSITY);
@@ -406,7 +406,7 @@ void printInterfaceStorage(storage *storage) {
 
 	printf("\n\n");
 }
-void printInterfacePNJ(item **listCraftableItem) {
+void printInterfaceCrafting(item **listCraftableItem) {
 	cleanTerminal();
 	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
 				   " \\_,|                                       |\n"
@@ -428,15 +428,9 @@ void printInterfacePNJ(item **listCraftableItem) {
 																 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	}
 
-	printc(				   "A - Acceder au stockage",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
-	printc(											      "     |\n"
-															 "    |                                                    |\n"
-															 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc(				   "Z - Acceder au catalogue de craft",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
-	printc(				   			 "      |\n"
-										"    |                                       |\n"
+	printc(				   			 "                             |\n"
 										"    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc(		 		  "O - Quitter l'atelier",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+	printc(		 		  "O - Revenir a l'atelier",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
 	printc(									 "                 |\n"
 												"    |                                       |\n"
 												"    |                                       |\n"

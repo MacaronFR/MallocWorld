@@ -63,8 +63,8 @@ int playerDoChoiceCategory(item **tabItem);
 
 //---------------------- Map ----------------------
 void playerMove(player *player, level *map, direction direction);
-int playerCraft(player *player);
-int playerCraftItem(player *player, int id);
+
+void playerInterfaceFight();
 void displayPlayerOnMap(player *p, level *map);
 
 

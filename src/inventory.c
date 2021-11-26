@@ -238,7 +238,7 @@ void printQuantity(inventory* inventory, int id) {
 	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
     if(inventory->slots[id].item != NULL) {
         item *item = inventory->slots[id].item;
-        if (isRessource(item)) {
+        if (item->type & RESSOURCES != 0) {
 			setTextDefault();
 			printf("%3d", inventory->slots[id].quantity);
 		}
