@@ -400,98 +400,107 @@ void printInterfacePlayer() {
 }
 void printInterfacePNJ() {
 	cleanTerminal();
-	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
-				   " \\_,|                                       |\n"
+	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
+				   " \\_,|                                                                     |\n"
 				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				   "Bienvenue a l'atelier !   Tous vos objets ont ete repare",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
-	printc(											      "     |\n"
+	printc(											      "         |\n"
 				   "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				   "Attention ou vous mettez les doigts !",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
-	printc(											      "     |\n"
-				   "    |                                                    |\n"
+	printc(											             "                            |\n"
+				   "    |                                                                     |\n"
 				   "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				   "Que souhaitez vous faire ?",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
-	printc(											      "     |\n"
-				   "    |                                                    |\n"
+	printc(											      "                                       |\n"
+															 "    |                                                                     |\n"
 				   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc(				   "A - Acceder au stockage",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
-	printc(											      "     |\n"
-															 "    |                                                    |\n"
+	printc(				   "A - Acceder au stockage",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(											      "                                          |\n"
+															 "    |                                                                     |\n"
 															 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc(				   "Z - Acceder au catalogue de craft",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
-	printc(				   			 "      |\n"
-										"    |                                       |\n"
-										"    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(				   "Z - Acceder au catalogue de craft",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(				   			 "                                |\n"
+										"    |                                                                     |\n"
+										"    |                                                                     |\n"
+										"    |                                            ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(		 		  "O - Quitter l'atelier",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
-	printc(									 "                 |\n"
-												"    |                                       |\n"
-												"    |                                       |\n"
-												"    |  ,-------------------------------------,\n"
-												"    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(									 "    |\n"
+												"    |                                                                     |\n"
+												"    |                                                                     |\n"
+												"    |  ,-------------------------------------------------------------------,\n"
+												"    \\_/___________________________________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 
 	printf("\n\n");
 }
 void printInterfaceStorage(storage *storage) {
-	cleanTerminal();
-	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
-				   " \\_,|                                       |\n"
-				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
-	printc(				   "Voici le stocake",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
 
-	printc(											      "     |\n"
-															 "    |                                                    |\n"
+	// printStorage
+
+	cleanTerminal();
+	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
+				   " \\_,|                                                                                     |\n"
+				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				   "Voici le stocage, ne ramassez pas tous ce que vous trouvez SVP    (-_-')",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+
+	printc(											      "         |\n"
+															 "    |                                                                                     |\n"
 															 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				   "Que souhaitez vous faire ?",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
-	printc(											      "     |\n"
-															 "    |                                                    |\n"
+	printc(											      "                                                       |\n"
+															 "    |                                                                                     |\n"
 															 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(				   "A - Deposer du matos",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-	printc(											      "     |\n"
-															 "    |                                                    |\n"
+	printc(											      "                                                             |\n"
+															 "    |                                                                                     |\n"
 															 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(				   "Z - Recuperer mon precieux",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-	printc(				   			 "      |\n"
-										"    |                                       |\n"
-										"    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(				   			 "                                                       |\n"
+										"    |                                                                                     |\n"
+										"    |                                                                                     |\n"
+										"    |                                                          ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(		 		  "O - Revenir a l'atelier",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
-	printc(									 "                 |\n"
-												"    |                                       |\n"
-												"    |                                       |\n"
-												"    |  ,-------------------------------------,\n"
-												"    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(									 "    |\n"
+												"    |                                                                                     |\n"
+												"    |                                                                                     |\n"
+												"    |  ,-----------------------------------------------------------------------------------,\n"
+												"    \\_/___________________________________________________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 
 	printf("\n\n");
 }
 void printInterfaceCrafting(item **listCraftableItem) {
 	cleanTerminal();
-	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
-				   " \\_,|                                       |\n"
+	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
+				   " \\_,|                                                                                     |\n"
 				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
-	printc(				   "Voici l'espace de conception",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+	printc(				   "Voici l'espace de conception.",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+	printc(						  "                                                    |\n"
+									 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(						  "Bon ce n'est pas comme la cite de l'innovation mais on fait comme on peux",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
 
-	printc(											      "     |\n"
-															 "    |                                                    |\n"
+	printc(											      "        |\n"
+															 "    |                                                                                     |\n"
 															 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				   "Quel objet souhaitez vous creer ?",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
-	printc(											      "     |\n"
-															 "    |                                                    |\n"
+	printc(											      "                                                |\n"
+															 "    |                                                                                     |\n"
 															 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 
 	for(int i=0 ; listCraftableItem[i] != NULL ; i++) {
 		setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-		printf("%d - %s",listCraftableItem[i]->id, listCraftableItem[i]->name);
-		printc(											      "     |\n"
+		printf("%2d - %20s",listCraftableItem[i]->id, listCraftableItem[i]->name);
+		printc(											      "                                                        |\n"
 																 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	}
 
-	printc(				   			 "                             |\n"
-										"    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(				   			 "                                                                                 |\n"
+										"    |                                                                                     |\n"
+										"    |                                                          ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(		 		  "O - Revenir a l'atelier",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
-	printc(									 "                 |\n"
-												"    |                                       |\n"
-												"    |                                       |\n"
-												"    |  ,-------------------------------------,\n"
-												"    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(									 "    |\n"
+												"    |                                                                                     |\n"
+												"    |                                                                                     |\n"
+												"    |  ,-----------------------------------------------------------------------------------,\n"
+												"    \\_/___________________________________________________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 
 	printf("\n\n");
 }
