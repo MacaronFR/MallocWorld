@@ -9,6 +9,7 @@
 #include <errno.h>
 #include <dirent.h>
 
+#include <inventory.h>
 #include <terminalManager.h>
 #include <utils.h>
 
@@ -40,6 +41,7 @@ bool checkCraftValidity(item **items, int length);
 void freeItem(item *item);
 item *copyItem(item *i);
 item *getItem(item **itemList, size_t nItem, int32_t id);
-void repair(item **itemList, size_t nItem, item *toRepair);
+void repairInventory(item **itemList, size_t nItem, inventory *inv);
+bool repair(item **itemList, size_t nItem, item *toRepair);
 
 #endif //MALLOCWORLD_ITEM_H

@@ -332,12 +332,24 @@ item *getItem(item **itemList, size_t nItem, int32_t id){
 	return NULL;
 }
 
-void repair(item **itemList, size_t nItem, item *toRepair){
+void repairInventory(item **itemList, size_t nItem, inventory *inv){
+	item *tmp;
+	for(int i = 0; i < MAX_SLOTS_INVENTORY; ++i){
+		item *tmp = inv->slots[i].item;
+		while(tmp != NULL && repair(itemList, nItem, tmp)){
+			;
+			tmp = tmp->next;
+		}
+	}
+}
+
+bool repair(item **itemList, size_t nItem, item *toRepair){
 	if((toRepair->type & TOOLS) != 0 && (toRepair->type & ARMORS) != 0 && (toRepair->type & WEAPONS) != 0){
 		item *ref = getItem(itemList, nItem, toRepair->id);
 		if(ref == NULL){
-			return;
+			return false;
 		}
 		toRepair->durability = ref->durability;
 	}
+	return true;
 }

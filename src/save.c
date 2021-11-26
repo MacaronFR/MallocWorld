@@ -95,7 +95,7 @@ int **loadZone(FILE *f, int zone, char *buf, int bufSize, int *w, int *h, int po
 		return NULL;
 	}
 	getSize(f, w, h);
-	level = loadZoneArray(zone, *h, *w);
+	level = loadZoneArray(zone, *h, *w, portal, p1, f);
 	return level;
 }
 
