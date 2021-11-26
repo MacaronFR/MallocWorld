@@ -86,9 +86,11 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 }
 
 int tryMove(player *player, level *map, direction direction,storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int x, int y, int portal[4][2]) {
-	printf("tryMove() %d\n",direction);
-	if(player->abs_coord.y-1 < 0 || player->abs_coord.x+1 >= map->w || player->abs_coord.y+1 >= map->h || player->abs_coord.x - 1 < 0) {//sortie de map
-		printc("La Terre est plate mon gars, tu ne peux pas aller plus loin! ¯\\_(\"/)_/¯",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	if(	direction == NORTH && player->abs_coord.y-1 < 0 ||
+	direction == EAST && player->abs_coord.x+1 >= map->w ||
+	direction == SOUTH && player->abs_coord.y+1 >= map->h ||
+	direction == WEST && player->abs_coord.x - 1 < 0) {//sortie de map
+		printc("La Terre est plate mon gars, tu ne peux pas aller plus loin! ¯\\_(\"/)_/¯",1,FOREGROUND_YELLOW);
 		return 0;
 	}
 
@@ -245,7 +247,7 @@ void interactWithPNJ(player *player, storage *storage, item **listItem, size_t n
 		if (tolower(value[0]) == 'a') {
 			goToStorage(player,storage);
 		} else if (tolower(value[0]) == 'z') {
-			goToCrafting(player,listCraftableItem);
+			goToCrafting(player,storage,listCraftableItem);
 		} else if (tolower(value[0]) == 'o' || tolower(value[0]) == '0') {
 			quit = true;
 		} else {
@@ -267,17 +269,18 @@ void goToStorage(player *player, storage *storage) {
 
 		} else if (tolower(value[0]) == 'z') {
 
-		} else if (tolower(value[0]) == 'o') {
+		} else if (tolower(value[0]) == 'o' || tolower(value[0]) == '0') {
 			quit = true;
 		} else {
-			printc("erreur goToStorage() \n", 1, FOREGROUND_YELLOW);
+			printc("Y a pas 36 000 choix, tu pose ou tu prend c'est tout.\n", 1, FOREGROUND_YELLOW);
 		}
 		free(value);
 	}
 }
-void goToCrafting(player *player, item **listCraftableItem) {
+void goToCrafting(player *player,storage *storage, item **listCraftableItem) {
 	bool quit = false;
 	while(!quit) {
+		printStorage(storage);
 		printInterfaceCrafting(listCraftableItem);
 		int value;
 		fflush(stdin);
@@ -287,10 +290,14 @@ void goToCrafting(player *player, item **listCraftableItem) {
 			return;
 		for(int i=0 ; listCraftableItem[i] != NULL ; i++) {
 			if(listCraftableItem[i]->id == value) {
-				// crafter l'item
+				item *itemCraft = craftItem(player->inventory,storage,listCraftableItem[i]);
+				if(itemCraft != NULL) {
+					addItemInStorage(storage, itemCraft);
+					free(itemCraft);
+				}
 			}
 		}
-		printc("id de d'item a crafter inconnu \n", 1, FOREGROUND_YELLOW);
+		printc("Tu m'as prit pour Ornn ? \nSi c'est pas écrit c'est que je ne sais pas faire. \n", 1, FOREGROUND_YELLOW);
 	}
 }
 
