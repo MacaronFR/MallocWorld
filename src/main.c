@@ -7,7 +7,7 @@ int main(){
 	respawn *respawnList = NULL;//Liste de respawn
 	size_t nItem, nResource, nMonster;
 	item **listItem = loadItems("../items/", &nItem);
-	if(listItem != NULL){
+	if(listItem != NULL && checkCraftValidity(listItem, nItem)){
 		printc("ListItem loaded!\n",1,FOREGROUND_GREEN);
 		resource **listResource = loadResources("../resources/", &nResource, listItem, nItem);
 		if(listResource != NULL){
@@ -31,7 +31,6 @@ int main(){
 							for(int i = 0; i < 4; ++i){
 								printf("%d, %d\n", portal[i][0], portal[i][1]);
 							}
-							inGame(player1,map,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,&respawnList,l);
 						}
 						else if(tolower(value[0]) == '3'){
 							printCredit();
