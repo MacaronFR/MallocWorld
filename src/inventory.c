@@ -211,36 +211,35 @@ void removeSlot(storage *s, int index){
 void printInventory(inventory* inventory) {
 	printInventoryLineSeparator(MAX_SLOTS_INVENTORY);
     for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
-        printSlot(inventory, i);
+        printSlot(inventory->slots[i], i);
     }
+	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
     printf(" <- Item\n");
 	printInventoryLineSeparator(MAX_SLOTS_INVENTORY);
     for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
-        printQuantity(inventory, i);
+        printQuantity(inventory->slots[i], i);
     }
+	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
     printf(" <- Count/Durability\n");
 	printInventoryLineSeparator(MAX_SLOTS_INVENTORY);
 }
-void printSlot(inventory* inventory, int id) {
+void printSlot(slot slot, int id) {
     printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-    if(inventory->slots[id].item != NULL) {
-        item* item = inventory->slots[id].item;
+    if(slot.item != NULL) {
+        item* item = slot.item;
         printf("%3d", item->id);
     }
     else {
         printf("   ");
     }
-    if(id == MAX_SLOTS_INVENTORY-1) {
-        printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-    }
 }
-void printQuantity(inventory* inventory, int id) {
+void printQuantity(slot slot, int id) {
 	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-    if(inventory->slots[id].item != NULL) {
-        item *item = inventory->slots[id].item;
+    if(slot.item != NULL) {
+        item *item = slot.item;
         if ((item->type & RESSOURCES) != 0) {
 			setTextDefault();
-			printf("%3d", inventory->slots[id].quantity);
+			printf("%3d", slot.quantity);
 		}
         else{
             setTextDefault();
@@ -249,18 +248,18 @@ void printQuantity(inventory* inventory, int id) {
     }
     else
         printf("   ");
-    if(id == MAX_SLOTS_INVENTORY-1) {
-		printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-    }
 }
 void printInventoryLineSeparator(int count) {
     setText(2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printf(" ");
     for(int i=0 ; i<count ; i++) {
         printf("+---");
     }
-    printf("+\n");
+    printf("+\n ");
     setTextDefault();
 }
+
+
 
 void repairInventory(item **itemList, size_t nItem, inventory *inv){
 	item *tmp;

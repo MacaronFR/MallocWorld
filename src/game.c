@@ -177,7 +177,7 @@ int fight(player *player, monster *monster, respawn **listRespawn, int32_t x, in
 	}
 	switch(res) {
 		case -2: {
-			printc("Vous avez été découpé, brulé, broyé... Quelle mort tragique... :'(", 1, FOREGROUND_RED);
+			printc("Vous avez été découpé, brulé, broyé... Quelle mort tragique... :'(\n", 1, FOREGROUND_RED);
 			return -2;
 		}
 		case 1: {
@@ -185,18 +185,20 @@ int fight(player *player, monster *monster, respawn **listRespawn, int32_t x, in
 			playerWinExp(player, monster->exp);
 			if(monster->id == 99)
 				return 2;
-			return 1;
+			return res;
 		}
-		case 2: {
-			printc("Vous avez fuit le combat ?!  Tapette !!!", 1, FOREGROUND_YELLOW);
-			return 1;
+		case 3: {
+			printc("Vous avez fuit le combat ?!  Tapette !!!\n", 1, FOREGROUND_YELLOW);
+			return res;
 		}
 		default: {
-			printc("BUG dans la matrice : fight", 1, FOREGROUND_RED);
+			printc("BUG dans la matrice : fight\n", 1, FOREGROUND_RED);
 		}
 	}
 }
 void interactWithPNJ(player *player, storage *storage, item **listItem, size_t nItem) {
+	cleanTerminal();
+	repairInventory(listItem,nItem,player->inventory);
 	item **listCraftableItem = getCraftableItem(listItem, nItem, player->abs_coord.zone);
 	bool quit = false;
 	while(!quit) {
@@ -209,10 +211,10 @@ void interactWithPNJ(player *player, storage *storage, item **listItem, size_t n
 			goToStorage(player,storage);
 		} else if (tolower(value[0]) == 'z') {
 			goToCrafting(player,listCraftableItem);
-		} else if (tolower(value[0]) == 'o') {
+		} else if (tolower(value[0]) == 'o' || tolower(value[0]) == '0') {
 			quit = true;
 		} else {
-			printc("erreur interactWithPNJ() \n", 1, FOREGROUND_YELLOW);
+			printc("Connait pas ce truc, c'est quoi ? \n", 1, FOREGROUND_RED);
 		}
 		free(value);
 	}
@@ -399,7 +401,6 @@ void printInterfacePlayer() {
 
 }
 void printInterfacePNJ() {
-	cleanTerminal();
 	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
 				   " \\_,|                                                                     |\n"
 				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);

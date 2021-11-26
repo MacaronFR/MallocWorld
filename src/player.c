@@ -45,47 +45,26 @@ void playerTakeDamage(player *player, uint16_t amount) {
 		player->life -= amount - (amount * reduction);
 	}
 }
-void playerWinExp(player *player, uint16_t exp) {}
-void playerLevelUp(player *player) {}
-
-//---------------------- Affichage ----------------------
-void printPlayer(player *player) {
-    printf(" @      | ");   printLevel(player);
-    printf("/|\\     | ");  printExp(player);
-    printf("/ \\     | ");  printLife(player);
-    printInventory(player->inventory);
-}
-void printLevel(player *player) {
-    setText(1,FOREGROUND_PURPLE);
-    printf("Lvl  : %d\n", player->level);
-    setTextDefault();
-}
-void printExp(player *player) {
-    setText(1,FOREGROUND_GREEN);
-    printf("Exp  : ");
-	printBar(player->exp, player->level*100.f, 50);
-    setTextDefault();
-}
-void printLife(player *player) {
-    setText(1,FOREGROUND_RED);
-    printf("Life : ");
-	printBar(player->life, player->maxLife,50);
-    setTextDefault();
-}
-void printBar(float value, float max, int size) {
-	char bar[size + 3];
-	bar[0] = '[';
-	int i;
-	for(i=0;i<size;i++){
-		if((i*(100/size)) <= (value/max)*100)
-			bar[i+1]='=';
-		else
-			bar[i+1]='_';
+void playerWinExp(player *player, uint16_t exp) {
+	player->exp += exp;
+	if(player->level < 10 && player->exp >= 100*player->level) {
+		playerLevelUp(player);
 	}
-	bar[i+1]=']';
-	bar[i+2]='\0';
-	printf("%s %d/%d\n",bar, (int)value, (int)max);
 }
+void playerLevelUp(player *player) {
+	player->exp = player->exp % (100 * player->level);
+	player->level++;
+
+	if(player->level <= 5)
+		player->maxLife += 10*(player->level - 1);
+	else if(player->level <= 8)
+		player->maxLife += 50;
+	else
+		player->maxLife += 75;
+	player->life = player-> maxLife;
+}
+
+
 //|--------------------------------------------| ACTION |--------------------------------------------|
 //---------------------- Fight ----------------------
 int playerTurnFight(player *player, monster *monster) {
@@ -194,7 +173,7 @@ int playerEscape(player *player) {
 	int res = (rand()%100);
 	if(res < 30) {
 		printf("COURAGE FUYONS!!!!");
-		return 2;
+		return 3;
 	}
 	printc("HEY! Reviens la toi!",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	return 0;
@@ -268,9 +247,9 @@ void displayPlayerOnMap(player *p, level *map){
 	endy = p->abs_coord.y - p->relative_coord.y + 10;
 	endy = endy < map->h ? endy : map->h;
 
-
+	printf("\n");
 	for(int i = starty; i < endy; ++i){
-		printc("+--+--+--+--+--+--+--+--+--+--+\n|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+		printc(" +--+--+--+--+--+--+--+--+--+--+\n |",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 		for(int j = startx; j < endx; ++j){
 			setTextDefault();
 			int id = map[p->abs_coord.zone].level[i][j];
@@ -319,8 +298,45 @@ void displayPlayerOnMap(player *p, level *map){
 		}
 		printf("\n");
 	}
-	printc("+--+--+--+--+--+--+--+--+--+--+\n",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printc(" +--+--+--+--+--+--+--+--+--+--+\n",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 	printf("\n\n");
+}
+void printPlayer(player *player) {
+	printf("  @      | ");   printLevel(player);
+	printf(" /|\\     | ");  printExp(player);
+	printf(" / \\     | ");  printLife(player);
+	printInventory(player->inventory);
+}
+void printLevel(player *player) {
+	setText(1,FOREGROUND_PURPLE);
+	printf("Lvl  : %d\n", player->level);
+	setTextDefault();
+}
+void printExp(player *player) {
+	setText(1,FOREGROUND_GREEN);
+	printf("Exp  : ");
+	printBar(player->exp, player->level*100.f, 50);
+	setTextDefault();
+}
+void printLife(player *player) {
+	setText(1,FOREGROUND_RED);
+	printf("Life : ");
+	printBar(player->life, player->maxLife,50);
+	setTextDefault();
+}
+void printBar(float value, float max, int size) {
+	char bar[size + 3];
+	bar[0] = '[';
+	int i;
+	for(i=0;i<size;i++){
+		if((i*(100/size)) <= (value/max)*100)
+			bar[i+1]='=';
+		else
+			bar[i+1]='_';
+	}
+	bar[i+1]=']';
+	bar[i+2]='\0';
+	printf("%s %d/%d\n",bar, (int)value, (int)max);
 }
 
 void playerInterfaceFight() {
