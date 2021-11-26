@@ -287,12 +287,13 @@ void displayPlayerOnMap(player *p, level *map){
 		p->relative_coord.y--;
 	}
 	startx = p->abs_coord.x - p->relative_coord.x;
+	startx = startx < 0 ? 0 : startx;
 	starty = p->abs_coord.y - p->relative_coord.y;
+	starty = starty < 0 ? 0 : starty;
 	endx = p->abs_coord.x - p->relative_coord.x + 10;
 	endx = endx < map->w ? endx : map->w;
 	endy = p->abs_coord.y - p->relative_coord.y + 10;
 	endy = endy < map->h ? endy : map->h;
-
 	printf("\n");
 	for(int i = starty; i < endy; ++i){
 		printc("    +--+--+--+--+--+--+--+--+--+--+\n    |",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);

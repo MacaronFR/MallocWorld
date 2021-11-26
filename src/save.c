@@ -44,14 +44,7 @@ level *loadSave(const char *fileName, respawn **respawnList, player *player, sto
 		*l=0;
 		return NULL;
 	}
-	if(loadRespawn(respawnList, buf, 256, f, resourceList, nResource, monsterList, nMonster)){
-		fclose(f);
-		freeStorage(storage);
-		freePlayer(player);
-		freeMap(map, *l);
-		*l=0;
-		return NULL;
-	}
+	loadRespawn(respawnList, buf, 256, f, resourceList, nResource, monsterList, nMonster);
 	return map;
 }
 
