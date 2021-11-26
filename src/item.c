@@ -332,10 +332,12 @@ item *getItem(item **itemList, size_t nItem, int32_t id){
 	return NULL;
 }
 
-//-------------- CHECK TYPE ITEM --------------
-bool isItem(item *item) {       return (item->type & ITEMS) == ITEMS;}
-bool isRessource(item *item) {  return (item->type & RESSOURCES) == RESSOURCES;}
-bool isArmor(item* item) {      return (item->type & ARMORS) == ARMORS;}
-bool isWeapon(item* item) {     return (item->type & WEAPONS) == WEAPONS;}
-bool isTool(item* item) {       return (item->type & TOOLS) == TOOLS;}
-bool isPotion(item* item) {     return (item->type & POTIONS) == POTIONS;}
+void repair(item **itemList, size_t nItem, item *toRepair){
+	if((toRepair->type & TOOLS) != 0 && (toRepair->type & ARMORS) != 0 && (toRepair->type & WEAPONS) != 0){
+		item *ref = getItem(itemList, nItem, toRepair->id);
+		if(ref == NULL){
+			return;
+		}
+		toRepair->durability = ref->durability;
+	}
+}

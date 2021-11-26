@@ -40,5 +40,6 @@ bool checkCraftValidity(item **items, int length);
 void freeItem(item *item);
 item *copyItem(item *i);
 item *getItem(item **itemList, size_t nItem, int32_t id);
+void repair(item **itemList, size_t nItem, item *toRepair);
 
 #endif //MALLOCWORLD_ITEM_H
