@@ -44,14 +44,7 @@ level *loadSave(const char *fileName, respawn **respawnList, player *player, sto
 		*l=0;
 		return NULL;
 	}
-	if(loadRespawn(respawnList, buf, 256, f, resourceList, nResource, monsterList, nMonster)){
-		fclose(f);
-		freeStorage(storage);
-		freePlayer(player);
-		freeMap(map, *l);
-		*l=0;
-		return NULL;
-	}
+	loadRespawn(respawnList, buf, 256, f, resourceList, nResource, monsterList, nMonster);
 	return map;
 }
 
@@ -356,6 +349,7 @@ bool writeRespawn(respawn *r, FILE *f){
 char *selectSave(){
 	saveFile *list = NULL;
 	saveFile *tmp;
+	char *name;
 	char *res;
 	int i = 0, choice = -1;
 	DIR *item_dir;
@@ -390,11 +384,15 @@ char *selectSave(){
 		if(list->index != choice){
 			free(list->name);
 		}else{
-			res = list->name;
+			name = list->name;
 		}
 		tmp = list->next;
 		free(list);
 		list = tmp;
 	}
+	res = malloc(strlen(name) + 9);
+	strcpy(res, "./saves/");
+	strcat(res, name);
+	free(name);
 	return res;
 }
