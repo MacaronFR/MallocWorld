@@ -8,6 +8,7 @@ void setDir(char *s){
 	a[1] = 0;
 	chdir(command);
 	system("pwd");
+	free(command);
 }
 
 int main(int argc, char **argv){

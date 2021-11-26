@@ -31,9 +31,9 @@ player *createPlayer(item **listItem, size_t nItem) {
 }
 
 stuff *createStuff() {
-	stuff *stuff = malloc(sizeof (stuff));
-	stuff->armor = NULL;
-	stuff->weapon = NULL;
+	stuff *s = malloc(sizeof(stuff));
+	s->armor = NULL;
+	s->weapon = NULL;
 }
 
 void freePlayer(player *player) {

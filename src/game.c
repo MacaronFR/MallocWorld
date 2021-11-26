@@ -86,6 +86,7 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 }
 
 int tryMove(player *player, level *map, direction direction,storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int x, int y, int portal[4][2]) {
+	monster *m;
 	if(	direction == NORTH && player->abs_coord.y-1 < 0 ||
 	direction == EAST && player->abs_coord.x+1 >= map->w ||
 	direction == SOUTH && player->abs_coord.y+1 >= map->h ||
@@ -118,7 +119,9 @@ int tryMove(player *player, level *map, direction direction,storage *storage, it
 			}
 			return res;
 		case 20: // Monster
-			res = fight(player, createMonster(findMonster(listMonster,nMonster,id)),respawnList,x,y);
+			m = createMonster(findMonster(listMonster,nMonster,id));
+			res = fight(player, m, respawnList,x,y, listMonster, nMonster);
+			freeMonster(m);
 			if(res == 1 || res == 2)
 				playerMove(player,map,direction);
 			return res;
@@ -198,20 +201,21 @@ int tryRecolte(player *player, item **listItem, size_t nItem, resource **listRes
 	printc("Tu ne peux pas récupérer la ressource\n",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	return 0;
 }
-int fight(player *player, monster *monster, respawn **listRespawn, int32_t x, int32_t y) {
+int fight(player *player, monster *m, respawn **listRespawn, int32_t x, int32_t y, monster **monsterList, size_t nMonster){
 	int res = 0;
-	uint16_t monsterMaxLife = monster->life;
+	uint16_t monsterMaxLife = m->life;
 	playerChooseStuff(player);
 	while(res == 0) {
-		res = playerTurnFight(player, monster,monsterMaxLife);
-		if(monster->life <= 0)
+		res = playerTurnFight(player, m, monsterMaxLife);
+		if(m->life <= 0)
 			res = 1;
 		else if(res != 3){
-			playerTakeDamage(player, monster->strength);
+			playerTakeDamage(player, m->strength);
 			if(playerIsDead(player))
 				res = -2;
 		}
 	}
+	free(player->stuff);
 	player->stuff = NULL;
 	switch(res) {
 		case -2: {
@@ -219,9 +223,9 @@ int fight(player *player, monster *monster, respawn **listRespawn, int32_t x, in
 			return -2;
 		}
 		case 1: {
-			addMonsterRespawn(monster,listRespawn,x,y,player->abs_coord.zone);
-			playerWinExp(player, monster->exp);
-			if(monster->id == 99)
+			addMonsterRespawn(findMonster(monsterList, nMonster, m->id), listRespawn, x, y, player->abs_coord.zone);
+			playerWinExp(player, m->exp);
+			if(m->id == 99)
 				return 2;
 			return res;
 		}
