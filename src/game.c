@@ -16,11 +16,11 @@ level *createGame(int portal[4][2], player *p1, item **listItem, size_t nItem, i
 	return map;
 }
 
-void inGame(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int nbMap) {
+void inGame(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int nbMap, int portal[4][2]) {
 	cleanTerminal();
 	bool end = false;
 	while(!end) {;
-		switch (playerTurn(player, map, storage, listItem,nItem, listResource,nResource, listMonster,nMonster, respawnList)){
+		switch (playerTurn(player, map, storage, listItem,nItem, listResource,nResource, listMonster,nMonster, respawnList, portal)){
 			case -2:
 				gameOver();
 				end = true;
@@ -52,7 +52,8 @@ void inGame(player *player, level *map, storage *storage, item **listItem, size_
 		}
 	}
 }
-int playerTurn(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList) {
+
+int playerTurn(player *player, level *map, storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int portal[4][2]) {
 	int res = 0;
 	while(res == 0) {
 		displayPlayerOnMap(player,map);
@@ -63,13 +64,13 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 		scanf("%s", value);
 		cleanTerminal();
 		if (tolower(value[0]) == 'z') {
-			res = tryMove(player,map,NORTH,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y-1);
+			res = tryMove(player,map,NORTH,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y-1, portal);
 		} else if (tolower(value[0]) == 'd') {
-			res = tryMove(player,map,EAST,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x+1,player->abs_coord.y);
+			res = tryMove(player,map,EAST,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x+1,player->abs_coord.y, portal);
 		} else if (tolower(value[0]) == 's') {
-			res = tryMove(player,map,SOUTH,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y+1);
+			res = tryMove(player,map,SOUTH,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,respawnList,player->abs_coord.x,player->abs_coord.y+1, portal);
 		} else if (tolower(value[0]) == 'q') {
-			res = tryMove(player, map, WEST,storage, listItem, nItem, listResource, nResource, listMonster, nMonster, respawnList, player->abs_coord.x - 1, player->abs_coord.y);
+			res = tryMove(player, map, WEST,storage, listItem, nItem, listResource, nResource, listMonster, nMonster, respawnList, player->abs_coord.x - 1, player->abs_coord.y, portal);
 		} else if(tolower(value[0]) == 'a') {
 			res = playerUsePotion(player);
 		} else if (tolower(value[0]) == 'o' || tolower(value[0]) == '0') {
@@ -81,11 +82,9 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 		free(value);
 	}
 	return res;
-
-
-
 }
-int tryMove(player *player, level *map, direction direction,storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int x, int y) {
+
+int tryMove(player *player, level *map, direction direction,storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int x, int y, int portal[4][2]) {
 	printf("tryMove() %d\n",direction);
 	if(player->abs_coord.y-1 < 0 || player->abs_coord.x+1 >= map->w || player->abs_coord.y+1 >= map->h || player->abs_coord.x - 1 < 0) {//sortie de map
 		printc("La Terre est plate mon gars, tu ne peux pas aller plus loin! ¯\\_(\"/)_/¯",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
@@ -97,9 +96,9 @@ int tryMove(player *player, level *map, direction direction,storage *storage, it
 	resCase = checkCaseIdType(id,listResource,nResource,listMonster,nMonster);
 	printf("resCase = %d\n", resCase);
 	switch(resCase) {
+		case -3:
 		case -2:
-			interactWithPNJ(player, storage, listItem, nItem);
-			return 1;
+			return teleport(id, player, map, portal);
 		case -1: // Case infranchissable
 			printc("Case invalide!!!\n",2, FOREGROUND_RED, FOREGROUND_INTENSITY);
 			return 0;
@@ -122,6 +121,40 @@ int tryMove(player *player, level *map, direction direction,storage *storage, it
 			return res;
 	}
 }
+
+bool teleport(int32_t id, player *p1, level *map, int portal[4][2]){
+	if(id == -3 && p1->abs_coord.zone == 2){
+		map[p1->abs_coord.zone].level[p1->abs_coord.y][p1->abs_coord.x] = 0;
+		p1->abs_coord.zone = 1;
+		p1->abs_coord.x = portal[3][0];
+		p1->abs_coord.y = portal[3][1] - 1;
+		map[p1->abs_coord.zone].level[p1->abs_coord.y][p1->abs_coord.x] = 1;
+		return true;
+	}else if(id == -3 && p1->abs_coord.zone == 1 && p1->level > 7){
+		map[p1->abs_coord.zone].level[p1->abs_coord.y][p1->abs_coord.x] = 0;
+		p1->abs_coord.zone = 2;
+		p1->abs_coord.x = portal[2][0];
+		p1->abs_coord.y = portal[2][1] - 1;
+		map[p1->abs_coord.zone].level[p1->abs_coord.y][p1->abs_coord.x] = 1;
+		return true;
+	}else if(id == -2 && p1->abs_coord.zone == 1){
+		map[p1->abs_coord.zone].level[p1->abs_coord.y][p1->abs_coord.x] = 0;
+		p1->abs_coord.zone = 0;
+		p1->abs_coord.x = portal[0][0];
+		p1->abs_coord.y = portal[0][1] - 1;
+		map[p1->abs_coord.zone].level[p1->abs_coord.y][p1->abs_coord.x] = 1;
+		return true;
+	}else if(id == -2 && p1->abs_coord.zone == 0 && p1->level > 7){
+		map[p1->abs_coord.zone].level[p1->abs_coord.y][p1->abs_coord.x] = 0;
+		p1->abs_coord.zone = 1;
+		p1->abs_coord.x = portal[1][0];
+		p1->abs_coord.y = portal[1][1] - 1;
+		map[p1->abs_coord.zone].level[p1->abs_coord.y][p1->abs_coord.x] = 1;
+		return true;
+	}
+	return false;
+}
+
 int checkCaseIdType(int id, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster) {
 	printf("checkCaseIdType()\n");
 	resource *res1 = findResource(listResource,nResource,id);

@@ -40,7 +40,7 @@ int main(){
 						}
 						free(value);
 						if(map != NULL){
-							inGame(player1,map,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,&respawnList,l);
+							inGame(player1,map,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,&respawnList,l, portal);
 							freeMap(map, 3);
 							freeRespawnList(respawnList);
 						}else r = -6;
