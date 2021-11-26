@@ -46,7 +46,7 @@ bool playerIsDead(player *player) {
     return player->life <= 0;
 }
 void playerTakeDamage(player *player, uint16_t amount) {
-	if(player->stuff != NULL && player->stuff->armor != NULL) {
+	if(player->stuff->armor != NULL) {
 		int reduction = (player->stuff->armor->flag / 100);
 		player->life -= amount - (amount * reduction);
 	}
@@ -100,8 +100,7 @@ void playerChooseStuff(player *player) {
 		}
 	}
 	free(listWeapons);
-	if(stuff->armor != NULL || stuff->weapon != NULL)
-		player->stuff = stuff;
+	player->stuff = stuff;
 }
 int playerTurnFight(player *player, monster *monster, uint16_t monsterMaxLife) {
 	printMonster(monster,monsterMaxLife);
@@ -139,7 +138,7 @@ int playerTurnFight(player *player, monster *monster, uint16_t monsterMaxLife) {
 	return res;
 }
 int playerDoDamage(player *player, monster *monster) {
-	if (player->stuff != NULL && player->stuff->weapon != NULL && player->stuff->weapon->durability > 0) {
+	if (player->stuff->weapon != NULL && player->stuff->weapon->durability > 0) {
 		int amount = (player->stuff->weapon->damage);
 		if(amount >= monster->life)
 			monster->life = 0;

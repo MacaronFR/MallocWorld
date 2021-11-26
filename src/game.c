@@ -176,6 +176,7 @@ int fight(player *player, monster *monster, respawn **listRespawn, int32_t x, in
 				res = -2;
 		}
 	}
+	player->stuff = NULL;
 	switch(res) {
 		case -2: {
 			printc("Vous avez été découpé, brulé, broyé... Quelle mort tragique... :'(\n", 1, FOREGROUND_RED);
