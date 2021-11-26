@@ -23,5 +23,7 @@ int applyRandom(int n, int level, int max_monstre);
 level *generateMap(int seed, int portal[4][2]);
 void freeMap(level *map, int level);
 bool checkZone(int **map, int x, int y, int length);
+void placeMonster(int **map, int h, int w, int level, int maxMonstre);
+void placePortal(int **map, int portal[4][2], int level);
 
 #endif //MALLOCWORLD_PERLIN_H

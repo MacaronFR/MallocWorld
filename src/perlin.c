@@ -25,7 +25,6 @@ level *generateMap(int seed, int portal[4][2]){
 
 int **generateLevel(int h, int w, int level, int *p, int seed, int maxMonstre, int portal[4][2]){
 	int **map = malloc(sizeof(int*) * h);
-	int x, y;
 	for(int i = 0; i < h; ++i){
 		map[i] = malloc(sizeof(int) * w);
 		for(int j = 0; j < w; ++j){
@@ -33,11 +32,24 @@ int **generateLevel(int h, int w, int level, int *p, int seed, int maxMonstre, i
 		}
 	}
 	srand(seed);
+	placeMonster(map, h, w, level, maxMonstre);
+	placePortal(map, portal, level);
+	return map;
+}
+
+void placeMonster(int **map, int h, int w, int level, int maxMonstre){
 	for(int i = 0; i < h; ++i){
 		for(int j = 0; j < w; ++j){
 			map[i][j] = applyRandom(map[i][j], level, maxMonstre);
 		}
 	}
+	if(level == 3){
+		map[rand()%h][rand()%w] = 99;
+	}
+}
+
+void placePortal(int **map, int portal[4][2], int level){
+	int x,y;
 	do{
 		x = (rand() % 98) + 1;
 		y = (rand() % 98) + 1;
@@ -55,7 +67,6 @@ int **generateLevel(int h, int w, int level, int *p, int seed, int maxMonstre, i
 		portal[3][0] = x;
 		portal[3][1] = y;
 	}
-	return map;
 }
 
 bool checkZone(int **map, int x, int y, int length){
