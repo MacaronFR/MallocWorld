@@ -238,7 +238,7 @@ void printQuantity(inventory* inventory, int id) {
 	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
     if(inventory->slots[id].item != NULL) {
         item *item = inventory->slots[id].item;
-        if (item->type & RESSOURCES != 0) {
+        if ((item->type & RESSOURCES) != 0) {
 			setTextDefault();
 			printf("%3d", inventory->slots[id].quantity);
 		}
@@ -260,4 +260,15 @@ void printInventoryLineSeparator(int count) {
     }
     printf("+\n");
     setTextDefault();
+}
+
+void repairInventory(item **itemList, size_t nItem, inventory *inv){
+	item *tmp;
+	for(int i = 0; i < MAX_SLOTS_INVENTORY; ++i){
+		item *tmp = inv->slots[i].item;
+		while(tmp != NULL && repair(itemList, nItem, tmp)){
+			;
+			tmp = tmp->next;
+		}
+	}
 }
