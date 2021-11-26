@@ -9,6 +9,7 @@ monster *createMonster(monster *m){
 	res->respawn = m->respawn;
 	res->strength = m->strength;
 	res->zone = m->zone;
+	res->exp = m->strength*5 + m->life/4;
 	return res;
 }
 

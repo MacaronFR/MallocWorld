@@ -35,7 +35,7 @@ void printInterfacePlayer();
 void printInterfacePNJ();
 void printInterfaceStorage(storage *storage);
 void printInterfaceCrafting(item **listCraftableItem);
-
+void printStorage(storage *storage);
 void printCredit();
 
 bool teleport(int32_t id, player *p1, level *map, int portal[4][2]);

@@ -30,6 +30,12 @@ player *createPlayer(item **listItem, size_t nItem) {
     return player1;
 }
 
+stuff *createStuff() {
+	stuff *stuff = malloc(sizeof (stuff));
+	stuff->armor = NULL;
+	stuff->weapon = NULL;
+}
+
 void freePlayer(player *player) {
     freeInventory(player->inventory);
     free(player);
@@ -40,7 +46,7 @@ bool playerIsDead(player *player) {
     return player->life <= 0;
 }
 void playerTakeDamage(player *player, uint16_t amount) {
-	if(player->stuff != NULL) {
+	if(player->stuff->armor != NULL) {
 		int reduction = (player->stuff->armor->flag / 100);
 		player->life -= amount - (amount * reduction);
 	}
@@ -71,10 +77,32 @@ void playerLevelUp(player *player) {
 //|--------------------------------------------| ACTION |--------------------------------------------|
 //---------------------- Fight ----------------------
 void playerChooseStuff(player *player) {
-
+	printPlayer(player);
+	stuff *stuff = createStuff();
+	item **listArmors = getItemCategory(player->inventory,ARMORS);
+	if(listArmors != NULL) {
+		printf("\nChoisi ton armure pour le combat : \n");
+		int res = playerDoChoiceCategory(listArmors);
+		int index = indexSlotInInventory(player->inventory, res, 0);
+		if (index != -1) {
+			stuff->armor = player->inventory->slots[index].item;
+		}
+	}
+	free(listArmors);
+	item **listWeapons = getItemCategory(player->inventory,WEAPONS);
+	if(listWeapons != NULL) {
+		printf("\nChoisi ton arme pour le combat : \n");
+		int res2 = playerDoChoiceCategory(listWeapons);
+		int index2 = indexSlotInInventory(player->inventory, res2, 0);
+		if(index2 != -1) {
+			stuff->weapon = player->inventory->slots[index2].item;
+			printf("\nArme selectionné \n");
+		}
+	}
+	free(listWeapons);
+	player->stuff = stuff;
 }
 int playerTurnFight(player *player, monster *monster, uint16_t monsterMaxLife) {
-	cleanTerminal();
 	printMonster(monster,monsterMaxLife);
 	printFightIcon();
 	printPlayer(player);
@@ -85,6 +113,7 @@ int playerTurnFight(player *player, monster *monster, uint16_t monsterMaxLife) {
 		char* value = malloc(sizeof (char) * 255);
 		fflush(stdin);
 		scanf("%s", value);
+		cleanTerminal();
 		if(tolower(value[0])  == 'a') {
 			res = playerDoDamage(player, monster);
 		}
@@ -109,9 +138,14 @@ int playerTurnFight(player *player, monster *monster, uint16_t monsterMaxLife) {
 	return res;
 }
 int playerDoDamage(player *player, monster *monster) {
-	if (player->stuff != NULL) {
-		int amount = (player->stuff->weapon->flag);
-		monster->life -= amount;
+	if (player->stuff->weapon != NULL && player->stuff->weapon->durability > 0) {
+		int amount = (player->stuff->weapon->damage);
+		if(amount >= monster->life)
+			monster->life = 0;
+		else {
+			monster->life -= player->stuff->weapon->damage;
+		}
+		player->stuff->weapon->durability--;
 	} else {
 		monster->life -= 1;
 	}
@@ -124,16 +158,17 @@ int playerSwitchWeapon(player *player) {
 		return -1;
 	}
 	int value = playerDoChoiceCategory(tabItem);
-	if(value > 0 && value < 11 && tabItem[value-1]!=NULL) {
-		player->stuff->weapon = tabItem[value-1];
+	int index = indexSlotInInventory(player->inventory,value,0);
+	if(index != -1) {
+		player->stuff->weapon = tabItem[index];
 		return 0;
 	}
-	else if(value == 11) {
-		printf("Réfléchi avant de lancer une action la prochaine fois -_-");
+	else if(value == 0) {
+		printf("Réfléchi avant de lancer une action la prochaine fois (-_-)");
 		return -1;
 	}
 	else {
-		printf("Tu veux bien apprendre à lire ? ça me fera des vacances... -_-");
+		printf("Tu veux bien apprendre à lire ? ça me fera des vacances... (-_-)");
 		return -1;
 	}
 }
@@ -144,16 +179,17 @@ int playerSwitchArmor(player *player) {
 		return -1;
 	}
 	int value = playerDoChoiceCategory(tabItem);
-	if(value > 0 && value < 11 && tabItem[value-1]!=NULL) {
-		player->stuff->armor = tabItem[value-1];
+	int index = indexSlotInInventory(player->inventory,value,0);
+	if(index != -1) {
+		player->stuff->armor = tabItem[index];
 		return 0;
 	}
-	else if(value == 11) {
-		printf("Réfléchi avant de lancer une action la prochaine fois -_-");
+	else if(value == 0) {
+		printf("Réfléchi avant de lancer une action la prochaine fois (-_-)");
 		return -1;
 	}
 	else {
-		printf("Tu veux bien apprendre à lire ? ça me fera des vacances... -_-");
+		printf("Tu veux bien apprendre à lire ? ça me fera des vacances... (-_-)");
 		return -1;
 	}
 }
@@ -190,12 +226,14 @@ int playerEscape(player *player) {
 int playerDoChoiceCategory(item** tabItem) {
 	printf("Fait ton choix :\n");
 	for (int i = 0; tabItem[i] != NULL; i++) {
-		printf("| %d - %s |", i+1, tabItem[i]->name);
+		printf("| %d - %s |\n", tabItem[i]->id, tabItem[i]->name);
 	}
-	printf("| 11 - Annuler |");
-	char* value = malloc(sizeof (char) * (2 + 1));
-	fgets(value,2,stdin);
-	return atoi(value);
+	printf("| 0 - Annuler |\n");
+	int value;
+	fflush(stdin);
+	scanf("%d", &value);
+	cleanTerminal();
+	return value;
 }
 
 //---------------------- Map ----------------------

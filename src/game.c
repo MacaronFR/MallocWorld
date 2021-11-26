@@ -209,6 +209,7 @@ int fight(player *player, monster *monster, respawn **listRespawn, int32_t x, in
 				res = -2;
 		}
 	}
+	player->stuff = NULL;
 	switch(res) {
 		case -2: {
 			printc("Vous avez été découpé, brulé, broyé... Quelle mort tragique... :'(\n", 1, FOREGROUND_RED);
@@ -231,7 +232,6 @@ int fight(player *player, monster *monster, respawn **listRespawn, int32_t x, in
 	}
 }
 void interactWithPNJ(player *player, storage *storage, item **listItem, size_t nItem) {
-	cleanTerminal();
 	repairInventory(listItem,nItem,player->inventory);
 	item **listCraftableItem = getCraftableItem(listItem, nItem, player->abs_coord.zone);
 	bool quit = false;
@@ -469,9 +469,8 @@ void printInterfacePNJ() {
 }
 void printInterfaceStorage(storage *storage) {
 
-	// printStorage
+	printStorage(storage);
 
-	cleanTerminal();
 	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
 				   " \\_,|                                                                                     |\n"
 				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
@@ -539,6 +538,7 @@ void printInterfaceCrafting(item **listCraftableItem) {
 
 	printf("\n\n");
 }
+
 
 void printCredit() {
 	printc("Jeux Mallocworld développé par :\n"

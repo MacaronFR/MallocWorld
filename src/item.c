@@ -115,6 +115,13 @@ item *load_item(const char *filename){
 		fclose(f);
 		return NULL;
 	}
+	res->damage = tmp;
+	tmp = getFieldValue(buf, f);
+	if(tmp == -1 && (errno == EINVAL || errno == ERANGE)){
+		free(res);
+		fclose(f);
+		return NULL;
+	}
 	res->durability = tmp;
 	tmp = getFieldValue(buf, f);
 	if(tmp == -1 && (errno == EINVAL || errno == ERANGE)){
@@ -312,6 +319,7 @@ item *copyItem(item *i){
 	res->maxStack = i->maxStack;
 	res->durability = i->durability;
 	res->flag = i->flag;
+	res->damage = i->damage;
 	res->next = NULL;
 	l = 0;
 	while(i->craft[l] != 0) ++l;
