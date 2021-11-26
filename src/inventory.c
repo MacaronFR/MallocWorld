@@ -251,11 +251,11 @@ void printQuantity(slot slot, int id) {
 }
 void printInventoryLineSeparator(int count) {
     setText(2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-	printf(" ");
+	printf("    ");
     for(int i=0 ; i<count ; i++) {
         printf("+---");
     }
-    printf("+\n ");
+    printf("+\n    ");
     setTextDefault();
 }
 

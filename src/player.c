@@ -44,6 +44,9 @@ void playerTakeDamage(player *player, uint16_t amount) {
 		int reduction = (player->stuff->armor->flag / 100);
 		player->life -= amount - (amount * reduction);
 	}
+	else {
+		player->life -= amount;
+	}
 }
 void playerWinExp(player *player, uint16_t exp) {
 	player->exp += exp;
@@ -67,16 +70,21 @@ void playerLevelUp(player *player) {
 
 //|--------------------------------------------| ACTION |--------------------------------------------|
 //---------------------- Fight ----------------------
-int playerTurnFight(player *player, monster *monster) {
+void playerChooseStuff(player *player) {
+
+}
+int playerTurnFight(player *player, monster *monster, uint16_t monsterMaxLife) {
 	cleanTerminal();
+	printMonster(monster,monsterMaxLife);
+	printFightIcon();
 	printPlayer(player);
 	int res = -1;
 
 	while(res == -1) {
 		playerInterfaceFight();
 		char* value = malloc(sizeof (char) * 255);
-		fgets(value,10,stdin);
 		fflush(stdin);
+		scanf("%s", value);
 		if(tolower(value[0])  == 'a') {
 			res = playerDoDamage(player, monster);
 		}
@@ -249,7 +257,7 @@ void displayPlayerOnMap(player *p, level *map){
 
 	printf("\n");
 	for(int i = starty; i < endy; ++i){
-		printc(" +--+--+--+--+--+--+--+--+--+--+\n |",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+		printc("    +--+--+--+--+--+--+--+--+--+--+\n    |",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 		for(int j = startx; j < endx; ++j){
 			setTextDefault();
 			int id = map[p->abs_coord.zone].level[i][j];
@@ -298,13 +306,13 @@ void displayPlayerOnMap(player *p, level *map){
 		}
 		printf("\n");
 	}
-	printc(" +--+--+--+--+--+--+--+--+--+--+\n",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printc("    +--+--+--+--+--+--+--+--+--+--+\n",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 	printf("\n\n");
 }
 void printPlayer(player *player) {
-	printf("  @      | ");   printLevel(player);
-	printf(" /|\\     | ");  printExp(player);
-	printf(" / \\     | ");  printLife(player);
+	printf("\n     @      | ");   printLevel(player);
+	printf("    /|\\     | ");  printExp(player);
+	printf("    / \\     | ");  printLife(player->life, player->maxLife);
 	printInventory(player->inventory);
 }
 void printLevel(player *player) {
@@ -318,10 +326,10 @@ void printExp(player *player) {
 	printBar(player->exp, player->level*100.f, 50);
 	setTextDefault();
 }
-void printLife(player *player) {
+void printLife(uint16_t current, uint16_t max) {
 	setText(1,FOREGROUND_RED);
 	printf("Life : ");
-	printBar(player->life, player->maxLife,50);
+	printBar(current, max,50);
 	setTextDefault();
 }
 void printBar(float value, float max, int size) {
@@ -344,33 +352,45 @@ void playerInterfaceFight() {
 	printc(	"\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
 			   " \\_,|                                          |\n"
 			   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
-	printc(				"Que souhaitez vous faire ?      ",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
-	printc(													"     |\n"
+	printc(				"Combat en cours ...",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+	printc(							  				"                   |\n"
+													   "    |                                          |\n"
+													   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(				"Que souhaitez vous faire ?      ",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	printc(													"      |\n"
 			   "    |                                          |\n"
 			   "    |                                          |\n"
 			   "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				   "A - Attaquer",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-	printc(							  				"             |\n"
+	printc(							  				"                          |\n"
 			   "    |                                          |\n"
 			   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc(				"Z - Changer d'arme",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-	printc(									"                 |\n"
+	printc(				"Z - Changer d'arme",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(									"                    |\n"
 			   "    |                                          |\n"
 			   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(				"E - Changer d'armure    ",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-	printc(												"       |\n"
+	printc(												"              |\n"
 		       "    |                                          |\n"
 			   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc(				"R - Boire une potion",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-	printc(									"                     |\n"
+	printc(				"R - Boire une potion",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+	printc(									"                  |\n"
 			   "    |                                          |\n"
 			   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(				"T - Prendre la fuite",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-	printc(									"             |\n"
+	printc(									"                  |\n"
 			   "    |                                          |\n"
 			   "    |                                          |\n"
 			   "    |  ,----------------------------------------,\n"
 			   "    \\_/________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printf("\n\n");
 
+}
+void printMonster(monster *monster, uint16_t monsterMaxLife) {
+	printf("\n     @      | ");   setText(1,FOREGROUND_PURPLE); printf("%s\n",monster->name);  setTextDefault();
+	printf("    /|\\     | ");  printLife(monster->life, monsterMaxLife);
+	printf("    / \\     | ");  printc("Degat :",2,FOREGROUND_RED,FOREGROUND_INTENSITY) ; printf("%d\n", monster->strength);
+}
+void printFightIcon() {
+	printf("\n             <==========={}xxx)=(^o^)=(xxx{}===========>\n");
 }

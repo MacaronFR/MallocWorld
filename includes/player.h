@@ -44,16 +44,12 @@ void playerWinExp(player *player, uint16_t exp);
 void playerLevelUp(player *player);
 
 
-//---------------------- Affichage ----------------------
-void printPlayer(player *player);
-void printLevel(player *player);
-void printExp(player *player);
-void printLife(player *player);
-void printBar(float value, float max, int size);
+
 
 //|--------------------------------------------| ACTION |--------------------------------------------|
 //---------------------- Fight ----------------------
-int playerTurnFight(player *player, monster *monster);
+void playerChooseStuff(player *player);
+int playerTurnFight(player *player, monster *monster, uint16_t monsterMaxLife);
 int playerDoDamage(player *player, monster *monster);
 int playerSwitchWeapon(player *player);
 int playerSwitchArmor(player *player);
@@ -64,8 +60,18 @@ int playerDoChoiceCategory(item **tabItem);
 //---------------------- Map ----------------------
 void playerMove(player *player, level *map, direction direction);
 
-void playerInterfaceFight();
-void displayPlayerOnMap(player *p, level *map);
 
+
+//---------------------- Affichage ----------------------
+void displayPlayerOnMap(player *p, level *map);
+void printPlayer(player *player);
+void printLevel(player *player);
+void printExp(player *player);
+void printLife(uint16_t current, uint16_t max);
+void printBar(float value, float max, int size);
+
+void playerInterfaceFight();
+void printMonster(monster *monster, uint16_t monsterMaxLife);
+void printFightIcon();
 
 #endif //MALLOCWORLD_PLAYER_H

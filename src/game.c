@@ -163,13 +163,14 @@ int tryRecolte(player *player, item **listItem, size_t nItem, resource **listRes
 	return 0;
 }
 int fight(player *player, monster *monster, respawn **listRespawn, int32_t x, int32_t y) {
-	printf("fight()\n");
 	int res = 0;
+	uint16_t monsterMaxLife = monster->life;
+	playerChooseStuff(player);
 	while(res == 0) {
-		res = playerTurnFight(player, monster);
+		res = playerTurnFight(player, monster,monsterMaxLife);
 		if(monster->life <= 0)
 			res = 1;
-		else {
+		else if(res != 3){
 			playerTakeDamage(player, monster->strength);
 			if(playerIsDead(player))
 				res = -2;
