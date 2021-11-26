@@ -28,7 +28,7 @@ typedef struct s_respawn{
 void addMonsterRespawn(monster *m, respawn **list, int32_t x, int32_t y, int8_t level);
 void addResourceRespawn(resource *r, respawn **list, int32_t x, int32_t y, int8_t level);
 void checkRespawn(respawn **list, level *map);
-void makeRespawn(respawn *r, level *map);
+bool makeRespawn(respawn *r, level *map);
 void freeRespawnList(respawn *r);
 
 #endif //MALLOCWORLD_RESPAWN_H

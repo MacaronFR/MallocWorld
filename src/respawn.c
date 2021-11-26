@@ -30,8 +30,7 @@ void checkRespawn(respawn **list, level *map){
 	respawn *l = *list;
 	while(l != NULL){
 		l->left--;
-		if(l->left <= 0){
-			makeRespawn(l, map);
+		if(l->left <= 0 && makeRespawn(l, map)){
 			if(prev == NULL){
 				*list = l->next;
 			}else{
@@ -47,16 +46,19 @@ void checkRespawn(respawn **list, level *map){
 	}
 }
 
-void makeRespawn(respawn *r, level *map){
+bool makeRespawn(respawn *r, level *map){
+	if(map[r->level].level[r->y][r->x] != 0){
+		return false;
+	}
 	switch(r->ptrType){
 		case MONSTER:
 			map[r->level].level[r->y][r->x] = r->ptr.m->id;
 			printf("Respawn Monster id = %d name = \"%s\" at (%d. %d)\n", r->ptr.m->id, r->ptr.m->name, r->x, r->y);
-			return;
+			return true;
 		case RESOURCE:
 			map[r->level].level[r->y][r->x] = r->ptr.r->id;
 			printf("Respawn Resource id = %d at (%d. %d)\n", r->ptr.r->id, r->x, r->y);
-			return;
+			return true;
 	}
 }
 
