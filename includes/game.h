@@ -34,7 +34,7 @@ void printMapLineSeparator(int count);
 void printInterfacePlayer();
 void printInterfacePNJ();
 void printInterfaceStorage(storage *storage);
-void printInterfaceCrafting(item **listCraftableItem);
+void printInterfaceCrafting(item **listCraftableItem,storage *storage);
 void printStorage(storage *storage);
 void printCredit();
 

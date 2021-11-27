@@ -49,6 +49,10 @@ void playerLevelUp(player *player);
 //|--------------------------------------------| ACTION |--------------------------------------------|
 //---------------------- Fight ----------------------
 void playerChooseStuff(player *player);
+void printChooseArmor(player *player, item **listArmors);
+void printChooseWeapon(player *player, item **listWeapons);
+
+
 int playerTurnFight(player *player, monster *monster, uint16_t monsterMaxLife);
 int playerDoDamage(player *player, monster *monster);
 int playerSwitchWeapon(player *player);

@@ -285,7 +285,7 @@ void goToCrafting(player *player,storage *storage, item **listCraftableItem) {
 	bool quit = false;
 	while(!quit) {
 		printStorage(storage);
-		printInterfaceCrafting(listCraftableItem);
+		printInterfaceCrafting(listCraftableItem, storage);
 		int value;
 		fflush(stdin);
 		scanf("%d", &value);
@@ -313,8 +313,15 @@ void winGame() {
 }
 
 //// --------------------------------- AFFICHAGE ---------------------------------
+void printCredit() {
+	printc("Jeux Mallocworld développé par :\n"
+		   "	-	Denis TURBIEZ		@Macaron\n"
+		   "	-	Basile PULIN		@Barlords\n"
+		   "	-	Jean-Jaures OKA		@Jean\n",
+		   2,FOREGROUND_GREEN,FOREGROUND_INTENSITY
+	);
+}
 void printStartMenu() {
-	cleanTerminal();
 	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
 				   	" \\_,|                                       |\n"
 				   	"    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
@@ -334,77 +341,15 @@ void printStartMenu() {
 	printc(		 		  "3 - Credit",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
 	printc(				   			 "                         |\n"
 				    "    |                                       |\n"
-				    "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
-	printc(		 		  "4 - Quitter le jeu",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
-	printc(									 "                 |\n"
+										"    |                                       |\n"
+										"    |                 ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(		 		  "0 - Quitter le jeu",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+	printc(									 "    |\n"
 				    "    |                                       |\n"
 				    "    |                                       |\n"
 				    "    |  ,-------------------------------------,\n"
 				    "    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printf("\n\n");
-}
-void tempPrintMap(level *map) {
-	for(int i=0 ; i<map->h ; i++) {
-		printMapLineSeparator(map->w);
-		printc("|",1,FOREGROUND_BLUE);
-		for (int j=0; j<map->w ; j++) {
-			setTextDefault();
-			int id = map[0].level[i][j];
-			switch(id) {
-				case -3:
-				case -2:
-					setText( 2, FOREGROUND_RED,BACKGROUND_CYAN);
-					break;
-				case -1:
-					setText( 2, FOREGROUND_RED,BACKGROUND_RED);
-					break;
-				case 0:
-					setText( 2, FOREGROUND_BLACK, BACKGROUND_BLACK);
-					break;
-				case 1:
-					setText( 3, FOREGROUND_CYAN, FOREGROUND_INTENSITY,BACKGROUND_PURPLE);
-					break;
-				case 2:
-					setText( 3, FOREGROUND_RED, FOREGROUND_INTENSITY,BACKGROUND_CYAN);
-					break;
-				case 3:
-				case 6:
-				case 9:
-					setText( 3, FOREGROUND_RED,FOREGROUND_INTENSITY,BACKGROUND_GREEN);
-					break;
-				case 4:
-				case 7:
-				case 10:
-					setText( 2, FOREGROUND_BLACK ,BACKGROUND_WHITE);
-					break;
-				case 5:
-				case 8:
-				case 11:
-					setText(3, FOREGROUND_PURPLE,FOREGROUND_INTENSITY,BACKGROUND_YELLOW);
-					break;
-				case 99:
-					setText( 2, FOREGROUND_BLACK,BACKGROUND_RED);
-					break;
-				default:
-					setText( 1, FOREGROUND_RED);
-					break;
-			}
-			printf("%2d",id);
-			setTextDefault();
-			printc("|", 1, FOREGROUND_BLUE);
-		}
-		printf("\n");
-	}
-	printMapLineSeparator(map->w);
-	printf("\n\n");
-}
-void printMapLineSeparator(int count) {
-	setText(1,FOREGROUND_BLUE);
-	for(int i=0 ; i<count ; i++) {
-		printf("+--");
-	}
-	printf("+\n");
-	setTextDefault();
 }
 void printInterfacePlayer() {
 
@@ -513,8 +458,10 @@ void printInterfaceStorage(storage *storage) {
 
 	printf("\n\n");
 }
-void printInterfaceCrafting(item **listCraftableItem) {
-	cleanTerminal();
+void printInterfaceCrafting(item **listCraftableItem, storage *storage) {
+
+	printStorage(storage);
+
 	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
 				   " \\_,|                                                                                     |\n"
 				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
@@ -552,11 +499,67 @@ void printInterfaceCrafting(item **listCraftableItem) {
 }
 
 
-void printCredit() {
-	printc("Jeux Mallocworld développé par :\n"
-		   "	-	Denis TURBIEZ		@Macaron\n"
-		   "	-	Basile PULIN		@Barlords\n"
-		   "	-	Jean-Jaures OKA		@Jean\n",
-		   2,FOREGROUND_GREEN,FOREGROUND_INTENSITY
-	);
+
+void tempPrintMap(level *map) {
+	for(int i=0 ; i<map->h ; i++) {
+		printMapLineSeparator(map->w);
+		printc("|",1,FOREGROUND_BLUE);
+		for (int j=0; j<map->w ; j++) {
+			setTextDefault();
+			int id = map[0].level[i][j];
+			switch(id) {
+				case -3:
+				case -2:
+					setText( 2, FOREGROUND_RED,BACKGROUND_CYAN);
+					break;
+				case -1:
+					setText( 2, FOREGROUND_RED,BACKGROUND_RED);
+					break;
+				case 0:
+					setText( 2, FOREGROUND_BLACK, BACKGROUND_BLACK);
+					break;
+				case 1:
+					setText( 3, FOREGROUND_CYAN, FOREGROUND_INTENSITY,BACKGROUND_PURPLE);
+					break;
+				case 2:
+					setText( 3, FOREGROUND_RED, FOREGROUND_INTENSITY,BACKGROUND_CYAN);
+					break;
+				case 3:
+				case 6:
+				case 9:
+					setText( 3, FOREGROUND_RED,FOREGROUND_INTENSITY,BACKGROUND_GREEN);
+					break;
+				case 4:
+				case 7:
+				case 10:
+					setText( 2, FOREGROUND_BLACK ,BACKGROUND_WHITE);
+					break;
+				case 5:
+				case 8:
+				case 11:
+					setText(3, FOREGROUND_PURPLE,FOREGROUND_INTENSITY,BACKGROUND_YELLOW);
+					break;
+				case 99:
+					setText( 2, FOREGROUND_BLACK,BACKGROUND_RED);
+					break;
+				default:
+					setText( 1, FOREGROUND_RED);
+					break;
+			}
+			printf("%2d",id);
+			setTextDefault();
+			printc("|", 1, FOREGROUND_BLUE);
+		}
+		printf("\n");
+	}
+	printMapLineSeparator(map->w);
+	printf("\n\n");
+}
+void printMapLineSeparator(int count) {
+	setText(1,FOREGROUND_BLUE);
+	for(int i=0 ; i<count ; i++) {
+		printf("+--");
+	}
+	printf("+\n");
+	setTextDefault();
 }

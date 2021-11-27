@@ -77,38 +77,132 @@ void playerLevelUp(player *player) {
 //|--------------------------------------------| ACTION |--------------------------------------------|
 //---------------------- Fight ----------------------
 void playerChooseStuff(player *player) {
-	printPlayer(player);
 	stuff *stuff = createStuff();
 	item **listArmors = getItemCategory(player->inventory,ARMORS);
 	if(listArmors != NULL) {
-		printf("\nChoisi ton armure pour le combat : \n");
-		int res = playerDoChoiceCategory(listArmors);
+		printChooseArmor(player,listArmors);
+		int res;
+		fflush(stdin);
+		scanf("%d", &res);
+		cleanTerminal();
 		int index = indexSlotInInventory(player->inventory, res, 0);
 		if (index != -1) {
 			stuff->armor = player->inventory->slots[index].item;
 		}
+		free(listArmors);
 	}
-	free(listArmors);
 	item **listWeapons = getItemCategory(player->inventory,WEAPONS);
 	if(listWeapons != NULL) {
-		printf("\nChoisi ton arme pour le combat : \n");
-		int res2 = playerDoChoiceCategory(listWeapons);
-		int index2 = indexSlotInInventory(player->inventory, res2, 0);
-		if(index2 != -1) {
-			stuff->weapon = player->inventory->slots[index2].item;
-			printf("\nArme selectionné \n");
+		printChooseWeapon(player,listWeapons);
+		int res;
+		fflush(stdin);
+		scanf("%d", &res);
+		cleanTerminal();
+		int index = indexSlotInInventory(player->inventory, res, 0);
+		if(index != -1) {
+			stuff->weapon = player->inventory->slots[index].item;
 		}
+		free(listWeapons);
 	}
-	free(listWeapons);
 	player->stuff = stuff;
 }
-int playerTurnFight(player *player, monster *monster, uint16_t monsterMaxLife) {
-	printMonster(monster,monsterMaxLife);
-	printFightIcon();
+void printChooseArmor(player *player, item **listArmors) {
 	printPlayer(player);
-	int res = -1;
 
+	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
+				   " \\_,|                                                                                     |\n"
+				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				   "Choisi ton armure :",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+	printc(						  "                                                              |\n"
+									 "    |                                                                                     |\n"
+									 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+
+	for(int i=0 ; listArmors[i] != NULL ; i++) {
+		setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+		printf("%2d  - %20s  | Resistance : %3d  ",listArmors[i]->id, listArmors[i]->name, listArmors[i]->damage);
+		printc(											      "                                 |\n"
+																 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	}
+
+	printc(				   			 "                                                                                 |\n"
+										"    |                                                                                     |\n"
+										"    |                                                                ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(		 		  "0 - Ne rien faire",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+	printc(									 "    |\n"
+												"    |                                                                                     |\n"
+												"    |                                                                                     |\n"
+												"    |  ,-----------------------------------------------------------------------------------,\n"
+												"    \\_/___________________________________________________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+
+	printf("\n\n");
+}
+void printChooseWeapon(player *player, item **listWeapons) {
+	printPlayer(player);
+
+	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
+				   " \\_,|                                                                                     |\n"
+				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				   "Choisi ton arme :",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+	printc(						  "                                                                |\n"
+									 "    |                                                                                     |\n"
+									 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+
+	for(int i=0 ; listWeapons[i] != NULL ; i++) {
+		setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+		printf("%2d  - %20s  | Degat : %3d  | Durabilité : %3d",listWeapons[i]->id, listWeapons[i]->name, listWeapons[i]->damage, listWeapons[i]->durability);
+		printc(											      "                    |\n"
+																 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	}
+
+	printc(				   			 "                                                                                 |\n"
+										"    |                                                                                     |\n"
+										"    |                                                                ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(		 		  "0 - Ne rien faire",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+	printc(									 "    |\n"
+												"    |                                                                                     |\n"
+												"    |                                                                                     |\n"
+												"    |  ,-----------------------------------------------------------------------------------,\n"
+												"    \\_/___________________________________________________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+
+	printf("\n\n");
+}
+void printChoosePotion(player *player, item **listPotion) {
+	printPlayer(player);
+
+	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
+				   " \\_,|                                                                                     |\n"
+				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				   "Choisi ton arme :",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+	printc(						  "                                                                |\n"
+									 "    |                                                                                     |\n"
+									 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+
+	for(int i=0 ; listPotion[i] != NULL ; i++) {
+		setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+		printf("%2d  - %20s  | Soin : %3d ",listPotion[i]->id, listPotion[i]->name, listPotion[i]->damage);
+		printc(											      "                    |\n"
+																 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	}
+
+	printc(				   			 "                                                                                 |\n"
+										"    |                                                                                     |\n"
+										"    |                                                                ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(		 		  "0 - Ne rien faire",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+	printc(									 "    |\n"
+												"    |                                                                                     |\n"
+												"    |                                                                                     |\n"
+												"    |  ,-----------------------------------------------------------------------------------,\n"
+												"    \\_/___________________________________________________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+
+	printf("\n\n");
+}
+
+int playerTurnFight(player *player, monster *monster, uint16_t monsterMaxLife) {
+	int res = -1;
 	while(res == -1) {
+		printMonster(monster,monsterMaxLife);
+		printFightIcon();
+		printPlayer(player);
 		playerInterfaceFight();
 		char* value = malloc(sizeof (char) * 255);
 		fflush(stdin);
@@ -130,7 +224,7 @@ int playerTurnFight(player *player, monster *monster, uint16_t monsterMaxLife) {
 			res = playerEscape(player);
 		}
 		else {
-			printc("L'action spécifié est incorrecte\n", 1, FOREGROUND_YELLOW);
+			printc("\nL'action spécifié est incorrecte\n", 1, FOREGROUND_YELLOW);
 			res = -1;
 		}
 		free(value);
@@ -154,86 +248,89 @@ int playerDoDamage(player *player, monster *monster) {
 int playerSwitchWeapon(player *player) {
 	item** tabItem = getItemCategory(player->inventory, WEAPONS);
 	if(tabItem == NULL) {
-		printf("Tu n'as pas d'autre arme, si tu n'es pas content démerde toi avec tes poings! \n");
+		printc("\nTu n'as pas d'autre arme, si tu n'es pas content démerde toi avec tes poings! \n",1,FOREGROUND_YELLOW);
 		return -1;
 	}
-	int value = playerDoChoiceCategory(tabItem);
+	printChooseWeapon(player, tabItem);
+	int value;
+	fflush(stdin);
+	scanf("%d", &value);
+	cleanTerminal();
 	int index = indexSlotInInventory(player->inventory,value,0);
 	if(index != -1) {
 		player->stuff->weapon = tabItem[index];
 		return 0;
 	}
 	else if(value == 0) {
-		printf("Réfléchi avant de lancer une action la prochaine fois (-_-)");
+		printf("\nRéfléchi avant de lancer une action la prochaine fois (-_-)\n");
 		return -1;
 	}
 	else {
-		printf("Tu veux bien apprendre à lire ? ça me fera des vacances... (-_-)");
+		printf("\nTu veux bien apprendre à lire ? ça me fera des vacances... (-_-)\n");
 		return -1;
 	}
 }
 int playerSwitchArmor(player *player) {
 	item** tabItem = getItemCategory(player->inventory, ARMORS);
 	if(tabItem == NULL) {
-		printf("T'as pas d'armure mon gars, va falloir que t'encaisse sans broncher!   (°v`(O=('-'Q)\n");
+		printf("\nT'as pas d'armure mon gars, va falloir que t'encaisse sans broncher!   (°v`(O=('-'Q)\n");
 		return -1;
 	}
-	int value = playerDoChoiceCategory(tabItem);
+	printChooseArmor(player, tabItem);
+	int value;
+	fflush(stdin);
+	scanf("%d", &value);
+	cleanTerminal();
 	int index = indexSlotInInventory(player->inventory,value,0);
 	if(index != -1) {
 		player->stuff->armor = tabItem[index];
 		return 0;
 	}
 	else if(value == 0) {
-		printf("Réfléchi avant de lancer une action la prochaine fois (-_-)");
+		printf("\nRéfléchi avant de lancer une action la prochaine fois (-_-)\n");
 		return -1;
 	}
 	else {
-		printf("Tu veux bien apprendre à lire ? ça me fera des vacances... (-_-)");
+		printf("\nTu veux bien apprendre à lire ? ça me fera des vacances... (-_-)\n");
 		return -1;
 	}
 }
 int playerUsePotion(player *player) {
 	item** tabItem = getItemCategory(player->inventory, POTIONS);
 	if(tabItem == NULL) {
-		printf("Des popo, des po..., ah non... :'( \n");
+		printc("\nDes popo, des po..., ah non... :'( \n",1,FOREGROUND_YELLOW);
 		return -1;
 	}
-	int value = playerDoChoiceCategory(tabItem);
-	if(value > 0 && value < 11 && tabItem[value-1]!=NULL) {
-		player->life += tabItem[value-1]->flag;
+	printChoosePotion(player, tabItem);
+	int value;
+	fflush(stdin);
+	scanf("%d", &value);
+	cleanTerminal();
+	int index = indexSlotInInventory(player->inventory,value,0);
+	if(index != -1) {
+		player->life += tabItem[index]->damage;
+		item *item = retrieveItemInInventory(player->inventory,value);
+		free(item);
 		return 0;
 	}
-	else if(value == 11) {
-		printf("Réfléchi avant de lancer une action la prochaine fois -_-");
+	else if(value == 0) {
+		printf("\nRéfléchi avant de lancer une action la prochaine fois (-_-)\n");
 		return -1;
 	}
 	else {
-		printf("Tu veux bien apprendre à lire ? ça me fera des vacances... -_-");
+		printf("\nTu veux bien apprendre à lire ? ça me fera des vacances... (-_-)\n");
 		return -1;
 	}
 }
 int playerEscape(player *player) {
 	int res = (rand()%100);
 	if(res < 30) {
-		printf("COURAGE FUYONS!!!!");
+		printc("\nCOURAGE FUYONS!!!!\n",1,FOREGROUND_YELLOW);
 		return 3;
 	}
-	printc("HEY! Reviens la toi!",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc("\nHEY! Reviens la toi!\n",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
 	return 0;
 
-}
-int playerDoChoiceCategory(item** tabItem) {
-	printf("Fait ton choix :\n");
-	for (int i = 0; tabItem[i] != NULL; i++) {
-		printf("| %d - %s |\n", tabItem[i]->id, tabItem[i]->name);
-	}
-	printf("| 0 - Annuler |\n");
-	int value;
-	fflush(stdin);
-	scanf("%d", &value);
-	cleanTerminal();
-	return value;
 }
 
 //---------------------- Map ----------------------
