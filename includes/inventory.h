@@ -53,8 +53,9 @@ void removeSlot(storage *s, int index);
 
 //---------------------- Affichage ----------------------
 void printInventory(inventory* inventory);
-void printInventoryLineSeparator(int count);
-void printSlot(slot slot,int id);
+void printInventoryLineSeparator(slot *slots, int count);
+void printName(slot slot,int id);
+void printId(slot slot,int id);
 void printQuantity(slot slot, int id);
 
 void repairInventory(item **itemList, size_t nItem, inventory *inv);

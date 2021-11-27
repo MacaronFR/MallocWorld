@@ -28,18 +28,18 @@ level* startMenu(respawn **respawnList, player *player, storage *storage, int po
 				free(save);
 				return map;
 			}else{
-				printc("No save present\n",1,FOREGROUND_YELLOW);
+				printc(" No save present\n",1,FOREGROUND_YELLOW);
 			}
 		}
 		else if(value == 3){
 			printCredit();
 		}
 		else if(value == 0){
-			printc("A une prochaine !",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+			printc(" A une prochaine !\n",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
 			return NULL;
 		}
 		else{
-			printc("J'ai venu, j'ai lu, j'ai pas comprendu",1,FOREGROUND_YELLOW);
+			printc(" J'ai venu, j'ai lu, j'ai pas comprendu\n",1,FOREGROUND_YELLOW);
 		}
 	}
 }
