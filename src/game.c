@@ -292,15 +292,20 @@ void goToStorage(player *player, storage *storage) {
 }
 
 void depositItemStorage(player *player, storage *storage) {
+	int value;
+	int verif;
 	while(1) {
 		printInterfaceDepositItem(player->inventory,storage);
-		int value;
 		fflush(stdin);
-		scanf("%d", &value);
+		verif = scanf("%d", &value);
 		cleanTerminal();
-		if(value == 0)
+		if(verif != 1)
 			return;
-		item *item = retrieveItemInInventory(player->inventory,value);
+		if(value >= MAX_SLOTS_INVENTORY || player->inventory->slots[value].item == NULL){
+			printc("C'est pas dispo", 1, FOREGROUND_YELLOW);
+			continue;
+		}
+		item *item = retrieveItemInInventory(player->inventory, player->inventory->slots[value].item->id);
 		if(item != NULL) {
 			addItemInStorage(storage, item);
 		} else {
@@ -309,16 +314,20 @@ void depositItemStorage(player *player, storage *storage) {
 	}
 }
 void retrieveItemStorage(player *player, storage *storage) {
-	bool quit = false;
-	while(!quit) {
+	int value;
+	int verif = 1;
+	while(verif == 1) {
 		printInterfaceRetrieveItem(player->inventory,storage);
-		int value;
 		fflush(stdin);
-		scanf("%d", &value);
+		verif = scanf("%d", &value);
 		cleanTerminal();
-		if(value == 0)
+		if(verif != 1)
 			return;
-		item *item = retrieveItemInStorage(storage, value);
+		if(value >= storage->size){
+			printc("Trop loin", 1, FOREGROUND_YELLOW);
+			continue;
+		}
+		item *item = retrieveItemInStorage(storage, storage->slots[value].item->id);
 		if(item != NULL) {
 			addItemInInventory(player->inventory,item);
 		} else {
@@ -333,7 +342,7 @@ void goToCrafting(player *player,storage *storage, item **listCraftableItem) {
 	item *craft;
 	while(verif == 1) {
 		printStorage(storage);
-		printInterfaceCrafting(listCraftableItem, storage);
+		printInterfaceCrafting(player->inventory, listCraftableItem, storage);
 		fflush(stdin);
 		verif = scanf("%d", &value);
 		cleanTerminal();
@@ -526,7 +535,7 @@ void printInterfaceDepositItem(inventory *inventory,storage *storage) {
 	for(int i=0 ; i < MAX_SLOTS_INVENTORY ; i++) {
 		if(inventory->slots[i].item != NULL) {
 			setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-			printf("%2d - %20s",inventory->slots[i].item->id, inventory->slots[i].item->name);
+			printf("%2d - %20s", i, inventory->slots[i].item->name);
 			printc(											      "                                                        |\n"
 																	 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 		}
@@ -553,14 +562,12 @@ void printInterfaceRetrieveItem(inventory *inventory,storage *storage) {
 				   " \\_,|                                                                                     |\n"
 				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				   "Que souhaitez vous recuperer ?          ",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
-	printc(						  "                                         |\n"
-									 "    |                                                                                     |\n"
-									 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(						  "                                         |\n    |                                                                                     |\n    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 
 	for(int i=0 ; i < storage->size ; i++) {
 		if(storage->slots[i].item != NULL) {
 			setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-			printf("%2d - %20s",storage->slots[i].item->id, storage->slots[i].item->name);
+			printf("%2d - %20s", i, storage->slots[i].item->name);
 			printc(											      "                                                        |\n"
 																	 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 		}
