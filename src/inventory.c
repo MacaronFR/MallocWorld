@@ -209,29 +209,46 @@ void removeSlot(storage *s, int index){
 
 //----------------------| AFFICHAGE |----------------------
 void printInventory(inventory* inventory) {
-	printInventoryLineSeparator(MAX_SLOTS_INVENTORY);
+	printc("\n   Inventaire :\n",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
+	printInventoryLineSeparator(inventory->slots,MAX_SLOTS_INVENTORY);
     for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
-        printSlot(inventory->slots[i], i);
+        printName(inventory->slots[i], i);
     }
 	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
     printf(" <- Item\n");
-	printInventoryLineSeparator(MAX_SLOTS_INVENTORY);
+	printInventoryLineSeparator(inventory->slots,MAX_SLOTS_INVENTORY);
+	for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
+		printId(inventory->slots[i], i);
+	}
+	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printf(" <- ID\n");
+	printInventoryLineSeparator(inventory->slots,MAX_SLOTS_INVENTORY);
     for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
         printQuantity(inventory->slots[i], i);
     }
 	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
     printf(" <- Count/Durability\n");
-	printInventoryLineSeparator(MAX_SLOTS_INVENTORY);
+	printInventoryLineSeparator(inventory->slots,MAX_SLOTS_INVENTORY);
 }
-void printSlot(slot slot, int id) {
+void printName(slot slot, int id) {
     printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
     if(slot.item != NULL) {
         item* item = slot.item;
-        printf("%3d", item->id);
+        printf("%20s ",item->name);
     }
     else {
-        printf("   ");
+        printf("%3s", "");
     }
+}
+void printId(slot slot, int id) {
+	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	if(slot.item != NULL) {
+		item* item = slot.item;
+		printf("%20d ",item->id);
+	}
+	else {
+		printf("%3s", "");
+	}
 }
 void printQuantity(slot slot, int id) {
 	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
@@ -239,21 +256,24 @@ void printQuantity(slot slot, int id) {
         item *item = slot.item;
         if ((item->type & RESSOURCES) != 0) {
 			setTextDefault();
-			printf("%3d", slot.quantity);
+			printf("%20d ", slot.quantity);
 		}
         else{
             setTextDefault();
-            printf("%3d", item->durability);
+            printf("%20d ", item->durability);
         }
     }
     else
-        printf("   ");
+        printf("%3s","");
 }
-void printInventoryLineSeparator(int count) {
+void printInventoryLineSeparator(slot *slots, int count) {
     setText(2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 	printf("    ");
     for(int i=0 ; i<count ; i++) {
-        printf("+---");
+		if(slots[i].item != NULL)
+        	printf("+---------------------");
+		else
+			printf("+---");
     }
     printf("+\n    ");
     setTextDefault();
@@ -261,24 +281,36 @@ void printInventoryLineSeparator(int count) {
 
 void printStorage(storage *storage) {
 	int size = storage->size;
+	printc("\n   Stockage :\n",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
 	if(size == 0) {
-		printc("Votre stockage est vide !!!",2,FOREGROUND_INTENSITY,FOREGROUND_GREEN);
+		printc(	"\n    +---+"
+			   		"\n    |   |"
+				   "\n    +---+"
+				   "\n    |   |"
+				   "\n    +---+"
+				   "\n    |   |"
+				   "\n    +---+\n",2,FOREGROUND_INTENSITY,FOREGROUND_BLUE);
 		return;
 	}
-
-	printInventoryLineSeparator(size);
-	for(int i=0 ; i<storage->size ; i++) {
-		printSlot(storage->slots[i], i);
+	printInventoryLineSeparator(storage->slots, size);
+	for(int i=0 ; i<size ; i++) {
+		printName(storage->slots[i], i);
 	}
 	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 	printf(" <- Item\n");
-	printInventoryLineSeparator(size);
-	for(int i=0 ; i<storage->size ; i++) {
+	printInventoryLineSeparator(storage->slots, size);
+	for(int i=0 ; i<size ; i++) {
+		printId(storage->slots[i], i);
+	}
+	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	printf(" <- ID\n");
+	printInventoryLineSeparator(storage->slots, size);
+	for(int i=0 ; i<size ; i++) {
 		printQuantity(storage->slots[i], i);
 	}
 	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 	printf(" <- Count/Durability\n");
-	printInventoryLineSeparator(size);
+	printInventoryLineSeparator(storage->slots, size);
 }
 
 

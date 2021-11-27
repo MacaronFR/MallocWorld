@@ -20,8 +20,13 @@ int checkCaseIdType(int id, resource **listResource, size_t nResource, monster *
 int tryRecolte(player *player, item **listItem, size_t nItem, resource **listResource, size_t nResource, respawn **listRespawn, int id,  int x, int y);
 int fight(player *player, monster *m, respawn **listRespawn, int32_t x, int32_t y, monster **monsterList, size_t nMonster);
 void interactWithPNJ(player *player, storage *storage, item **listItem, size_t nItem);
+
 void goToStorage(player *player, storage *storage);
+void depositItemStorage(player *player, storage *storage);
+void retrieveItemStorage(player *player, storage *storage);
+
 void goToCrafting(player *player,storage *storage, item **listCraftableItem);
+
 
 void gameOver();
 void winGame();
@@ -33,8 +38,14 @@ void tempPrintMap(level *map);
 void printMapLineSeparator(int count);
 void printInterfacePlayer();
 void printInterfacePNJ();
-void printInterfaceStorage(storage *storage);
-void printInterfaceCrafting(item **listCraftableItem,storage *storage);
+
+void printInterfaceStorage(inventory *inventory, storage *storage);
+void printInterfaceDepositItem(inventory *inventory,storage *storage);
+void printInterfaceRetrieveItem(inventory *inventory,storage *storage);
+
+void printInterfaceCrafting(inventory *inventory, item **listCraftableItem,storage *storage);
+void printCraftingChoice(item *item);
+
 void printStorage(storage *storage);
 void printCredit();
 

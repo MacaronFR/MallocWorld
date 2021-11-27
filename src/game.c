@@ -273,15 +273,15 @@ void interactWithPNJ(player *player, storage *storage, item **listItem, size_t n
 void goToStorage(player *player, storage *storage) {
 	bool quit = false;
 	while(!quit) {
-		printInterfaceStorage(storage);
+		printInterfaceStorage(player->inventory, storage);
 		char* value = malloc(sizeof(char) * 255);
 		fflush(stdin);
 		scanf("%s", value);
 		cleanTerminal();
 		if (tolower(value[0]) == 'a') {
-
+			depositItemStorage(player, storage);
 		} else if (tolower(value[0]) == 'z') {
-
+			retrieveItemStorage(player, storage);
 		} else if (tolower(value[0]) == 'o' || tolower(value[0]) == '0') {
 			quit = true;
 		} else {
@@ -290,11 +290,47 @@ void goToStorage(player *player, storage *storage) {
 		free(value);
 	}
 }
+void depositItemStorage(player *player, storage *storage) {
+	while(1) {
+		printInterfaceDepositItem(player->inventory,storage);
+		int value;
+		fflush(stdin);
+		scanf("%d", &value);
+		cleanTerminal();
+		if(value == 0)
+			return;
+		item *item = retrieveItemInInventory(player->inventory,value);
+		if(item != NULL) {
+			addItemInStorage(storage, item);
+		} else {
+			printc("Ne depose pas des objet que tu n'as pas.\n", 1, FOREGROUND_YELLOW);
+		}
+	}
+}
+void retrieveItemStorage(player *player, storage *storage) {
+	bool quit = false;
+	while(!quit) {
+		printInterfaceRetrieveItem(player->inventory,storage);
+		int value;
+		fflush(stdin);
+		scanf("%d", &value);
+		cleanTerminal();
+		if(value == 0)
+			return;
+		item *item = retrieveItemInStorage(storage, value);
+		if(item != NULL) {
+			addItemInInventory(player->inventory,item);
+		} else {
+			printc("Ne prend pas des objet que tu n'as pas.\n", 1, FOREGROUND_YELLOW);
+		}
+	}
+}
+
 void goToCrafting(player *player,storage *storage, item **listCraftableItem) {
 	bool quit = false;
 	while(!quit) {
 		printStorage(storage);
-		printInterfaceCrafting(listCraftableItem, storage);
+		printInterfaceCrafting(player->inventory, listCraftableItem, storage);
 		int value;
 		fflush(stdin);
 		scanf("%d", &value);
@@ -433,8 +469,10 @@ void printInterfacePNJ() {
 
 	printf("\n\n");
 }
-void printInterfaceStorage(storage *storage) {
 
+void printInterfaceStorage(inventory *inventory, storage *storage) {
+
+	printInventory(inventory);
 	printStorage(storage);
 
 	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
@@ -467,8 +505,78 @@ void printInterfaceStorage(storage *storage) {
 
 	printf("\n\n");
 }
-void printInterfaceCrafting(item **listCraftableItem, storage *storage) {
+void printInterfaceDepositItem(inventory *inventory,storage *storage) {
 
+	printInventory(inventory);
+	printStorage(storage);
+
+	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
+				   " \\_,|                                                                                     |\n"
+				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				   "Que souhaitez vous deposer ? ",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+	printc(						  "                                                    |\n"
+															 "    |                                                                                     |\n"
+															 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+
+	for(int i=0 ; i < MAX_SLOTS_INVENTORY ; i++) {
+		if(inventory->slots[i].item != NULL) {
+			setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+			printf("%2d - %20s",inventory->slots[i].item->id, inventory->slots[i].item->name);
+			printc(											      "                                                        |\n"
+																	 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+		}
+	}
+
+	printc(				   			 "                                                                                 |\n"
+										"    |                                                                                     |\n"
+										"    |                                                          ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(		 		  "O - Revenir au stockage",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+	printc(									 "    |\n"
+												"    |                                                                                     |\n"
+												"    |                                                                                     |\n"
+												"    |  ,-----------------------------------------------------------------------------------,\n"
+												"    \\_/___________________________________________________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+
+	printf("\n\n");
+}
+void printInterfaceRetrieveItem(inventory *inventory,storage *storage) {
+
+	printInventory(inventory);
+	printStorage(storage);
+
+	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
+				   " \\_,|                                                                                     |\n"
+				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(				   "Que souhaitez vous recuperer ?          ",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+	printc(						  "                                   |\n"
+									 "    |                                                                                     |\n"
+									 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+
+	for(int i=0 ; i < storage->size ; i++) {
+		if(storage->slots[i].item != NULL) {
+			setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
+			printf("%2d - %20s",storage->slots[i].item->id, storage->slots[i].item->name);
+			printc(											      "                                                        |\n"
+																	 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+		}
+	}
+
+	printc(				   			 "                                                                                 |\n"
+										"    |                                                                                     |\n"
+										"    |                                                          ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+	printc(		 		  "O - Revenir au stockage",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
+	printc(									 "    |\n"
+												"    |                                                                                     |\n"
+												"    |                                                                                     |\n"
+												"    |  ,-----------------------------------------------------------------------------------,\n"
+												"    \\_/___________________________________________________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+
+	printf("\n\n");
+}
+
+void printInterfaceCrafting(inventory *inventory, item **listCraftableItem, storage *storage) {
+
+	printInventory(inventory);
 	printStorage(storage);
 
 	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
@@ -505,6 +613,9 @@ void printInterfaceCrafting(item **listCraftableItem, storage *storage) {
 												"    \\_/___________________________________________________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 
 	printf("\n\n");
+}
+void printCraftingChoice(item *item) {
+
 }
 
 
