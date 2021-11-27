@@ -192,11 +192,13 @@ int tryRecolte(player *player, item **listItem, size_t nItem, resource **listRes
 			}
 			if((tmp->type & 4) != 0) {
 				int count = (int)(rand()%4);
-				for(int j=0 ; j<=count ; j++)
-					addItemInInventory(player->inventory, tmp);
-			}
-			else
+				for(int j=0 ; j<=count ; j++){
+					addItemInInventory(player->inventory, copyItem(tmp));
+				}
+				freeItem(tmp);
+			}else{
 				addItemInInventory(player->inventory, tmp);
+			}
 			addResourceRespawn(resource,listRespawn,x,y,player->abs_coord.zone);
 			free(listTool);
 			return 1;

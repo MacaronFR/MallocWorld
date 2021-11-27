@@ -285,7 +285,7 @@ void printStorage(storage *storage) {
 void repairInventory(item **itemList, size_t nItem, inventory *inv){
 	item *tmp;
 	for(int i = 0; i < MAX_SLOTS_INVENTORY; ++i){
-		item *tmp = inv->slots[i].item;
+		tmp = inv->slots[i].item;
 		while(tmp != NULL && repair(itemList, nItem, tmp)){
 			tmp = tmp->next;
 		}
