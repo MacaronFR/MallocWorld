@@ -37,7 +37,7 @@ void printStartMenu();
 void tempPrintMap(level *map);
 void printMapLineSeparator(int count);
 void printInterfacePlayer();
-void printInterfacePNJ();
+void printInterfacePNJ(inventory *inventory, storage *storage);
 
 void printInterfaceStorage(inventory *inventory, storage *storage);
 void printInterfaceDepositItem(inventory *inventory,storage *storage);

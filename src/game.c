@@ -252,7 +252,7 @@ void interactWithPNJ(player *player, storage *storage, item **listItem, size_t n
 	item **listCraftableItem = getCraftableItem(listItem, nItem, player->abs_coord.zone);
 	bool quit = false;
 	while(!quit) {
-		printInterfacePNJ();
+		printInterfacePNJ(player->inventory, storage);
 		char* value = malloc(sizeof(char) * 255);
 		fflush(stdin);
 		scanf("%s", value);
@@ -329,7 +329,6 @@ void retrieveItemStorage(player *player, storage *storage) {
 void goToCrafting(player *player,storage *storage, item **listCraftableItem) {
 	bool quit = false;
 	while(!quit) {
-		printStorage(storage);
 		printInterfaceCrafting(player->inventory, listCraftableItem, storage);
 		int value;
 		fflush(stdin);
@@ -344,9 +343,12 @@ void goToCrafting(player *player,storage *storage, item **listCraftableItem) {
 					addItemInStorage(storage, itemCraft);
 					free(itemCraft);
 				}
+				else
+					printc(" Tu n'as pas les ressources necessaire \n", 1, FOREGROUND_YELLOW);
 			}
+			else
+				printc(" Tu m'as prit pour Ornn ?\n Si c'est pas écrit c'est que je ne sais pas faire. \n", 1, FOREGROUND_YELLOW);
 		}
-		printc("Tu m'as prit pour Ornn ? \nSi c'est pas écrit c'est que je ne sais pas faire. \n", 1, FOREGROUND_YELLOW);
 	}
 }
 
@@ -436,7 +438,10 @@ void printInterfacePlayer() {
 	printf("\n\n");
 
 }
-void printInterfacePNJ() {
+void printInterfacePNJ(inventory *inventory, storage *storage) {
+	printInventory(inventory);
+	printStorage(storage);
+
 	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
 				   " \\_,|                                                                     |\n"
 				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
@@ -548,7 +553,7 @@ void printInterfaceRetrieveItem(inventory *inventory,storage *storage) {
 				   " \\_,|                                                                                     |\n"
 				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				   "Que souhaitez vous recuperer ?          ",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
-	printc(						  "                                   |\n"
+	printc(						  "                                         |\n"
 									 "    |                                                                                     |\n"
 									 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 
