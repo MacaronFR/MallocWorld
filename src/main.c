@@ -11,6 +11,36 @@ void setDir(char *s){
 	free(command);
 }
 
+level* startMenu(respawn **respawnList, player *player, storage *storage, int portal[4][2], int *l, item **itemList, size_t nItem, resource **resourceList, size_t nResource, monster **monsterList, size_t nMonster) {
+	while(1) {
+		printStartMenu();
+		int value;
+		scanf("%d", &value);
+		cleanTerminal();
+		if(value == 1){
+			return createGame(portal, player, itemList, nItem, l);
+		} else if(value == 2){
+			char *save = selectSave();
+			if(save != NULL){
+				return loadSave(save, respawnList, player, storage, portal, l, itemList, nItem,
+								resourceList, nResource, monsterList, nMonster);
+				free(save);
+			}else{
+				printf("No save present\n");
+			}
+		}
+		else if(value == 3){
+			printCredit();
+		}
+		else if(value == 0){
+			printc("A une prochaine !",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+		}
+		else{
+			printc("J'ai venu, j'ai lu, j'ai pas comprendu",1,FOREGROUND_YELLOW);
+		}
+	}
+}
+
 int main(int argc, char **argv){
 	setDir(argv[0]);
 	int r = 0, l;
@@ -33,28 +63,8 @@ int main(int argc, char **argv){
 					storage *storage = createStorage();
 					if(storage != NULL){
 						printc("Storage created!\n",1,FOREGROUND_GREEN);
-						char* value = malloc(sizeof(char) * 255);
-						printStartMenu();
-						scanf("%s", value);
-						if(tolower(value[0]) == '1'){
-							map = createGame(portal, player1, listItem, nItem, &l);
-						} else if(tolower(value[0]) == '2'){
-							char *save = selectSave();
-							if(save != NULL){
-								map = loadSave(save, &respawnList, player1, storage, portal, &l, listItem, nItem,
-											   listResource, nResource, listMonster, nMonster);
-								free(save);
-							}else{
-								printf("No save present\n");
-							}
-						}
-						else if(tolower(value[0]) == '3'){
-							printCredit();
-						}
-						else{
-							printc("J'ai venu, j'ai lu, j'ai pas comprendu",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
-						}
-						free(value);
+						cleanTerminal();
+						map = startMenu(&respawnList, player1, storage, portal, &l, listItem, nItem,listResource, nResource, listMonster, nMonster);
 						if(map != NULL){
 							inGame(player1,map,storage,listItem,nItem,listResource,nResource,listMonster,nMonster,&respawnList,l, portal);
 							freeMap(map, 3);
