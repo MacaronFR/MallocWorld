@@ -245,6 +245,7 @@ int fight(player *player, monster *m, respawn **listRespawn, int32_t x, int32_t 
 	}
 }
 void interactWithPNJ(player *player, storage *storage, item **listItem, size_t nItem) {
+	printf("interactWithPNJ");
 	repairInventory(listItem,nItem,player->inventory);
 	item **listCraftableItem = getCraftableItem(listItem, nItem, player->abs_coord.zone);
 	bool quit = false;

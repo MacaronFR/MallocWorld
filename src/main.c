@@ -15,6 +15,7 @@ level* startMenu(respawn **respawnList, player *player, storage *storage, int po
 	while(1) {
 		printStartMenu();
 		int value;
+		fflush(stdin);
 		scanf("%d", &value);
 		cleanTerminal();
 		if(value == 1){
@@ -22,11 +23,12 @@ level* startMenu(respawn **respawnList, player *player, storage *storage, int po
 		} else if(value == 2){
 			char *save = selectSave();
 			if(save != NULL){
-				return loadSave(save, respawnList, player, storage, portal, l, itemList, nItem,
+				level *map = loadSave(save, respawnList, player, storage, portal, l, itemList, nItem,
 								resourceList, nResource, monsterList, nMonster);
 				free(save);
+				return map;
 			}else{
-				printf("No save present\n");
+				printc("No save present\n",1,FOREGROUND_YELLOW);
 			}
 		}
 		else if(value == 3){
@@ -34,6 +36,7 @@ level* startMenu(respawn **respawnList, player *player, storage *storage, int po
 		}
 		else if(value == 0){
 			printc("A une prochaine !",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+			return NULL;
 		}
 		else{
 			printc("J'ai venu, j'ai lu, j'ai pas comprendu",1,FOREGROUND_YELLOW);
