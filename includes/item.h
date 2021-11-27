@@ -20,6 +20,10 @@ typedef enum e_category {
 	WEAPONS = ITEMS + 4096,
 	TOOLS = ITEMS + 2048,
 	POTIONS = ITEMS + 1024,
+
+	ORES = RESSOURCES + 4,
+	WOODS = RESSOURCES + 2,
+	PLANTS = RESSOURCES + 1
 }category;
 
 typedef struct s_item{
