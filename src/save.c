@@ -356,7 +356,7 @@ char *selectSave(){
 	struct dirent *en;
 	item_dir = opendir("./saves/");
 	if(!item_dir){
-		//TODO le dossier save est casser
+		return NULL;
 	}
 	while((en = readdir(item_dir)) != NULL){
 		if(en->d_type == DT_REG){
