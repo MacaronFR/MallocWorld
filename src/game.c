@@ -290,27 +290,29 @@ void goToStorage(player *player, storage *storage) {
 		free(value);
 	}
 }
+
 void goToCrafting(player *player,storage *storage, item **listCraftableItem) {
-	bool quit = false;
-	while(!quit) {
+	int value;
+	int verif = 1;
+	item *craft;
+	while(verif == 1) {
 		printStorage(storage);
 		printInterfaceCrafting(listCraftableItem, storage);
-		int value;
 		fflush(stdin);
-		scanf("%d", &value);
+		verif = scanf("%d", &value);
 		cleanTerminal();
-		if(value == 0)
-			return;
-		for(int i=0 ; listCraftableItem[i] != NULL ; i++) {
-			if(listCraftableItem[i]->id == value) {
-				item *itemCraft = craftItem(player->inventory,storage,listCraftableItem[i]);
-				if(itemCraft != NULL) {
-					addItemInStorage(storage, itemCraft);
-					free(itemCraft);
-				}
-			}
+		printf("%d, %d\n", verif, value);
+		if(verif != 1 || listCraftableItem[value] == NULL){
+			printc("Ça marche pas visiblement\n", 1, FOREGROUND_YELLOW);
+			continue;
 		}
-		printc("Tu m'as prit pour Ornn ? \nSi c'est pas écrit c'est que je ne sais pas faire. \n", 1, FOREGROUND_YELLOW);
+		craft = craftItem(player->inventory, storage, listCraftableItem[value]);
+		if(craft == NULL){
+			printc("Tu as pas les ressources\n", 1, FOREGROUND_YELLOW);
+			return;
+		}
+		printc("C'est fait", 1, FOREGROUND_GREEN);
+		addItemInInventory(player->inventory, craft);
 	}
 }
 
@@ -489,7 +491,7 @@ void printInterfaceCrafting(item **listCraftableItem, storage *storage) {
 
 	for(int i=0 ; listCraftableItem[i] != NULL ; i++) {
 		setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-		printf("%2d - %20s",listCraftableItem[i]->id, listCraftableItem[i]->name);
+		printf("%2d - %20s",i, listCraftableItem[i]->name);
 		printc(											      "                                                        |\n"
 																 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	}
