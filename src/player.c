@@ -47,8 +47,8 @@ bool playerIsDead(player *player) {
 }
 void playerTakeDamage(player *player, uint16_t amount) {
 	if(player->stuff->armor != NULL) {
-		int reduction = (player->stuff->armor->flag / 100);
-		player->life -= amount - (amount * reduction);
+		float reduction = (player->stuff->armor->damage / 100.f);
+		player->life -=  (amount - (int)(amount * reduction));
 	}
 	else {
 		player->life -= amount;
