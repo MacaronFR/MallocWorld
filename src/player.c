@@ -46,12 +46,16 @@ bool playerIsDead(player *player) {
     return player->life <= 0;
 }
 void playerTakeDamage(player *player, uint16_t amount) {
+	int damage;
+	double reduction = 1;
 	if(player->stuff->armor != NULL) {
-		float reduction = (player->stuff->armor->damage / 100.f);
-		player->life -=  (amount - (int)(amount * reduction));
+		reduction = 1. - (player->stuff->armor->damage / 100.);
 	}
-	else {
-		player->life -= amount;
+	damage = (int)(amount * reduction);
+	if(damage > player->life){
+		player->life = 0;
+	}else{
+		player->life -= damage;
 	}
 }
 void playerWinExp(player *player, uint16_t exp) {
@@ -171,14 +175,14 @@ void printChoosePotion(player *player, item **listPotion) {
 	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
 				   " \\_,|                                                                                     |\n"
 				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
-	printc(				   "Choisi ton arme :",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
+	printc(				   "Choisi ta potion :",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
 	printc(						  "                                                                |\n"
 									 "    |                                                                                     |\n"
 									 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 
 	for(int i=0 ; listPotion[i] != NULL ; i++) {
 		setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-		printf("%2d  - %20s  | Soin : %3d ",listPotion[i]->id, listPotion[i]->name, listPotion[i]->damage);
+		printf("%2d  - %20s  | Soin : %3d ", i, listPotion[i]->name, listPotion[i]->damage);
 		printc(											      "                    |\n"
 																 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	}
@@ -198,15 +202,16 @@ void printChoosePotion(player *player, item **listPotion) {
 
 int playerTurnFight(player *player, monster *monster, uint16_t monsterMaxLife) {
 	int res = -1;
+	char* value = malloc(sizeof (char) * 255);
 	while(res == -1) {
 		printMonster(monster,monsterMaxLife);
 		printFightIcon();
 		printPlayer(player);
 		playerInterfaceFight();
-		char* value = malloc(sizeof (char) * 255);
 		fflush(stdin);
 		scanf("%s", value);
 		cleanTerminal();
+		value[0] = tolower(value[0]);
 		if(tolower(value[0])  == 'a') {
 			res = playerDoDamage(player, monster);
 		}
@@ -226,8 +231,8 @@ int playerTurnFight(player *player, monster *monster, uint16_t monsterMaxLife) {
 			printc("\nL'action spécifié est incorrecte\n", 1, FOREGROUND_YELLOW);
 			res = -1;
 		}
-		free(value);
 	}
+	free(value);
 	return res;
 }
 int playerDoDamage(player *player, monster *monster) {
@@ -296,30 +301,23 @@ int playerSwitchArmor(player *player) {
 }
 int playerUsePotion(player *player) {
 	item** tabItem = getItemCategory(player->inventory, POTIONS);
+	int value;
+	int verif;
 	if(tabItem == NULL) {
 		printc("\nDes popo, des po..., ah non... :'( \n",1,FOREGROUND_YELLOW);
 		return -1;
 	}
 	printChoosePotion(player, tabItem);
-	int value;
 	fflush(stdin);
-	scanf("%d", &value);
-	cleanTerminal();
-	int index = indexSlotInInventory(player->inventory,value,0);
-	if(index != -1) {
-		player->life += tabItem[index]->damage;
-		item *item = retrieveItemInInventory(player->inventory,value);
-		free(item);
+	verif = scanf("%d", &value);
+	if(verif != 1 || tabItem[value] == NULL){
 		return 0;
 	}
-	else if(value == 0) {
-		printf("\nRéfléchi avant de lancer une action la prochaine fois (-_-)\n");
-		return -1;
-	}
-	else {
-		printf("\nTu veux bien apprendre à lire ? ça me fera des vacances... (-_-)\n");
-		return -1;
-	}
+	cleanTerminal();
+	player->life += tabItem[value]->damage;
+	item *item = retrieveItemInInventory(player->inventory, tabItem[value]->id);
+	free(item);
+	return 0;
 }
 int playerEscape(player *player) {
 	int res = (rand()%100);
