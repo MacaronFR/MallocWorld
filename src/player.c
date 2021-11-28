@@ -250,55 +250,44 @@ int playerDoDamage(player *player, monster *monster) {
 	return 0;
 }
 int playerSwitchWeapon(player *player) {
+	int value;
+	int verif;
 	item** tabItem = getItemCategory(player->inventory, WEAPONS);
 	if(tabItem == NULL) {
 		printc("\nTu n'as pas d'autre arme, si tu n'es pas content démerde toi avec tes poings! \n",1,FOREGROUND_YELLOW);
 		return -1;
 	}
 	printChooseWeapon(player, tabItem);
-	int value;
 	fflush(stdin);
-	scanf("%d", &value);
+	verif = scanf("%d", &value);
+	if(verif != 1 || tabItem[value] == NULL){
+		return -1;
+	}
 	cleanTerminal();
-	int index = indexSlotInInventory(player->inventory,value,0);
-	if(index != -1) {
-		player->stuff->weapon = tabItem[index];
-		return 0;
-	}
-	else if(value == 0) {
-		printf("\nRéfléchi avant de lancer une action la prochaine fois (-_-)\n");
-		return -1;
-	}
-	else {
-		printf("\nTu veux bien apprendre à lire ? ça me fera des vacances... (-_-)\n");
-		return -1;
-	}
+	player->stuff->weapon = tabItem[value];
+	free(tabItem);
+	return 0;
 }
 int playerSwitchArmor(player *player) {
+	int value;
+	int verif;
 	item** tabItem = getItemCategory(player->inventory, ARMORS);
 	if(tabItem == NULL) {
 		printf("\nT'as pas d'armure mon gars, va falloir que t'encaisse sans broncher!   (°v`(O=('-'Q)\n");
 		return -1;
 	}
 	printChooseArmor(player, tabItem);
-	int value;
 	fflush(stdin);
-	scanf("%d", &value);
+	verif = scanf("%d", &value);
+	if(verif != 1 || tabItem[value] == NULL){
+		return -1;
+	}
 	cleanTerminal();
-	int index = indexSlotInInventory(player->inventory,value,0);
-	if(index != -1) {
-		player->stuff->armor = tabItem[index];
-		return 0;
-	}
-	else if(value == 0) {
-		printf("\nRéfléchi avant de lancer une action la prochaine fois (-_-)\n");
-		return -1;
-	}
-	else {
-		printf("\nTu veux bien apprendre à lire ? ça me fera des vacances... (-_-)\n");
-		return -1;
-	}
+	player->stuff->armor = tabItem[value];
+	free(tabItem);
+	return 0;
 }
+
 int playerUsePotion(player *player) {
 	item** tabItem = getItemCategory(player->inventory, POTIONS);
 	int value;
@@ -315,8 +304,10 @@ int playerUsePotion(player *player) {
 	}
 	cleanTerminal();
 	player->life += tabItem[value]->damage;
+	if(player->life > player->maxLife)
+		player->life = player->maxLife;
 	item *item = retrieveItemInInventory(player->inventory, tabItem[value]->id);
-	free(item);
+	freeItem(item);
 	return 0;
 }
 int playerEscape(player *player) {

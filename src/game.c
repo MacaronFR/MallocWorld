@@ -74,6 +74,7 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 			res = tryMove(player, map, WEST,storage, listItem, nItem, listResource, nResource, listMonster, nMonster, respawnList, player->abs_coord.x - 1, player->abs_coord.y, portal);
 		} else if(tolower(value[0]) == 'a') {
 			res = playerUsePotion(player);
+			res++;
 		} else if (tolower(value[0]) == 'o' || tolower(value[0]) == '0') {
 			res = -1;
 		} else {
@@ -98,7 +99,6 @@ int tryMove(player *player, level *map, direction direction,storage *storage, it
 	int id, resCase, res;
 	id = map[player->abs_coord.zone].level[y][x];
 	resCase = checkCaseIdType(id,listResource,nResource,listMonster,nMonster);
-	printf("resCase = %d\n", resCase);
 	switch(resCase) {
 		case -3:
 		case -2:
@@ -136,7 +136,7 @@ bool teleport(int32_t id, player *p1, level *map, int portal[4][2]){
 		p1->abs_coord.y = portal[3][1] - 1;
 		map[p1->abs_coord.zone].level[p1->abs_coord.y][p1->abs_coord.x] = 1;
 		return true;
-	}else if(id == -3 && p1->abs_coord.zone == 1 && p1->level > 7){
+	}else if(id == -3 && p1->abs_coord.zone == 1 && p1->level >= 7){
 		map[p1->abs_coord.zone].level[p1->abs_coord.y][p1->abs_coord.x] = 0;
 		p1->abs_coord.zone = 2;
 		p1->abs_coord.x = portal[2][0];
@@ -150,7 +150,7 @@ bool teleport(int32_t id, player *p1, level *map, int portal[4][2]){
 		p1->abs_coord.y = portal[0][1] - 1;
 		map[p1->abs_coord.zone].level[p1->abs_coord.y][p1->abs_coord.x] = 1;
 		return true;
-	}else if(id == -2 && p1->abs_coord.zone == 0 && p1->level > 7){
+	}else if(id == -2 && p1->abs_coord.zone == 0 && p1->level >= 3){
 		map[p1->abs_coord.zone].level[p1->abs_coord.y][p1->abs_coord.x] = 0;
 		p1->abs_coord.zone = 1;
 		p1->abs_coord.x = portal[1][0];
