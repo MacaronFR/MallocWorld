@@ -51,13 +51,13 @@ int main(int argc, char **argv){
 	level *map = NULL;
 	respawn *respawnList = NULL;//Liste de respawn
 	size_t nItem, nResource, nMonster;
-	item **listItem = loadItems("../items/", &nItem);
+	item **listItem = loadItems("./items/", &nItem);
 	if(listItem != NULL && checkCraftValidity(listItem, nItem)){
 		printc("ListItem loaded!\n",1,FOREGROUND_GREEN);
-		resource **listResource = loadResources("../resources/", &nResource, listItem, nItem);
+		resource **listResource = loadResources("./resources/", &nResource, listItem, nItem);
 		if(listResource != NULL){
 			printc("ListResource loaded!\n",1,FOREGROUND_GREEN);
-			monster **listMonster = loadMonsters("../monsters/", &nMonster);
+			monster **listMonster = loadMonsters("./monsters/", &nMonster);
 			if(listMonster != NULL){
 				printc("ListMonster loaded!\n",1,FOREGROUND_GREEN);
 				player *player1 = createPlayer(listItem,nItem);
