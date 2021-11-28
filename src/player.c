@@ -77,35 +77,34 @@ void playerLevelUp(player *player) {
 //|--------------------------------------------| ACTION |--------------------------------------------|
 //---------------------- Fight ----------------------
 void playerChooseStuff(player *player) {
+	int value;
+	int verif;
 	stuff *stuff = createStuff();
 	item **listArmors = getItemCategory(player->inventory,ARMORS);
 	if(listArmors != NULL) {
 		printChooseArmor(player,listArmors);
-		int res;
 		fflush(stdin);
-		scanf("%d", &res);
+		verif = scanf("%d", &value);
 		cleanTerminal();
-		int index = indexSlotInInventory(player->inventory, res, 0);
-		if (index != -1) {
-			stuff->armor = player->inventory->slots[index].item;
+		if(verif == 1 && listArmors[value] != NULL){
+			stuff->armor = listArmors[value];
 		}
 		free(listArmors);
 	}
 	item **listWeapons = getItemCategory(player->inventory,WEAPONS);
 	if(listWeapons != NULL) {
 		printChooseWeapon(player,listWeapons);
-		int res;
 		fflush(stdin);
-		scanf("%d", &res);
+		verif = scanf("%d", &value);
 		cleanTerminal();
-		int index = indexSlotInInventory(player->inventory, res, 0);
-		if(index != -1) {
-			stuff->weapon = player->inventory->slots[index].item;
+		if(verif == 1 && listWeapons[value] != NULL){
+			stuff->weapon = listWeapons[value];
 		}
 		free(listWeapons);
 	}
 	player->stuff = stuff;
 }
+
 void printChooseArmor(player *player, item **listArmors) {
 	printPlayer(player);
 
@@ -119,7 +118,7 @@ void printChooseArmor(player *player, item **listArmors) {
 
 	for(int i=0 ; listArmors[i] != NULL ; i++) {
 		setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-		printf("%2d  - %20s  | Resistance : %3d  ",listArmors[i]->id, listArmors[i]->name, listArmors[i]->damage);
+		printf("%2d  - %20s  | Resistance : %3d  ",i, listArmors[i]->name, listArmors[i]->damage);
 		printc(											      "                                 |\n"
 																 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	}
@@ -149,7 +148,7 @@ void printChooseWeapon(player *player, item **listWeapons) {
 
 	for(int i=0 ; listWeapons[i] != NULL ; i++) {
 		setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-		printf("%2d  - %20s  | Degat : %3d  | Durabilité : %3d",listWeapons[i]->id, listWeapons[i]->name, listWeapons[i]->damage, listWeapons[i]->durability);
+		printf("%2d  - %20s  | Degat : %3d  | Durabilité : %3d", i, listWeapons[i]->name, listWeapons[i]->damage, listWeapons[i]->durability);
 		printc(											      "                    |\n"
 																 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	}

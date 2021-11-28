@@ -353,7 +353,9 @@ void goToCrafting(player *player,storage *storage, item **listCraftableItem) {
 			return;
 		}
 		printc("C'est fait", 1, FOREGROUND_GREEN);
-		addItemInInventory(player->inventory, craft);
+		if(!addItemInInventory(player->inventory, craft)){
+			addItemInStorage(storage, craft);
+		}
 	}
 }
 
