@@ -162,7 +162,6 @@ bool teleport(int32_t id, player *p1, level *map, int portal[4][2]){
 }
 
 int checkCaseIdType(int id, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster) {
-	printf("checkCaseIdType()\n");
 	resource *res1 = findResource(listResource,nResource,id);
 	if(res1 != NULL)
 		return 3;
@@ -172,7 +171,6 @@ int checkCaseIdType(int id, resource **listResource, size_t nResource, monster *
 	return id;
 }
 int tryRecolte(player *player, item **listItem, size_t nItem, resource **listResource, size_t nResource, respawn **listRespawn, int id,  int x, int y) {
-	printf("tryRecolte()\n");
 	item **listTool = getItemCategory(player->inventory, TOOLS);
 	resource *resource = findResource(listResource,nResource,id);
 	item *tmp;
@@ -247,7 +245,6 @@ int fight(player *player, monster *m, respawn **listRespawn, int32_t x, int32_t 
 	}
 }
 void interactWithPNJ(player *player, storage *storage, item **listItem, size_t nItem) {
-	printf("interactWithPNJ");
 	repairInventory(listItem,nItem,player->inventory);
 	item **listCraftableItem = getCraftableItem(listItem, nItem, player->abs_coord.zone);
 	bool quit = false;
@@ -346,7 +343,6 @@ void goToCrafting(player *player,storage *storage, item **listCraftableItem) {
 		fflush(stdin);
 		verif = scanf("%d", &value);
 		cleanTerminal();
-		printf("%d, %d\n", verif, value);
 		if(verif != 1 || listCraftableItem[value] == NULL){
 			printc("Ça marche pas visiblement\n", 1, FOREGROUND_YELLOW);
 			continue;
