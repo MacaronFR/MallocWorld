@@ -291,14 +291,16 @@ void goToStorage(player *player, storage *storage) {
 	}
 }
 void depositItemStorage(player *player, storage *storage) {
-	while(1) {
+	int value;
+	int verif = 1;
+	while(verif == 1) {
 		printInterfaceDepositItem(player->inventory,storage);
-		int value;
 		fflush(stdin);
-		scanf("%d", &value);
+		verif = scanf("%d", &value);
 		cleanTerminal();
-		if(value == 0)
+		if(verif != 1){
 			return;
+		}
 		item *item = retrieveItemInInventory(player->inventory,value);
 		if(item != NULL) {
 			addItemInStorage(storage, item);
@@ -308,15 +310,16 @@ void depositItemStorage(player *player, storage *storage) {
 	}
 }
 void retrieveItemStorage(player *player, storage *storage) {
-	bool quit = false;
-	while(!quit) {
+	int value;
+	int verif = 1;
+	while(verif == 1) {
 		printInterfaceRetrieveItem(player->inventory,storage);
-		int value;
 		fflush(stdin);
-		scanf("%d", &value);
+		verif = scanf("%d", &value);
 		cleanTerminal();
-		if(value == 0)
+		if(verif != 1){
 			return;
+		}
 		item *item = retrieveItemInStorage(storage, value);
 		if(item != NULL) {
 			addItemInInventory(player->inventory,item);
@@ -327,28 +330,25 @@ void retrieveItemStorage(player *player, storage *storage) {
 }
 
 void goToCrafting(player *player,storage *storage, item **listCraftableItem) {
-	bool quit = false;
-	while(!quit) {
+	int value;
+	int verif = 1;
+	item *craft;
+	while(verif == 1) {
 		printInterfaceCrafting(player->inventory, listCraftableItem, storage);
-		int value;
 		fflush(stdin);
-		scanf("%d", &value);
+		verif = scanf("%d", &value);
 		cleanTerminal();
-		if(value == 0)
-			return;
-		for(int i=0 ; listCraftableItem[i] != NULL ; i++) {
-			if(listCraftableItem[i]->id == value) {
-				item *itemCraft = craftItem(player->inventory,storage,listCraftableItem[i]);
-				if(itemCraft != NULL) {
-					addItemInStorage(storage, itemCraft);
-					free(itemCraft);
-				}
-				else
-					printc(" Tu n'as pas les ressources necessaire \n", 1, FOREGROUND_YELLOW);
-			}
-			else
-				printc(" Tu m'as prit pour Ornn ?\n Si c'est pas écrit c'est que je ne sais pas faire. \n", 1, FOREGROUND_YELLOW);
+		if(verif != 1 || listCraftableItem[value] == NULL){
+			printc("Ça marche pas visiblement\n", 1, FOREGROUND_YELLOW);
+			continue;
 		}
+		craft = craftItem(player->inventory, storage, listCraftableItem[value]);
+		if(craft == NULL){
+			printc("Tu as pas les ressources\n", 1, FOREGROUND_YELLOW);
+			return;
+		}
+		printc("C'est fait", 1, FOREGROUND_GREEN);
+		addItemInInventory(player->inventory, craft);
 	}
 }
 
