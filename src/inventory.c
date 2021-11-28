@@ -202,7 +202,7 @@ void removeSlot(storage *s, int index){
 		s->slots[i] = s->slots[i + 1];
 	}
 	s->size -= 1;
-	s->slots = realloc(s->slots, sizeof(slot*) * s->size);
+	s->slots = realloc(s->slots, sizeof(slot) * s->size);
 }
 //---------------------- GET ET SET ----------------------
 
