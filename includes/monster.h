@@ -8,6 +8,7 @@
 #include <dirent.h>
 #include <terminalManager.h>
 #include <utils.h>
+#include <sys/stat.h>
 
 typedef struct s_monster{
 	uint16_t life;

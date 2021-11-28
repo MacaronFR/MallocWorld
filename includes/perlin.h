@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdint.h>
 
 typedef struct s_level{
 	int32_t h, w;

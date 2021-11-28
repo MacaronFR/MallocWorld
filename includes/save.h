@@ -4,6 +4,7 @@
 #include <respawn.h>
 #include <perlin.h>
 #include <player.h>
+#include <sys/stat.h>
 
 typedef struct s_saveFile{
 	char *name;

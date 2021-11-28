@@ -173,6 +173,7 @@ item **loadItems(const char *dir, size_t *nItem){
 	item_dir = opendir(dir);
 	size_t dirlen = strlen(dir);
 	char *file = malloc(sizeof(char) * (dirlen + 256));
+    struct stat stbuf;
 	strcpy(file, dir);
 	if(file[dirlen - 1] != '/'){
 		file[dirlen] = '/';
@@ -181,7 +182,8 @@ item **loadItems(const char *dir, size_t *nItem){
 	}
 	if(item_dir){
 		while((en = readdir(item_dir)) != NULL){
-			if(en->d_type == DT_REG){
+            stat(en->d_name, &stbuf);
+            if(S_ISDIR(stbuf.st_mode)){
 				file[dirlen] = '\0';
 				strcat(file, en->d_name);
 #ifdef DEBUG

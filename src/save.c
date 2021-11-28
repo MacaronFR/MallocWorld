@@ -354,12 +354,14 @@ char *selectSave(){
 	int i = 0, choice = -1;
 	DIR *item_dir;
 	struct dirent *en;
+    struct stat stbuf;
 	item_dir = opendir("./saves/");
 	if(!item_dir){
 		return NULL;
 	}
 	while((en = readdir(item_dir)) != NULL){
-		if(en->d_type == DT_REG){
+        stat(en->d_name, &stbuf);
+        if(S_ISDIR(stbuf.st_mode)){
 			tmp = list;
 			list = malloc(sizeof(saveFile));
 			list->next = tmp;

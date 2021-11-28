@@ -3,6 +3,7 @@
 
 #include <utils.h>
 #include <item.h>
+#include <sys/stat.h>
 
 typedef struct s_resource{
 	int32_t id;
