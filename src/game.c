@@ -74,6 +74,8 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 			res = tryMove(player, map, WEST,storage, listItem, nItem, listResource, nResource, listMonster, nMonster, respawnList, player->abs_coord.x - 1, player->abs_coord.y, portal);
 		} else if(tolower(value[0]) == 'a') {
 			res = playerUsePotion(player);
+			if(res == -1)
+				return 0;
 		} else if (tolower(value[0]) == 'o' || tolower(value[0]) == '0') {
 			res = -1;
 		} else {
@@ -291,11 +293,13 @@ void goToStorage(player *player, storage *storage) {
 	}
 }
 void depositItemStorage(player *player, storage *storage) {
+	int verif, value;
 	while(1) {
 		printInterfaceDepositItem(player->inventory,storage);
-		int value;
 		fflush(stdin);
-		scanf("%d", &value);
+		verif = scanf("%d", &value);
+		if(verif == 0)
+			value = -1;
 		cleanTerminal();
 		if(value == 0)
 			return;
