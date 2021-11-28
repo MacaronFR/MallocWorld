@@ -12,18 +12,18 @@
 
 //---------------------- Creation et Destruction ----------------------
 inventory* createInventory(){
-    inventory* inv = malloc(sizeof(inventory));
-    if(inv == NULL){
+	inventory* inv = malloc(sizeof(inventory));
+	if(inv == NULL){
 #ifdef DEBUG
-        fprintf(stderr, "Error : Out of memory");
+		fprintf(stderr, "Error : Out of memory");
 #endif
-        return NULL;
-    }
+		return NULL;
+	}
 	for(int i = 0; i < MAX_SLOTS_INVENTORY; i++){
 		inv->slots[i].item = NULL;
 		inv->slots[i].quantity = 0;
 	}
-    return inv;
+	return inv;
 }
 
 void freeInventory(inventory* inventory){
@@ -69,7 +69,7 @@ void freeStorage(storage *s){
 
 //---------------------- Test du contenue ----------------------
 bool isStackFull(slot *slot){
-    return slot->item != NULL && slot->item->maxStack <= slot->quantity;
+	return slot->item != NULL && slot->item->maxStack <= slot->quantity;
 }
 
 int indexEmptySlot(inventory *inventory){
@@ -113,28 +113,28 @@ item **getItemCategory(inventory *inventory, category category) {
 
 //---------------------- Récupération et Modification ----------------------
 bool addItemInInventory(inventory *inventory, item *add) {
-    int slot = indexSlotInInventory(inventory, add->id, 0);
-    int emptySlot;
-    while(slot != -1) {
-        if(!isStackFull(&(inventory->slots[slot]))) {
-            add->next = inventory->slots[slot].item;
-            inventory->slots[slot].item = add;
-            inventory->slots[slot].quantity++;
-            return true;
-        }
-        else{
-            slot++;
-        }
-        slot = indexSlotInInventory(inventory, add->id, slot);
-    }
-    emptySlot = indexEmptySlot(inventory);
-    if(emptySlot != -1) {
-        add->next = NULL;
-        inventory->slots[emptySlot].item = add;
-        inventory->slots[emptySlot].quantity++;
-        return true;
-    }
-    return false;
+	int slot = indexSlotInInventory(inventory, add->id, 0);
+	int emptySlot;
+	while(slot != -1) {
+		if(!isStackFull(&(inventory->slots[slot]))) {
+			add->next = inventory->slots[slot].item;
+			inventory->slots[slot].item = add;
+			inventory->slots[slot].quantity++;
+			return true;
+		}
+		else{
+			slot++;
+		}
+		slot = indexSlotInInventory(inventory, add->id, slot);
+	}
+	emptySlot = indexEmptySlot(inventory);
+	if(emptySlot != -1) {
+		add->next = NULL;
+		inventory->slots[emptySlot].item = add;
+		inventory->slots[emptySlot].quantity++;
+		return true;
+	}
+	return false;
 }
 
 item *retrieveItemInInventory(inventory *inv, int32_t id){
@@ -202,7 +202,7 @@ void removeSlot(storage *s, int index){
 		s->slots[i] = s->slots[i + 1];
 	}
 	s->size -= 1;
-	s->slots = realloc(s->slots, sizeof(slot*) * s->size);
+	s->slots = realloc(s->slots, sizeof(slot) * s->size);
 }
 //---------------------- GET ET SET ----------------------
 
@@ -211,11 +211,11 @@ void removeSlot(storage *s, int index){
 void printInventory(inventory* inventory) {
 	printc("\n   Inventaire :\n",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
 	printInventoryLineSeparator(inventory->slots,MAX_SLOTS_INVENTORY);
-    for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
-        printName(inventory->slots[i], i);
-    }
+	for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
+		printName(inventory->slots[i], i);
+	}
 	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-    printf(" <- Item\n");
+	printf(" <- Item\n");
 	printInventoryLineSeparator(inventory->slots,MAX_SLOTS_INVENTORY);
 	for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
 		printId(inventory->slots[i], i);
@@ -223,22 +223,22 @@ void printInventory(inventory* inventory) {
 	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 	printf(" <- ID\n");
 	printInventoryLineSeparator(inventory->slots,MAX_SLOTS_INVENTORY);
-    for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
-        printQuantity(inventory->slots[i], i);
-    }
+	for(int i=0 ; i<MAX_SLOTS_INVENTORY ; i++) {
+		printQuantity(inventory->slots[i], i);
+	}
 	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-    printf(" <- Count/Durability\n");
+	printf(" <- Count/Durability\n");
 	printInventoryLineSeparator(inventory->slots,MAX_SLOTS_INVENTORY);
 }
 void printName(slot slot, int id) {
-    printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-    if(slot.item != NULL) {
-        item* item = slot.item;
-        printf("%20s ",item->name);
-    }
-    else {
-        printf("%3s", "");
-    }
+	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	if(slot.item != NULL) {
+		item* item = slot.item;
+		printf("%20s ",item->name);
+	}
+	else {
+		printf("%3s", "");
+	}
 }
 void printId(slot slot, int id) {
 	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
@@ -252,31 +252,31 @@ void printId(slot slot, int id) {
 }
 void printQuantity(slot slot, int id) {
 	printc("|",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
-    if(slot.item != NULL) {
-        item *item = slot.item;
-        if ((item->type & RESSOURCES) != 0) {
+	if(slot.item != NULL) {
+		item *item = slot.item;
+		if ((item->type & RESSOURCES) != 0) {
 			setTextDefault();
 			printf("%20d ", slot.quantity);
 		}
-        else{
-            setTextDefault();
-            printf("%20d ", item->durability);
-        }
-    }
-    else
-        printf("%3s","");
+		else{
+			setTextDefault();
+			printf("%20d ", item->durability);
+		}
+	}
+	else
+		printf("%3s","");
 }
 void printInventoryLineSeparator(slot *slots, int count) {
-    setText(2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
+	setText(2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 	printf("    ");
-    for(int i=0 ; i<count ; i++) {
+	for(int i=0 ; i<count ; i++) {
 		if(slots[i].item != NULL)
-        	printf("+---------------------");
+			printf("+---------------------");
 		else
 			printf("+---");
-    }
-    printf("+\n    ");
-    setTextDefault();
+	}
+	printf("+\n    ");
+	setTextDefault();
 }
 
 void printStorage(storage *storage) {
@@ -284,7 +284,7 @@ void printStorage(storage *storage) {
 	printc("\n   Stockage :\n",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
 	if(size == 0) {
 		printc(	"\n    +---+"
-			   		"\n    |   |"
+				   "\n    |   |"
 				   "\n    +---+"
 				   "\n    |   |"
 				   "\n    +---+"

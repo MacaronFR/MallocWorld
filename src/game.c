@@ -88,9 +88,9 @@ int playerTurn(player *player, level *map, storage *storage, item **listItem, si
 int tryMove(player *player, level *map, direction direction,storage *storage, item **listItem, size_t nItem, resource **listResource, size_t nResource, monster **listMonster, size_t nMonster, respawn **respawnList, int x, int y, int portal[4][2]) {
 	monster *m;
 	if(	direction == NORTH && player->abs_coord.y-1 < 0 ||
-	direction == EAST && player->abs_coord.x+1 >= map->w ||
-	direction == SOUTH && player->abs_coord.y+1 >= map->h ||
-	direction == WEST && player->abs_coord.x - 1 < 0) {//sortie de map
+		   direction == EAST && player->abs_coord.x+1 >= map->w ||
+		   direction == SOUTH && player->abs_coord.y+1 >= map->h ||
+		   direction == WEST && player->abs_coord.x - 1 < 0) {//sortie de map
 		printc("La Terre est plate mon gars, tu ne peux pas aller plus loin! ¯\\_(\"/)_/¯",1,FOREGROUND_YELLOW);
 		return 0;
 	}
@@ -290,18 +290,22 @@ void goToStorage(player *player, storage *storage) {
 		free(value);
 	}
 }
+
 void depositItemStorage(player *player, storage *storage) {
 	int value;
-	int verif = 1;
-	while(verif == 1) {
+	int verif;
+	while(1) {
 		printInterfaceDepositItem(player->inventory,storage);
 		fflush(stdin);
 		verif = scanf("%d", &value);
 		cleanTerminal();
-		if(verif != 1){
+		if(verif != 1)
 			return;
+		if(value >= MAX_SLOTS_INVENTORY || player->inventory->slots[value].item == NULL){
+			printc("C'est pas dispo", 1, FOREGROUND_YELLOW);
+			continue;
 		}
-		item *item = retrieveItemInInventory(player->inventory,value);
+		item *item = retrieveItemInInventory(player->inventory, player->inventory->slots[value].item->id);
 		if(item != NULL) {
 			addItemInStorage(storage, item);
 		} else {
@@ -317,10 +321,13 @@ void retrieveItemStorage(player *player, storage *storage) {
 		fflush(stdin);
 		verif = scanf("%d", &value);
 		cleanTerminal();
-		if(verif != 1){
+		if(verif != 1)
 			return;
+		if(value >= storage->size){
+			printc("Trop loin", 1, FOREGROUND_YELLOW);
+			continue;
 		}
-		item *item = retrieveItemInStorage(storage, value);
+		item *item = retrieveItemInStorage(storage, storage->slots[value].item->id);
 		if(item != NULL) {
 			addItemInInventory(player->inventory,item);
 		} else {
@@ -334,10 +341,12 @@ void goToCrafting(player *player,storage *storage, item **listCraftableItem) {
 	int verif = 1;
 	item *craft;
 	while(verif == 1) {
+		printStorage(storage);
 		printInterfaceCrafting(player->inventory, listCraftableItem, storage);
 		fflush(stdin);
 		verif = scanf("%d", &value);
 		cleanTerminal();
+		printf("%d, %d\n", verif, value);
 		if(verif != 1 || listCraftableItem[value] == NULL){
 			printc("Ça marche pas visiblement\n", 1, FOREGROUND_YELLOW);
 			continue;
@@ -370,71 +379,71 @@ void printCredit() {
 }
 void printStartMenu() {
 	printc(	    "\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
-				   	" \\_,|                                       |\n"
-				   	"    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+				   " \\_,|                                       |\n"
+				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				   "Bienvenue dans Mallocworld !!!",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
 	printc(											      "     |\n"
-		   			"    |                                       |\n"
-		   			"    |                                       |\n"
-					"    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+															 "    |                                       |\n"
+															 "    |                                       |\n"
+															 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				  "1 - Lancer une nouvelle partie",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 	printc(												 "     |\n"
-				    "    |                                       |\n"
-				    "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+															"    |                                       |\n"
+															"    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(		 		  "2 - Charger une partie",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
 	printc(							 			 "             |\n"
-				    "    |                                       |\n"
-				    "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+													"    |                                       |\n"
+													"    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(		 		  "3 - Credit",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
 	printc(				   			 "                         |\n"
-				    "    |                                       |\n"
+										"    |                                       |\n"
 										"    |                                       |\n"
 										"    |                 ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(		 		  "0 - Quitter le jeu",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
 	printc(									 "    |\n"
-				    "    |                                       |\n"
-				    "    |                                       |\n"
-				    "    |  ,-------------------------------------,\n"
-				    "    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+												"    |                                       |\n"
+												"    |                                       |\n"
+												"    |  ,-------------------------------------,\n"
+												"    \\_/_____________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printf("\n\n");
 }
 void printInterfacePlayer() {
 
 	printc(	"\n /¯\\¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\\\n"
-				" \\_,|                                          |\n"
-				"    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+			   " \\_,|                                          |\n"
+			   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				"A votre tour, bouger vous le cul!",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
 	printc(													"     |\n"
-		   		"    |                                          |\n"
-		   		"    |                                          |\n"
-		   		"    |                    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+															   "    |                                          |\n"
+															   "    |                                          |\n"
+															   "    |                    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				    			"Z - NORTH",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
 	printc(							  				"             |\n"
-		   		"    |                                          |\n"
-		   		"    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+													   "    |                                          |\n"
+													   "    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(								"^",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 	printc(									"                     |\n"
-		   		"    |      ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+											   "    |      ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(				"WEST - Q    ",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
 	printc(							"<–+–>",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 	printc(									"    D - EAST",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
 	printc(												"       |\n"
-		   		"    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+														   "    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(								"v",2,FOREGROUND_BLUE,FOREGROUND_INTENSITY);
 	printc(									"                     |\n"
-		   		"    |                                          |\n"
-		   		"    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+											   "    |                                          |\n"
+											   "    |                    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(								"S - SOUTH",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
 	printc(											"             |\n"
-		   		"    |                                          |\n"
-		   		"    |                                          |\n"
-		   		"    |", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+													   "    |                                          |\n"
+													   "    |                                          |\n"
+													   "    |", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(		   "   A - Potion               ",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
 	printc(										"O - Quitter",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
 	printc(													"   |\n"
-		   		"    |                                          |\n"
-		   		"    |  ,----------------------------------------,\n"
-		   		"    \\_/________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+															   "    |                                          |\n"
+															   "    |  ,----------------------------------------,\n"
+															   "    \\_/________________________________________/", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printf("\n\n");
 
 }
@@ -447,15 +456,15 @@ void printInterfacePNJ(inventory *inventory, storage *storage) {
 				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				   "Bienvenue a l'atelier !   Tous vos objets ont ete repare",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
 	printc(											      "         |\n"
-				   "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+															 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				   "Attention ou vous mettez les doigts !",2,FOREGROUND_RED,FOREGROUND_INTENSITY);
 	printc(											             "                            |\n"
-				   "    |                                                                     |\n"
-				   "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+																	"    |                                                                     |\n"
+																	"    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				   "Que souhaitez vous faire ?",2,FOREGROUND_GREEN,FOREGROUND_INTENSITY);
 	printc(											      "                                       |\n"
 															 "    |                                                                     |\n"
-				   "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
+															 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	printc(				   "A - Acceder au stockage",2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
 	printc(											      "                                          |\n"
 															 "    |                                                                     |\n"
@@ -520,13 +529,13 @@ void printInterfaceDepositItem(inventory *inventory,storage *storage) {
 				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				   "Que souhaitez vous deposer ? ",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
 	printc(						  "                                                    |\n"
-															 "    |                                                                                     |\n"
-															 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+									 "    |                                                                                     |\n"
+									 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 
 	for(int i=0 ; i < MAX_SLOTS_INVENTORY ; i++) {
 		if(inventory->slots[i].item != NULL) {
 			setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-			printf("%2d - %20s",inventory->slots[i].item->id, inventory->slots[i].item->name);
+			printf("%2d - %20s", i, inventory->slots[i].item->name);
 			printc(											      "                                                        |\n"
 																	 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 		}
@@ -553,14 +562,12 @@ void printInterfaceRetrieveItem(inventory *inventory,storage *storage) {
 				   " \\_,|                                                                                     |\n"
 				   "    |    ", 2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 	printc(				   "Que souhaitez vous recuperer ?          ",2,FOREGROUND_PURPLE,FOREGROUND_INTENSITY);
-	printc(						  "                                         |\n"
-									 "    |                                                                                     |\n"
-									 "    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
+	printc(						  "                                         |\n    |                                                                                     |\n    |    ",2, FOREGROUND_YELLOW, FOREGROUND_INTENSITY);
 
 	for(int i=0 ; i < storage->size ; i++) {
 		if(storage->slots[i].item != NULL) {
 			setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-			printf("%2d - %20s",storage->slots[i].item->id, storage->slots[i].item->name);
+			printf("%2d - %20s", i, storage->slots[i].item->name);
 			printc(											      "                                                        |\n"
 																	 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 		}
@@ -602,7 +609,7 @@ void printInterfaceCrafting(inventory *inventory, item **listCraftableItem, stor
 
 	for(int i=0 ; listCraftableItem[i] != NULL ; i++) {
 		setText(2,FOREGROUND_CYAN,FOREGROUND_INTENSITY);
-		printf("%2d - %20s",listCraftableItem[i]->id, listCraftableItem[i]->name);
+		printf("%2d - %20s",i, listCraftableItem[i]->name);
 		printc(											      "                                                        |\n"
 																 "    |    ",2,FOREGROUND_YELLOW,FOREGROUND_INTENSITY);
 	}
